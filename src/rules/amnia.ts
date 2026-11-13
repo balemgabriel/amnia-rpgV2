@@ -455,10 +455,10 @@ export const skillDistributions: SkillDistributionDef[] = [
 export const circleOrder: CircleDef['id'][] = [
   'reforco',
   'elemento',
-  'multiplicacao',
-  'ilusao',
-  'projecao',
   'alteracao',
+  'projecao',
+  'ilusao',
+  'multiplicacao',
 ]
 
 export const circles: CircleDef[] = [
