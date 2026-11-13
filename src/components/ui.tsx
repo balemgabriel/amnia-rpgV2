@@ -1,6 +1,16 @@
+import type {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  InputHTMLAttributes,
+  ReactNode,
+  TextareaHTMLAttributes,
+} from 'react'
+import { cn } from '@/lib/cn'
+
 <Button
+  key={classe.id}
   variant="ghost"
-  disabled={!classe.disponivel}
+  disabled={classe.disponivel === false}
   onClick={() => setClasseSelecionada(classe.id)}
   style={
     classeSelecionada === classe.id
@@ -14,15 +24,6 @@
 >
   {classe.name}
 </Button>
-
-import type {
-  ButtonHTMLAttributes,
-  CSSProperties,
-  InputHTMLAttributes,
-  ReactNode,
-  TextareaHTMLAttributes,
-} from 'react'
-import { cn } from '@/lib/cn'
 
 export function Button({
   variant = 'primary',
