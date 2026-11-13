@@ -7,24 +7,6 @@ import type {
 } from 'react'
 import { cn } from '@/lib/cn'
 
-<Button
-  key={classe.id}
-  variant="ghost"
-  disabled={classe.disponivel === false}
-  onClick={() => setClasseSelecionada(classe.id)}
-  style={
-    classeSelecionada === classe.id
-      ? ({
-          outline: `2px solid ${classe.cor}`,
-          outlineOffset: '2px',
-          boxShadow: `0 0 10px ${classe.cor}55`,
-        } as CSSProperties)
-      : undefined
-  }
->
-  {classe.name}
-</Button>
-
 export function Button({
   variant = 'primary',
   className,
