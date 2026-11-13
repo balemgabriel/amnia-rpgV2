@@ -1383,7 +1383,7 @@
     "id": "lutador",
     "name": "Lutador",
     "disponivel": true,
-    "cor": "#9A1717"
+    "cor": "#9A1717",
     "description": "O lutador é alguém em busca de glória pessoal, seja por meio de dentes quebrados de oponentes em becos e bares, seja num coliseu sendo banhado por flores e ouro após uma batalha, ou por meio do auto-aprimoramento e meditação no meio de uma montanha.",
     "coreAbilities": [
       {
