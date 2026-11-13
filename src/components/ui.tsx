@@ -1,3 +1,20 @@
+<Button
+  variant="ghost"
+  disabled={!classe.disponivel}
+  onClick={() => setClasseSelecionada(classe.id)}
+  style={
+    classeSelecionada === classe.id
+      ? ({
+          outline: `2px solid ${classe.cor}`,
+          outlineOffset: '2px',
+          boxShadow: `0 0 10px ${classe.cor}55`,
+        } as CSSProperties)
+      : undefined
+  }
+>
+  {classe.name}
+</Button>
+
 import type {
   ButtonHTMLAttributes,
   CSSProperties,

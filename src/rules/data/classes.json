@@ -2,6 +2,7 @@
   {
     "id": "alquimista",
     "name": "Alquimista",
+    "disponivel": false,
     "description": "",
     "coreAbilities": [],
     "talents": []
@@ -9,6 +10,8 @@
   {
     "id": "artesao",
     "name": "Artesão",
+    "cor": "#B6461D",
+    "disponivel": true,
     "description": "O Artesão é o mestre da preparação e da engenhosidade. Ele não depende apenas de sorte; ele traz suas próprias ferramentas para mudar as regras do jogo.",
     "coreAbilities": [
       {
@@ -153,6 +156,7 @@
   {
     "id": "artista",
     "name": "Artista",
+    "disponivel": false,
     "description": "",
     "coreAbilities": [],
     "talents": []
@@ -160,6 +164,8 @@
   {
     "id": "bardo",
     "name": "Bardo",
+    "cor": "#B6461D",
+    "disponivel": true,
     "description": "Os Bardos são versáteis mestres das artes, capazes de transformar sons, palavras e movimentos em poderosos instrumentos de influência e magia.",
     "coreAbilities": [
       {
@@ -310,6 +316,8 @@
   {
     "id": "barbaro",
     "name": "Bárbaro",
+    "disponivel": true,
+    "cor": "#9A1717",
     "description": "O bárbaro é uma pessoa que prefere viver a vida de maneira mais “rústica”, sem os prazeres e confortos da civilização, e valorizando os instintos naturais e selvagens.",
     "coreAbilities": [
       {
@@ -454,6 +462,8 @@
   {
     "id": "cacador",
     "name": "Caçador",
+    "disponivel": true,
+    "cor": "#284620",
     "description": "O caçador tende a ser alguém extremamente focado e apto no ato de perseguir, rastrear e caçar uma única presa, sendo ela um monstro que assombra um vilarejo, a um mercenário que está com uma recompensa boa sob sua cabeça, até mesmo uma criatura da Noite.",
     "coreAbilities": [
       {
@@ -616,6 +626,7 @@
   {
     "id": "clerigo",
     "name": "Clérigo",
+    "disponivel": false,
     "description": "",
     "coreAbilities": [],
     "talents": []
@@ -623,6 +634,8 @@
   {
     "id": "druida",
     "name": "Druida",
+    "cor": "#284620",
+    "disponivel": true,
     "description": "O druida é uma figura mística e importante em Amnia. Conhecido por sua profunda conexão com a natureza e o mundo espiritual, o druida tem um papel vital como conselheiro, curandeiro e líder espiritual.",
     "coreAbilities": [
       {
@@ -773,6 +786,8 @@
   {
     "id": "feiticeiro",
     "name": "Feiticeiro",
+    "disponivel": true,
+    "cor": "#175D9A",
     "description": "Feiticeiro são pessoas naturalmente adeptas a andar na linha tênue entre magias poderosas e consequências fatais. Por isso são naturalmente caçados e altamente observados, pois a qualquer momento alguma pessoa pode morrer de uma maneira súbita no meio de uma cidade",
     "coreAbilities": [
       {
@@ -911,6 +926,8 @@
   {
     "id": "ginete",
     "name": "Ginete",
+    "disponivel": true,
+    "cor": "#284620",
     "description": "Os Ginetes são combatentes altamente especializados que dominam o combate montado, tornando-se um só com suas montarias em manobras táticas e ferozes. Adaptáveis e letais, eles são treinados para transformar o campo de batalha a seu favor",
     "coreAbilities": [
       {
@@ -1061,6 +1078,8 @@
   {
     "id": "guerreiro",
     "name": "Guerreiro",
+    "disponivel": true,
+    "cor": "#9A1717",
     "description": "O guerreiro tende a ser um aventureiro médio, seu motivo de embarcar em uma aventura pode ser apenas heroismo barato, uma jornada para ser o maior espadachim de Amnia, ou uma missão de Honra e cumprir seu juramento de ajudar os fracos.",
     "coreAbilities": [
       {
@@ -1211,6 +1230,8 @@
   {
     "id": "ladino",
     "name": "Ladino",
+    "disponivel": true,
+    "cor": "#284620",
     "description": "Ladinos são indivíduos astutos e habilidosos que são frequentemente contratados para realizar o trabalho sujo para várias organizações e gangues. Essas atividades podem incluir a coleta de informações sensíveis que podem ser usadas para chantagem, roubo de magias únicas e autorias, até assassinato.",
     "coreAbilities": [
       {
@@ -1361,6 +1382,8 @@
   {
     "id": "lutador",
     "name": "Lutador",
+    "disponivel": true,
+    "cor": "#9A1717"
     "description": "O lutador é alguém em busca de glória pessoal, seja por meio de dentes quebrados de oponentes em becos e bares, seja num coliseu sendo banhado por flores e ouro após uma batalha, ou por meio do auto-aprimoramento e meditação no meio de uma montanha.",
     "coreAbilities": [
       {
@@ -1517,6 +1540,8 @@
   {
     "id": "mago",
     "name": "Mago",
+    "disponivel": true,
+    "cor": "#175D9A",
     "description": "O mago é alguém que estuda todos os processos da magia, se especializando em um círculo e se tornando um verdadeiro mestre",
     "coreAbilities": [
       {
@@ -1682,6 +1707,7 @@
   {
     "id": "ocultista",
     "name": "Ocultista",
+    "disponivel": false,
     "description": "",
     "coreAbilities": [],
     "talents": []
