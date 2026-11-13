@@ -1,0 +1,1689 @@
+[
+  {
+    "id": "alquimista",
+    "name": "Alquimista",
+    "description": "",
+    "coreAbilities": [],
+    "talents": []
+  },
+  {
+    "id": "artesao",
+    "name": "Artesão",
+    "description": "O Artesão é o mestre da preparação e da engenhosidade. Ele não depende apenas de sorte; ele traz suas próprias ferramentas para mudar as regras do jogo.",
+    "coreAbilities": [
+      {
+        "id": "gambiarra-genial",
+        "name": "Gambiarra Genial",
+        "description": "Você pode usar 1 Ímpeto e 1PA para criar uma gambiarra fazendo um teste de Ofícios, podendo ser uma arma improvisada, um dispositivo ou algo único. A Gambiarra pode ter 1 modificação de graça."
+      },
+      {
+        "id": "tatuagem-runica",
+        "name": "Tatuagem Rúnica",
+        "description": "Você pode gastar 1 Ímpeto durante um descanso curto ou 3 Ímpeto em combate para inscrever uma runa temporária na pele de um aliado (ou em um objeto). A runa dura até ser ativada ou até o fim da sessão. E pode ser ativada como uma reação por 1PA."
+      },
+      {
+        "id": "temperar-o-aco",
+        "name": "Temperar o Aço",
+        "description": "Uma vez por cena, você pode gastar 2 Ímpeto para realizar um ajuste rápido em sua arma ou armadura durante o combate, aumentando o dano ou redução física dele equivalente a um teste de Oficios CD 4, sucessos acima de 5 adicionam +1 para o atributo até o final da cena. ( Máx de +3 para o atributo)."
+      }
+    ],
+    "talents": [
+      {
+        "id": "graxa-de-cotovelo",
+        "name": "Graxa de Cotovelo",
+        "description": "Caso falhe num teste de Oficios para reparar algo, pode usar 1 Ímpeto para adicionar dados equivalente a sua Força na rolagem novamente.",
+        "requirement": "Força 2"
+      },
+      {
+        "id": "aaigampunk",
+        "name": "Aaigampunk",
+        "description": "Suas criações recebem PM igual a seu atributo chave.",
+        "requirement": "Arcanismo 4"
+      },
+      {
+        "id": "meu-precioso",
+        "name": "Meu Precioso",
+        "description": "Suas criações recebem +1 no dano, RD ou +4 de vida.",
+        "requirement": ""
+      },
+      {
+        "id": "vontade-da-maquina",
+        "name": "Vontade da Máquina",
+        "description": "Suas criações tem +1 no SAVE DC.",
+        "requirement": "Vontade 3 e Oficios 3"
+      },
+      {
+        "id": "ajuste-nos-parafusos",
+        "name": "Ajuste nos parafusos",
+        "description": "Você pode usar 2 Ímpeto e 1PA para ajustar uma criação, aumentando os atributos dela em +1, só pode ser usado uma vez por cena.",
+        "requirement": "Gambiarra Genial"
+      },
+      {
+        "id": "rancor-do-inventor",
+        "name": "Rancor do Inventor",
+        "description": "Sempre que sua criação sofre dano ou é destruida, você recebe +2 dados contra aquele que feriu/destruiu a criação até o final de cena.",
+        "requirement": ""
+      },
+      {
+        "id": "bem-planejado",
+        "name": "Bem planejado",
+        "description": "Uma vez por descanso permite adicionar um Modificador extra em algo.",
+        "requirement": "Oficios 2"
+      },
+      {
+        "id": "projetinho",
+        "name": "Projetinho",
+        "description": "Runas Inatas recebem -1 no custo final ao afetar suas criações.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "runa-programada",
+        "name": "Runa Programada",
+        "description": "Suas criações recebem uma runa passiva de até nível 2.",
+        "requirement": ""
+      },
+      {
+        "id": "projeto-dinamico",
+        "name": "Projeto-Dinamico",
+        "description": "Sua criação pode ter 2 formas diferentes, como um escudo que vira arma e etc. Mas a dificuldade para construir ele muda para DIF 5. e Você gasta 1 PA para trocar de forma.",
+        "requirement": "Oficios 4"
+      },
+      {
+        "id": "resfriamento-arcano",
+        "name": "Resfriamento Arcano",
+        "description": "Suas tatuagens Rúnicas ajudem a resfriar o limiar em -2 pontos adicionais.",
+        "requirement": "Tatuagem Rúnica"
+      },
+      {
+        "id": "runa-de-cooperacao",
+        "name": "Runa de Cooperação",
+        "description": "Ao ativar runas em aliados ou criações elas recebem +1 na rolagem ou Nível.",
+        "requirement": "Inteligência 3"
+      },
+      {
+        "id": "tempo-arcano",
+        "name": "Tempo Arcano",
+        "description": "Condições moderadas relacionadas ao tempo de ativação de uma runa em uma de suas criações diminui o custo final delas em -1.",
+        "requirement": ""
+      },
+      {
+        "id": "runa-de-reacao",
+        "name": "Runa de reação",
+        "description": "Runas ou magias ativadas por meia de reações recebem +1 no dado.",
+        "requirement": "Vontade 2"
+      },
+      {
+        "id": "orgulho-do-pai",
+        "name": "Orgulho do pai",
+        "description": "Pode usar 1 Ímpeto quando uma criação ativa uma condição ou restrição de uma magia, causando +2 de dano.",
+        "requirement": ""
+      },
+      {
+        "id": "ferreiro-experiente",
+        "name": "Ferreiro Experiente",
+        "description": "Ao criar armas ou armaduras você pode usar 2 Ímpeto para adicionar um modificador extra.",
+        "requirement": "Oficios 3"
+      },
+      {
+        "id": "sob-medida",
+        "name": "Sob-Medida",
+        "description": "Quando você ou um aliado utiliza um item que você criou, ele ganha +1 no dado relacionado ao item.",
+        "requirement": ""
+      },
+      {
+        "id": "projeto-de-amor",
+        "name": "Projeto de amor",
+        "description": "Você se dedica a apenas uma criação, fazendo com que toda runa tenha -1 de custo ao afetar ela, e você receba +1 dado ao usar ela, mas runas custam +2 em outras criações que não sejam essa, e você recebe -1 no dado ao usar essa outra criação.",
+        "requirement": "Temperar o Aço"
+      },
+      {
+        "id": "pedra-de-amolar",
+        "name": "Pedra de Amolar",
+        "description": "Gasta 1 Ímpeto e 1PA para afiar sua arma, aumentando o SAVE DC dela em +1 por uma rodada.",
+        "requirement": ""
+      },
+      {
+        "id": "aperfeicoamento",
+        "name": "Aperfeiçoamento",
+        "description": "cada vez que derrota um inimigo com sua criação, sua criação recebe +1 em todas rolagens contra aquele tipo de inimigo na proxima vez que encontra-lo.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "artista",
+    "name": "Artista",
+    "description": "",
+    "coreAbilities": [],
+    "talents": []
+  },
+  {
+    "id": "bardo",
+    "name": "Bardo",
+    "description": "Os Bardos são versáteis mestres das artes, capazes de transformar sons, palavras e movimentos em poderosos instrumentos de influência e magia.",
+    "coreAbilities": [
+      {
+        "id": "tema-de-batalha",
+        "name": "Tema de Batalha",
+        "description": "Pode usar 1 Ímpeto e 1PA para tocar o tema de batalha seu ou de um jogador, rolando +2 dados."
+      },
+      {
+        "id": "canto-da-ruina",
+        "name": "Canto da Ruína",
+        "description": "Você usa 2 Ímpeto para lançar uma melodia dissonante em um alvo, fazendo com que ele deva fazer um SAVE DC de Instrospecção+VON para não receber -2 em rolagens nessa rodada."
+      },
+      {
+        "id": "maestro-do-caos",
+        "name": "Maestro do Caos",
+        "description": "Uma vez por rodada, você pode gastar 1 Ímpeto + 1PA para guiar o fluxo da batalha com sua voz ou instrumento com um dos efeitos;\nAcelerar: Um aliado a até 6m ganha 1 PA adicional neste turno (para atacar ou mover).\nDescompassar: Um inimigo a até 6m deve realizar um SAVE DC de CAR+VON para não receber a condição de intimidado."
+      }
+    ],
+    "talents": [
+      {
+        "id": "afinacao-fatal",
+        "name": "Afinação fatal",
+        "description": "Magias lançadas por canalização Oral causam +1 de dano.",
+        "requirement": "Canalização Oral Nívél 2"
+      },
+      {
+        "id": "inspiracao-bardica",
+        "name": "Inspiração Bárdica",
+        "description": "Usa 2 Ímpeto para conceder 2 sucessos automáticos em testes não relacionados a combate para um aliado.",
+        "requirement": "Carisma 4"
+      },
+      {
+        "id": "climax",
+        "name": "Climax",
+        "description": "Pode usar 2 Ímpeto para começar um Climax, fazendo com que magias lançadas pela canalização Oral recebam +2 Dados até o seu próximo turno.",
+        "requirement": "Performance 3"
+      },
+      {
+        "id": "o-show-nao-pode-parar",
+        "name": "O show não pode parar",
+        "description": "Recebe 1RD enquanto toca músicas.",
+        "requirement": ""
+      },
+      {
+        "id": "leitmotiff",
+        "name": "Leitmotiff",
+        "description": "Pode gastar 1 Ímpeto para tocar um verso e receber 3 de mana quando você ou um aliado passa em um teste por uma margem de 4.",
+        "requirement": "Performance 2 e Arcanismo 2"
+      },
+      {
+        "id": "tambores-da-chuva",
+        "name": "Tambores da Chuva",
+        "description": "Enquanto toca um ritmo continuo seus aliados recebem +1 dado.",
+        "requirement": ""
+      },
+      {
+        "id": "orquestra-de-batalha",
+        "name": "Orquestra de batalha",
+        "description": "Por 1 Ímpeto extra você pode ativar tema de batalha em um alvo extra.",
+        "requirement": "Tema de Batalha"
+      },
+      {
+        "id": "nota-marrom",
+        "name": "Nota Marrom",
+        "description": "Você pode usar 2 Ímpeto para forçar um alvo a realizar um teste de VON+Fortitude vs Performance+Vontade sua, se ele falhar por uma margem de 2 ele fica ofuscado e prejudicado, e se falhar por margem de 4 ele fica paralizado.",
+        "requirement": ""
+      },
+      {
+        "id": "trompete-do-elefante",
+        "name": "Trompete do Elefante",
+        "description": "Você usa 1 Ímpeto e 1PA para focar uma música humilhante a um inimigo, fazendo com que ele perca -2 espaços/4metros de deslocamento.",
+        "requirement": "Subterfúgio 3"
+      },
+      {
+        "id": "desafinado-de-proposito",
+        "name": "Desafinado de proposito",
+        "description": "Ao desafinar ou falhar em uma performance por uma margem de 3, todos num raio de 5espaços/8metros devem realizar um SAVE DC de Fortitude+Von para não receber -1 nas rolagens até o final da rodada.",
+        "requirement": ""
+      },
+      {
+        "id": "tema-unico",
+        "name": "Tema único",
+        "description": "Usando 2 Ímpeto Você cria músicas únicas para você e seus aliados em circunstancias que não envolvem combate, adicionando +1 dado nessas ações.",
+        "requirement": ""
+      },
+      {
+        "id": "orquestra-fantasma",
+        "name": "Orquestra Fantasma",
+        "description": "Magias que afetem sues instrumentos custam -2 de mana.",
+        "requirement": "Inteligência 2"
+      },
+      {
+        "id": "nuance",
+        "name": "Nuance",
+        "description": "Você consegue atribuir uma runa de Nível equivalente a sua Pericia de Performance a um tema.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "nota-do-talento",
+        "name": "Nota do Talento",
+        "description": "1 vez por dia consegue lançar uma nota que age como uma habilidade ativa de outra classe.",
+        "requirement": "Vontade 3 e Inteligência 3"
+      },
+      {
+        "id": "nota-favorita",
+        "name": "Nota favorita",
+        "description": "Magias de Canalização Oral tem seu SAVE DC aumentado em +1. (Canto da Rúina)",
+        "requirement": ""
+      },
+      {
+        "id": "carga-musical",
+        "name": "Carga Musical",
+        "description": "Usa 2 Ímpeto para aumentar o nível de uma runa equivalente ao seu Carisma, só pode ser usado uma vez por cena.",
+        "requirement": ""
+      },
+      {
+        "id": "ritmo-arcano",
+        "name": "Ritmo Arcano",
+        "description": "Se você conseguiu tocar músicas por 3 turnos, você recebe 2 sucessos automáticos no próximo ataque.",
+        "requirement": ""
+      },
+      {
+        "id": "efeitos-sonoros",
+        "name": "Efeitos Sonoros",
+        "description": "Pode usar 1 Ímpeto para lançar efeitos sonoros durante rolagens dos outros, fazendo um teste de performance DIF 4 para reduzir a rolagem do alvo em -1.",
+        "requirement": "Performance 2"
+      },
+      {
+        "id": "orquestra-de-um-homem-so",
+        "name": "Orquestra de um homem só",
+        "description": "Você pode tocar quantos instrumentos conseguir em um turno sem ter que gastar ações para trocar de instrumentos.",
+        "requirement": ""
+      },
+      {
+        "id": "ta-todo-molhado",
+        "name": "TÁ TODO MOLHADO",
+        "description": "Recebe +1 dado em testes que envolvem humilhar um alvo.",
+        "requirement": ""
+      },
+      {
+        "id": "so-queremos-brincar",
+        "name": "Só queremos brincar",
+        "description": "Fazer alguém falhar uma rolagem concede 1 Ímpeto.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "barbaro",
+    "name": "Bárbaro",
+    "description": "O bárbaro é uma pessoa que prefere viver a vida de maneira mais “rústica”, sem os prazeres e confortos da civilização, e valorizando os instintos naturais e selvagens.",
+    "coreAbilities": [
+      {
+        "id": "furia-primal",
+        "name": "Fúria Primal",
+        "description": "Usa 2 Ímpeto para entrar em fúria. Sua fúria acaba se ficar 1 turno sem atacar alguém. Você causa +2 de dano extra, mas recebe +1 de dano extra."
+      },
+      {
+        "id": "furia-arcana",
+        "name": "Fúria Arcana",
+        "description": "Usa 2 Ímpeto para entrar em fúria. Sua Fúria acaba se ficar 1 turno sem atacar alguém. Ao entrar em fúria a mana em seu corpo se torna instável, fazendo que um dos seguintes efeitos aconteça(d12);\n1. Você aumenta seu tamanho em uma classe, por exemplo de tamanho médio para grande, de grande para gigante e etc.\n2. Vinhas rapidamente crescem até o inimigo mais proximo, ele deve realizar um teste de Atletiscismo+Destreza vs Seu Save dc.\n3. Escolhe um reforço ou elemento e imbui sua arma com uma Runa de nível equivalente ao seu atributo chave.\n4. Misseis equivalentes a seu atributo chave voam nos inimigos forçando testes de Atleticismo + Des vs seu Save Dc para não receber 4 de dano.\n5. O próximo inimigo que o acertar sera cegado por 1 turno caso falhe um save dc de VON+Des.\n6. Você e Aliados a sua volta ganham +2 dados para se defender por 1 rodada.\n7. Ganha 1PA, e rola o d12 novamente.\n8. Você e mais um aliado podem fazer uma ação em conjunto sem usar PA.\n9. Se Teleporta até o inimigo mais proximo\n10. Absorve o próximo ataque que receber recebendo apenas 1 de dano.\n11. Ganha +2 para algum atributo ou pericia enquanto em fúria.\n12. Seu próximo ataque sera repetido contra o inimigo."
+      },
+      {
+        "id": "furia-animal",
+        "name": "Fúria Animal",
+        "description": "Usa 2 Ímpeto para entrar em fúria. Sua fúria acaba se ficar 1 turno sem atacar alguem. Você escolhe um espírito animal para representar sua fúria e instintos;\nDragão: Ao entrar em fúria força alvos a sua volta a realizar um SAVE de Von, caso falhem recebem -1 dados em rolagens contra você.\nGrifo: Pode usar 1PA para realizar um rugido estridente, forçando um SAVE DC de VON, em caso de falha seus aliados recebem +2 dados contra os alvos que falharam.\nCrocodilo: Causa +1 de dano contra alvos expostos.\nLobo: Ataques em conjunto com seus aliados causam +1 de dano\nTigre: Ataques bem sucedidos com margem de 3 ou mais diminuem os dados de defesa do alvo em -1.\nÁguia: Enquanto em fúria a ação de Analisar Alvo o concede +2 de dano contra o alvo.\nSerpente: Recebe +2 dados para manobras de Agarrar.\nRaposa: Ao desviar de um ataque recebe +1 dado de ataque contra o alvo.\nUrso: A Manobra de Ataque pesado, aumenta em +1 dano base extra."
+      }
+    ],
+    "talents": [
+      {
+        "id": "so-vejo-vermelho",
+        "name": "Só vejo Vermelho",
+        "description": "Ao acertar um ataque pode gastar 1 Ímpeto para realizar outro ataque.",
+        "requirement": "Vontade 2"
+      },
+      {
+        "id": "avanco-potente",
+        "name": "Avanço Potente",
+        "description": "A ação de atropelar causa 1 de dano extra.",
+        "requirement": "Força 2"
+      },
+      {
+        "id": "golpe-poderoso",
+        "name": "Golpe Poderoso",
+        "description": "Pode usar 1 Ímpeto para declarar esse ataque, recebendo -1 nos dados de defesa e causando +1 de dano.",
+        "requirement": "Fúria Primal"
+      },
+      {
+        "id": "rasga-bucho",
+        "name": "Rasga-Bucho",
+        "description": "Causa sangramento ao acertar um ataque com margem maior que 3.",
+        "requirement": "Força 3"
+      },
+      {
+        "id": "climax",
+        "name": "Climax",
+        "description": "Usa 2 Ímpeto para adicionar +1 dado de ataque para cada turno passado em fúria.",
+        "requirement": ""
+      },
+      {
+        "id": "carrasco",
+        "name": "Carrasco",
+        "description": "Causa +1 de dano ao atacar com armas Pesadas ou machados.",
+        "requirement": "Especialização em Armas pesadas ou Machados"
+      },
+      {
+        "id": "calma-apos-a-tempestade",
+        "name": "Calma após a tempestade",
+        "description": "Ao sair de fúria cura PV iguais ao seus pontos de Ímpeto atuais.",
+        "requirement": ""
+      },
+      {
+        "id": "tatuagem-mistica",
+        "name": "Tatuagem Mistica",
+        "description": "Tem direito a criar uma tatuagem mística que funciona como uma runa passiva em seu corpo de nível equivalente ao seu atributo chave, que pode ser ativada com 1 Ímpeto sem gastar mana.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "absorcao",
+        "name": "Absorção",
+        "description": "Ao passar um Save dc de uma magia por uma margem de 4, você pode usar 1 Ímpeto para absorver ela recuperando 4PV.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "aptitude-selvagem",
+        "name": "Aptitude Selvagem",
+        "description": "Escolhe duas runas e reduz seu custo de em -1 permanentemente.",
+        "requirement": "Int ou Von 2"
+      },
+      {
+        "id": "lamento-do-aaigam",
+        "name": "Lamento do Aaigam",
+        "description": "Ao entrar em fúria você pode usar 1 Ímpeto para ativar novamente um efeito de magia selvagem do d12.",
+        "requirement": "Fúria Arcana"
+      },
+      {
+        "id": "sabedoria-ancestral",
+        "name": "Sabedoria Ancestral",
+        "description": "Em testes para identificar magias pode usar Sobrevivencia ao Invés de Arcanismo ou Erudição.",
+        "requirement": ""
+      },
+      {
+        "id": "ancestralidade-vingativa",
+        "name": "Ancestralidade Vingativa",
+        "description": "Após ser acertado durante a fúria adiciona pode usar 1 Ímpeto para receber +1 dados contra aquele alvo, mas recebe -1 ao atacar qualquer alvo que não seja ele.",
+        "requirement": ""
+      },
+      {
+        "id": "escudo-espiritual",
+        "name": "Escudo Espiritual",
+        "description": "Quando seu limiar está acima do limite recebe +1 de RD.",
+        "requirement": ""
+      },
+      {
+        "id": "chamado-da-caca",
+        "name": "Chamado da caça",
+        "description": "1 vez por dia rola 1d4, recebe sucessos automáticos equivalentes ao resultado do dado que podem ser usado a qualquer momento.",
+        "requirement": "Int 2 e Von 2"
+      },
+      {
+        "id": "lider-da-alcateia",
+        "name": "Lider da alcateia",
+        "description": "Cada vez que acerta um inimigo, seus aliados ganham +1 dado contra esse mesmo inimigo (Máx 2).",
+        "requirement": ""
+      },
+      {
+        "id": "topo-da-cadeia",
+        "name": "Topo da Cadeia",
+        "description": "Ao entrar em fúria todos inimigos devem realizar um SAVE DC de Von para não receber -1 dados em qualquer ação por 1 rodada.",
+        "requirement": ""
+      },
+      {
+        "id": "instinto-da-fera-dupla",
+        "name": "Instinto da Fera Dupla",
+        "description": "Pode usar +1 Ímpeto e 1PA para ativar os efeitos de outro espírito animal.",
+        "requirement": "Fúria Animal"
+      },
+      {
+        "id": "empunhadura-runica",
+        "name": "Empunhadura Rúnica",
+        "description": "Colocar runas e magias em sua arma recebem -2 no custo final.",
+        "requirement": "Arcanismo 2"
+      },
+      {
+        "id": "corpo-magico",
+        "name": "Corpo Mágico",
+        "description": "Pode rolar FOR para resistir a efeitos mágicos que forçariam um teste de VON ou INT por 1 Ímpeto.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "cacador",
+    "name": "Caçador",
+    "description": "O caçador tende a ser alguém extremamente focado e apto no ato de perseguir, rastrear e caçar uma única presa, sendo ela um monstro que assombra um vilarejo, a um mercenário que está com uma recompensa boa sob sua cabeça, até mesmo uma criatura da Noite.",
+    "coreAbilities": [
+      {
+        "id": "atirador-de-elite",
+        "name": "Atirador de Elite",
+        "description": "Pode usar 1 Ímpeto para marcar um alvo, fazendo com que a ação de mirar conceda +1 dado extra contra esse alvo. Você só pode ter uma marcação por cena."
+      },
+      {
+        "id": "plano-perfeito",
+        "name": "Plano Perfeito",
+        "description": "Você planeja sua abordagem antes de uma caça, você atribui um “Prazo” para que você conclua sua caça, seja 1 dia, 1 semana e etc. E escolhendo um dos efeitos;\n+1 dado contra o alvo\nRecebe +1PA quando o alvo cai em uma armadilha sua\nAtaques furtivos contra o alvo recebem +1 dano\n+1 dado de defesa contra o alvo.\nCaso o prazo seja menos que 3 rodadas ou turnos, você recebe 1-3XP. só pode ser usado uma vez por dia."
+      },
+      {
+        "id": "jogo-da-caca",
+        "name": "Jogo da Caça",
+        "description": "Você usa 2 Ímpeto e foca em apenas um alvo, fazendo com que ele se torne sua Obsessão. você cria 3 objetivos para realizar contra ela, por exemplo desarmar, atacar um membro especifico, acertar ele 3 vezes. Cada vez que conclui um objetivo recebe +1 dado contra esse alvo."
+      }
+    ],
+    "talents": [
+      {
+        "id": "planejamento-avancado",
+        "name": "Planejamento avançado",
+        "description": "Permite usa 1 Ímpeto para ativar mais um efeito do plano perfeito.",
+        "requirement": "Plano Perfeito"
+      },
+      {
+        "id": "bem-preparado",
+        "name": "Bem preparado",
+        "description": "Voce recebe +1 dado de ataque com armas a distância.",
+        "requirement": "Especialização em um tipo de Armas a distância"
+      },
+      {
+        "id": "marcacao-compartilhada",
+        "name": "Marcação compartilhada",
+        "description": "Um aliado seu pode atacar seu alvo e receber os mesmos benefícios que voce contra o alvo.",
+        "requirement": "Liderança 2"
+      },
+      {
+        "id": "caixao-fechado",
+        "name": "Caixão Fechado",
+        "description": "Seu primeiro ataque contra o alvo de obsessão, marcação ou plano custa -1PA.",
+        "requirement": "Destreza 2"
+      },
+      {
+        "id": "fogo-de-supressao",
+        "name": "Fogo de Supressão",
+        "description": "Se seu ataque acertar o inimigo por uma margem de 2 ele recebe -1 na próxima rolagem.",
+        "requirement": ""
+      },
+      {
+        "id": "disparo-atordoante",
+        "name": "Disparo Atordoante",
+        "description": "Pode Usar 1 Ímpeto para declarar um disparo atordoante, que recebe -1 na rolagem de ataque, mas ao acertar força o alvo a um save dc para não ficar atordoado por 1 turno.",
+        "requirement": "Precisão 3"
+      },
+      {
+        "id": "alvo-estudado",
+        "name": "Alvo estudado",
+        "description": "Após 2 turnos se passarem desde o inicio do combate, toda vez que o seu Alvo o ataca, você pode usar 1 Ímpeto para contra-atacar com +1 dado de ataque.",
+        "requirement": ""
+      },
+      {
+        "id": "golpe-final",
+        "name": "Golpe Final",
+        "description": "Causa +1 de dano em alvos que estão com menos da metade da vida, e causa +2 dano caso seja seu alvo.",
+        "requirement": "Precisão 4"
+      },
+      {
+        "id": "rankabazo",
+        "name": "Rankabazo",
+        "description": "Usa 3 Ímpeto para preparar um Rankabazo, um ataque com -2 na rolagem de ataque(Esse -5 nunca pode ser mitigado), ao acertar o ataque reduz o RD do alvo em 2, e reduz os dados de defesa dele em -2.",
+        "requirement": ""
+      },
+      {
+        "id": "mira-ajustada",
+        "name": "Mira Ajustada",
+        "description": "A ação de mira adiciona +1 de dano se for feita contra o seu alvo. (Máx de 2)",
+        "requirement": ""
+      },
+      {
+        "id": "postura-do-atirador-de-elite",
+        "name": "Postura do Atirador de Elite",
+        "description": "Usa 2PA para Ficar imóvel perdendo 2 dados de defesa, mas adiciona +2 dados em rolagens de precisão.",
+        "requirement": "Atirador de Elite"
+      },
+      {
+        "id": "postura-do-predador",
+        "name": "Postura do Predador",
+        "description": "Usa 1 Ímpeto para entrar em uma postura predatoria, recebendo +1 em Furtividade, e recebendo +1 dado de ataque contra seu alvo.",
+        "requirement": "Furtividade 4"
+      },
+      {
+        "id": "espreitador",
+        "name": "Espreitador",
+        "description": "Ataques furtivos causam +1 de dano contra seu alvo.",
+        "requirement": "Furtividade 3"
+      },
+      {
+        "id": "perseguidor",
+        "name": "Perseguidor",
+        "description": "Se mover em direção de sua Obsessão 1 vez por rodada não conta como ação de movimento.",
+        "requirement": ""
+      },
+      {
+        "id": "afiacao-rapida",
+        "name": "Afiação rápida",
+        "description": "Gasta 1 ímpeto para afiar sua arma, concedendo +1 sucesso automático em ataques.",
+        "requirement": "Armas Brancas 3"
+      },
+      {
+        "id": "saborear-a-caca",
+        "name": "Saborear a caça",
+        "description": "Caso seu objetivo de Obsessão envolva atacar membros do seu alvo, cura 1 de vida para cada vez q atacou o membro do inimigo.",
+        "requirement": "Jogo da Caça"
+      },
+      {
+        "id": "rasga-bucho",
+        "name": "Rasga Bucho",
+        "description": "ataques contra inimigos expostos causam sangramento caso eles falhem num SAVE dc de FOR+Atletismo.",
+        "requirement": ""
+      },
+      {
+        "id": "estilo-selvagem",
+        "name": "Estilo Selvagem",
+        "description": "Uma vez por cena permite um ataque com -1PA com armas de arremesso ou leves.",
+        "requirement": "Especialização em Armas leves ou de Arremesso"
+      },
+      {
+        "id": "te-peguei",
+        "name": "Te peguei",
+        "description": "Atacar furtivamente seu alvo faz com que ele fique em estado de terror por 1 turno caso falhe num teste de VON+INT vs sua VON+ Intimidação.",
+        "requirement": "Intimidação 2"
+      },
+      {
+        "id": "visao-agucada",
+        "name": "Visão aguçada",
+        "description": "Recebe +1 dado em testes de percepção e sobrevivência.",
+        "requirement": ""
+      },
+      {
+        "id": "calculo-perfeito",
+        "name": "Cálculo Perfeito",
+        "description": "Usa 2 Ímpeto e 1PA para realizar um ataque que ricocheteia em 3 inimigos, mas recebe -1 na rolagem.",
+        "requirement": ""
+      },
+      {
+        "id": "perfurador-de-dragoes",
+        "name": "Perfurador de dragões",
+        "description": "Usa 1PA e 2 Ímpeto para fazer com que seu próximo ataque que ignora a armadura do inimigo, e causa +3 de dano. Mas reduz seus dados de defesa em -2 por 1 rodada.",
+        "requirement": ""
+      },
+      {
+        "id": "foca-no-jogo-prior",
+        "name": "Foca no jogo Prior",
+        "description": "Você cria uma mini missão todo combate para provar para todos que você é quem mais da dano, essa mini missão deve envolver acertar partes especificas do inimigo, derrotar esse mesmo inimigo e usar uma de suas Habilidades centrais. Ao completar essa missão recebe +1 dado de ataque +1 de dano por 2 combates.( 1 vez por dia)",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "clerigo",
+    "name": "Clérigo",
+    "description": "",
+    "coreAbilities": [],
+    "talents": []
+  },
+  {
+    "id": "druida",
+    "name": "Druida",
+    "description": "O druida é uma figura mística e importante em Amnia. Conhecido por sua profunda conexão com a natureza e o mundo espiritual, o druida tem um papel vital como conselheiro, curandeiro e líder espiritual.",
+    "coreAbilities": [
+      {
+        "id": "voz-da-natureza",
+        "name": "Voz da Natureza",
+        "description": "Pode usar 1 Ímpeto para despertar a vegetação ao seu redor, Diminuindo em -1 custo da Runa de Natureza (Elemento), e fazendo que Plantas, raízes ou vinhas se movem impondo uma das seguintes condições a todos os inimigos na área que falharem no SAVE DC de Atletismo + DES por 1 rodada (escolha uma):\nEnlaçado: Velocidade reduzida pela metade e -1 em testes de Esquiva.\nCegado: Folhas e pólen bloqueiam a visão, -2 em ataques à distância.\nProtegido: Aliados na área ganham +1d6 em testes de defesa."
+      },
+      {
+        "id": "transformacao-bestial",
+        "name": "Transformação Bestial",
+        "description": "A runa de Metamorfose recebe -2 no custo dela, e permite você usar 1 Ímpeto para usar uma transformação parcial e recebe +1 em uma Habilidade enquanto a transformação está ativa.\nEx; +1 em Atletismo ao transformar suas pernas em pernas de um bode."
+      },
+      {
+        "id": "sentido-do-caminho",
+        "name": "Sentido do Caminho",
+        "description": "Uma vez por cena, você pode gastar 2 Ímpeto para receber +2 em todos os testes de Sobrevivência, Navegação, Ofícios e Percepção relacionados ao ambiente natural.\nVocê pode mover-se através de terreno difícil sem penalidades.\nUma vez por turno, pode gastar 1 PA para encontrar automaticamente um recurso útil (água potável, planta medicinal, abrigo seguro, caminho oculto)."
+      }
+    ],
+    "talents": [
+      {
+        "id": "a-natureza-e-cruel",
+        "name": "A Natureza é cruel",
+        "description": "Magias de Natureza tem seu SAVE DC aumentados em +1.",
+        "requirement": "4 Níveis em Elemento - Natureza"
+      },
+      {
+        "id": "casca-de-arvore",
+        "name": "Casca de Arvore",
+        "description": "Qualquer armadura feita de madeira ou objeto feito de madeira recebe +1RD.",
+        "requirement": "Ofícios 2 e Sobrevivência"
+      },
+      {
+        "id": "eficacia-da-natureza",
+        "name": "Eficácia da Natureza",
+        "description": "Magias que afetem ou alterem a natureza tem custo aumentado em +1, e magias que amplificam atributos e efeitos da natureza recebem -1 no custo.",
+        "requirement": "Vontade 3"
+      },
+      {
+        "id": "semente-de-odad",
+        "name": "Semente de Odad",
+        "description": "3 vezes por combate pode lançar uma semente de Odad, e rola 1d6 para invocar uma planta mágica que vem com uma Runa de nível 4 do elemento( Fogo, água, terra, veneno, raio, gelo).",
+        "requirement": "Voz da Natureza"
+      },
+      {
+        "id": "adubagem",
+        "name": "Adubagem",
+        "description": "Após obter mais uma margem de 4 sucessos em uma magia, a próxima magia elemental custa -2 dados.",
+        "requirement": "Arcanismo 4"
+      },
+      {
+        "id": "protecao-da-natureza",
+        "name": "Proteção da Natureza",
+        "description": "Usa 1 Ímpeto para recebe pontos de vida temporários equivalentes a sua Sobrevivência, ou Nível de runa de Natureza usado nesse turno.",
+        "requirement": "Círculo Elemental Inato"
+      },
+      {
+        "id": "totem-ritualistico",
+        "name": "Totem Ritualistico",
+        "description": "Permite usar 2 Ímpeto para criar um totem, que aumenta o dano de Magias canalizadas pelo método Ritualistico em +2.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "grande-viajante",
+        "name": "Grande Viajante",
+        "description": "Você escolhe 3 biomas específicos, e reduz o custo de Magias elementais na nesses ambientes em -1.",
+        "requirement": ""
+      },
+      {
+        "id": "pastor-dos-ermos",
+        "name": "Pastor dos Ermos",
+        "description": "Sentido do Caminho adiciona +2 dados para testes de Empatia Animal.",
+        "requirement": "Sentido do Caminho"
+      },
+      {
+        "id": "apex",
+        "name": "Apex",
+        "description": "Magias de Natureza afetando você ou um animal tem seu nível aumentado em +1.",
+        "requirement": ""
+      },
+      {
+        "id": "selvageria-natural",
+        "name": "Selvageria Natural",
+        "description": "Ataques de Metamorfose recebem +1 de Dano.",
+        "requirement": "Especialização Combate com Metamorfose ou Garras"
+      },
+      {
+        "id": "resiliencia-natural",
+        "name": "Resiliência Natural",
+        "description": "Ao acertar um ataque com metamorfose ativa com margem de 4 sucessos, cura 2 pontos de vida.",
+        "requirement": "Transformação Bestial"
+      },
+      {
+        "id": "igual-pra-igual",
+        "name": "Igual pra Igual",
+        "description": "Copiar um aspecto de algum animal próximo com Metamorfose diminui o custo em -1.",
+        "requirement": "Sobrevivência 2"
+      },
+      {
+        "id": "abominacao",
+        "name": "Abominação",
+        "description": "Ativar um outra transformação com Metamorfose causa 2 de dano em você mas reduz o custo da outra transformação em -2.",
+        "requirement": ""
+      },
+      {
+        "id": "regeneracao-abnormal",
+        "name": "Regeneração Abnormal",
+        "description": "Uma vez por cena pode usar 2 Ímpeto para recuperar 2+VON de PV.",
+        "requirement": ""
+      },
+      {
+        "id": "maestria-do-crisol",
+        "name": "Maestria do Crisol",
+        "description": "Escolhe um tipo de manobra, ofensiva, defensiva, agarrar e save para permitir que use 2 Ímpeto para adicionar +2 sucessos automáticos ao usar ela enquanto transformado.",
+        "requirement": "Briga ou Tática 3"
+      },
+      {
+        "id": "besta-do-alvoredo",
+        "name": "Besta do Alvoredo",
+        "description": "Caso esteja em uma transformação de Nível 5+ recebe +1 em testes de intimidação e percepção.",
+        "requirement": "Intimidação ou Percepção 4"
+      },
+      {
+        "id": "bem-vindo",
+        "name": "Bem vindo",
+        "description": "Ao chegar em um ambiente novo recebe +2XP, Assim como uma especialização em Sobrevivência ou Erudição.",
+        "requirement": ""
+      },
+      {
+        "id": "mirar-na-isca",
+        "name": "Mirar na Isca",
+        "description": "Atacar um alvo com um companheiro animal ou familiar causa 1 sucesso automático.",
+        "requirement": "Empatia Animal 3"
+      },
+      {
+        "id": "cacada-selvagem",
+        "name": "Caçada Selvagem",
+        "description": "1 vez por dia você consegue ativar a caçada selvagem, invocando 2d4 animais selvagens par ao ajudar com uma caçada.",
+        "requirement": "Empatia Animal 4"
+      },
+      {
+        "id": "mestre-das-feras",
+        "name": "Mestre das Feras",
+        "description": "Recebe 2 Especializações em Empatia animal.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "feiticeiro",
+    "name": "Feiticeiro",
+    "description": "Feiticeiro são pessoas naturalmente adeptas a andar na linha tênue entre magias poderosas e consequências fatais. Por isso são naturalmente caçados e altamente observados, pois a qualquer momento alguma pessoa pode morrer de uma maneira súbita no meio de uma cidade",
+    "coreAbilities": [
+      {
+        "id": "fissura-arcana",
+        "name": "Fissura Arcana",
+        "description": "Ao conjurar uma magia gaste 2 Ímpeto para ganhar +2 no dano, Seu Limiar e o Limiar do alvo acertado sobe +3 imediatamente (além do custo da magia)."
+      },
+      {
+        "id": "mente-sobre-materia",
+        "name": "Mente sobre Matéria",
+        "description": "Permite usar 2 Ímpeto e 1PA para forçar uma runa a se materializar por meio de sua mente, fazendo um teste de CAR+VON de dificuldade equivalente ao nível da runa sendo manifestada fazendo com que você gaste apenas metade da Mana necessária na runa."
+      },
+      {
+        "id": "tecer-o-acaso",
+        "name": "Tecer o Acaso",
+        "description": "Você usa sua mana para moldar a alterar suas magias além do normal. Quando você lança uma magia pode usar 1 Ímpeto e rolar 1d6 para que um dos efeitos aconteçam;\n1 - Sua magia ao acertar cria raios que acertam mais 2 inimigos causando metade do dano neles.\n2 - Cria uma copia perfeita de sua magia ao lançar ela, aumenta o dano em +1.\n3 - Sua magia recebe 1 sucesso automático.\n4 - Você aumenta o dano em +1.\n5 - Cura PV equivalente a margem de sucesso contra o alvo.\n6 - Adiciona +1 no SAVE DC para inimigos resistirem a suas magias."
+      }
+    ],
+    "talents": [
+      {
+        "id": "corpo-sobrecarregado",
+        "name": "Corpo sobrecarregado",
+        "description": "Usar Ímpeto enquanto acima do seu limiar aumenta o seu dano em +1, e diminui o custo de Runas Inatas em -1.",
+        "requirement": "Fissura Arcana"
+      },
+      {
+        "id": "estourar-mentes",
+        "name": "Estourar Mentes",
+        "description": "Magias de projeção recebem +1 dano.",
+        "requirement": ""
+      },
+      {
+        "id": "espalhar-o-acaso",
+        "name": "Espalhar o Acaso",
+        "description": "Acertar uma magia por uma margem de 5, faz com que Tecer o Acaso se ative novamente.",
+        "requirement": "Tecer o Acaso"
+      },
+      {
+        "id": "rompe-magia",
+        "name": "Rompe Magia",
+        "description": "Pode usar 1 Ímpeto para receber 2 sucessos automáticos ao usar a manobra de Contramagia.",
+        "requirement": "Vontade 4"
+      },
+      {
+        "id": "feiticaria-perigosa",
+        "name": "Feitiçaria Perigosa",
+        "description": "Uma vez por cena Quando está acima do limite do limiar, pode usar 2 Ímpeto para lançar uma magia sem que ela ative uma Mácula.",
+        "requirement": ""
+      },
+      {
+        "id": "periculosidade-extrema",
+        "name": "Periculosidade Extrema",
+        "description": "A cada 6 pontos que seu limiar sobe, aumenta o SAVE DC de suas magias em +1.",
+        "requirement": "Inteligência 3"
+      },
+      {
+        "id": "montanhas-alem-das-montanhas",
+        "name": "Montanhas além das Montanhas",
+        "description": "Permite passar 6 pontos do limite do seu Limiar sem que uma Mácula aconteça.",
+        "requirement": "Fortitude 2"
+      },
+      {
+        "id": "deixar-o-destino",
+        "name": "Deixar o Destino",
+        "description": "Cada vez que uma magia é lançada por usar 1 Ímpeto para lançar um dado especial, caso o dado seja par aquele que lançou a magia tem seu limiar resfriada em 3 pontos, caso caia par seu Limiar sobe em 3.",
+        "requirement": ""
+      },
+      {
+        "id": "dobrar-a-aposta",
+        "name": "Dobrar a Aposta",
+        "description": "Pode usar 1 Ímpeto e declarar qual vai ser a margem de sucesso de um teste, ao acertar você dobra a efetividade dele, seja por dano ou efeito, ao falhar você recebe dano igual 2 x A margem que você apostou.",
+        "requirement": "Arcanismo 4"
+      },
+      {
+        "id": "jogo-desigual",
+        "name": "Jogo Desigual",
+        "description": "Pode usar 1 Ímpeto e 4 de Mana para re-rolar um dado.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "imaginacao-fertil",
+        "name": "Imaginação fértil",
+        "description": "Pode usar 1 Ímpeto para adicionar metade de seu CAR em SAVES contra efeitos mentais.",
+        "requirement": ""
+      },
+      {
+        "id": "biblioteca-mental",
+        "name": "Biblioteca Mental",
+        "description": "Pode usar 1 Ímpeto ao usar a runa de Externalização, fazendo com que você receba 1 sucesso automático na ação ou comando feito por essa Externalização.",
+        "requirement": "Erudição 3"
+      },
+      {
+        "id": "oficina-do-diabo",
+        "name": "Oficina do Diabo",
+        "description": "Atingir um inimigo despercebido com uma magia concede 1 sucesso automático.",
+        "requirement": "Furtividade 3"
+      },
+      {
+        "id": "explosao-de-mana",
+        "name": "Explosão de Mana",
+        "description": "Ao sofrer uma mácula pode usar 2 Ímpeto ou 4PV para atrasar a Mácula em 1 rodada ou cena, quando a mácula acontecer ela gera uma explosão de Mana que causa +4 dano e precisa de um SAVE DIF 4 de VON+INT ou DES+Atletismo para desviar.",
+        "requirement": ""
+      },
+      {
+        "id": "feiticaria-amiga",
+        "name": "Feitiçaria amiga",
+        "description": "Consegue ativar Mente sobre matéria em Magias Alheias.",
+        "requirement": "Mente Sobre Matéria"
+      },
+      {
+        "id": "mente-vazia",
+        "name": "Mente Vazia",
+        "description": "Ao ativar supressão permite Manipular magias num raio de 4 metros, alocando mana e alterando runas com -2 no custo final.",
+        "requirement": "Arcanismo 4"
+      },
+      {
+        "id": "sorrindo-na-desgraca",
+        "name": "Sorrindo na desgraça",
+        "description": "Quando uma Mácula Arcana ou falha crítica acontece recebe 1 dado da sorte. O dado da sorte deve ser rolado assim que recebe, e você pode trocar ele por qualquer dado em qualquer rolagem.",
+        "requirement": "Manha 2"
+      },
+      {
+        "id": "os-dados-sorridentes",
+        "name": "Os dados sorridentes",
+        "description": "Ao causar um crítico pode aumentar sua carga arcana até o limite para ativar até 2 feitiçarias avançadas instantaneamente.",
+        "requirement": ""
+      },
+      {
+        "id": "sorte-extra",
+        "name": "Sorte extra",
+        "description": "Runas de Sorte recebem -2 no custo final.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "ginete",
+    "name": "Ginete",
+    "description": "Os Ginetes são combatentes altamente especializados que dominam o combate montado, tornando-se um só com suas montarias em manobras táticas e ferozes. Adaptáveis e letais, eles são treinados para transformar o campo de batalha a seu favor",
+    "coreAbilities": [
+      {
+        "id": "danca-dos-cascos",
+        "name": "Dança dos Cascos",
+        "description": "Quando montado pode usar 1 Ímpeto ao usar a manobra de Investida movendo-se até o dobro do seu deslocamento em linha reta e ataque no final do movimento.\nEste ataque ganha +1 dado e se acertar, você pode imediatamente se mover mais 3 metros para sem provocar ataques de oportunidade."
+      },
+      {
+        "id": "olho-do-general",
+        "name": "Olho do General",
+        "description": "Uma vez por turno, você pode gastar 1 Ímpeto e 1PA para analisar o campo de batalha e Expor uma Fraqueza de um inimigo visível ou um local de vantagem. Escolha um aliado adjacente ou a até 6 metros. Até o final do seu próximo turno, esse aliado ganha +1 sucesso automático em ataques contra o alvo exposto ou em ações relacionadas a sua ordem."
+      },
+      {
+        "id": "juramento-do-cavaleiro",
+        "name": "Juramento do Cavaleiro",
+        "description": "Uma vez por cena, você pode declarar um Juramento (ex: \"Protegerei este aliado\", \"Não recuarei desta posição\", \"Derrubarei este inimigo\"). Enquanto o Juramento estiver ativo, você ganha +2 em todas as rolagens relacionadas a ele. Se você cumprir o Juramento, recupera 1 Ímpeto imediatamente.\nSe quebrar o Juramento voluntariamente, perde 2 SP e sofre -1 em todas as rolagens até o fim da cena."
+      }
+    ],
+    "talents": [
+      {
+        "id": "mangudai",
+        "name": "Mangudai",
+        "description": "Ataques a distância feitos em cima de sua montaria causam +1 dno.",
+        "requirement": "Armas a Distância 3"
+      },
+      {
+        "id": "escaramucador",
+        "name": "Escaramuçador",
+        "description": "Recebe +1 dado ao atacar com armas de arremesso ou lanças.",
+        "requirement": "Especialização em Armas de Arremesso ou lanças"
+      },
+      {
+        "id": "fuga-rapida",
+        "name": "Fuga Rápida",
+        "description": "Você pode realizar um teste de Acrobacia CD 15 para subir ou descer de sua montaria sem usar ações de movimento.",
+        "requirement": ""
+      },
+      {
+        "id": "enxame-de-ataques",
+        "name": "Enxame de Ataques",
+        "description": "Quando usa dança dos cascos pode usar 1 Ímpeto para atacar durante a investida com -1 dado de ataque.",
+        "requirement": "Dança dos Cascos"
+      },
+      {
+        "id": "evasao-continua",
+        "name": "Evasão Continua",
+        "description": "Após desviar de um ataque com sua montaria, o próximo ataque contra você terá -1 dado.",
+        "requirement": "Montaria 3"
+      },
+      {
+        "id": "escaramuca",
+        "name": "Escaramuça",
+        "description": "Após desviar 1PA adicional, uma vez por combate.",
+        "requirement": "Destreza 4"
+      },
+      {
+        "id": "flanqueador",
+        "name": "Flanqueador",
+        "description": "Flanquear um inimigo Concede +1 dado de ataque.",
+        "requirement": "Tática 3"
+      },
+      {
+        "id": "liderar-por-exemplo",
+        "name": "Liderar Por Exemplo",
+        "description": "Ao acertar +4 sucessos em uma ação, seus aliados ganham +1 dado para essa ação, Uma vez por cena.",
+        "requirement": "Liderança 3"
+      },
+      {
+        "id": "autoridade",
+        "name": "Autoridade",
+        "description": "Ao direcionar um aliado com uma ordem ele recebe +1 sucesso automático na próxima rolagem.",
+        "requirement": "Olho do General"
+      },
+      {
+        "id": "movimentos-taticos",
+        "name": "Movimentos Táticos",
+        "description": "Pode usar 1 Ímpeto e rolar Tática + Percepção Dif 4, para notar uma trilha tática para seu grupo, concedendo +2 dados para rolagens não relacionadas a combate nessa trilha.",
+        "requirement": "Tática 3"
+      },
+      {
+        "id": "robustez",
+        "name": "Robustez",
+        "description": "Sua Montaria recebe 5 de vida extra por nível e +1 RD.",
+        "requirement": ""
+      },
+      {
+        "id": "defensor",
+        "name": "Defensor",
+        "description": "Usar manobras defensivas aumenta sua RD em +1.",
+        "requirement": ""
+      },
+      {
+        "id": "aco-pesado",
+        "name": "Aço Pesado",
+        "description": "A manobra de atropelar adiciona a seu RD no dano.",
+        "requirement": "Força 4"
+      },
+      {
+        "id": "ponta-de-lanca",
+        "name": "Ponta de Lança",
+        "description": "Pode usar 1 Ímpeto durante um ataque montado para ignorar 2RD do alvo.",
+        "requirement": "Montaria 3"
+      },
+      {
+        "id": "abrir-caminho",
+        "name": "Abrir caminho",
+        "description": "desde que você esteja na frente ou haja primeiro, seus aliados +1 dados na primeira rodada.",
+        "requirement": ""
+      },
+      {
+        "id": "desprezar-os-covardes",
+        "name": "Desprezar os Covardes",
+        "description": "Pode usar 1 Ímpeto para que você e seus aliados recebem sua RD se estiverem caidos, desprevenidos e etc.",
+        "requirement": "Vontade 2"
+      },
+      {
+        "id": "ataque-pesado",
+        "name": "Ataque Pesado",
+        "description": "Ataques enquanto em montaria adicionam +1 de dano caso a montaria for média, +2 caso for grande ou mais.",
+        "requirement": "Montaria 4"
+      },
+      {
+        "id": "autoconfianca",
+        "name": "Autoconfiança",
+        "description": "Uma vez por dia pode realizar um teste de VON + Car, aonde cada sucesso acima de 5 faz você recuperar 1 Ímpeto.",
+        "requirement": ""
+      },
+      {
+        "id": "direcionar-aliados",
+        "name": "Direcionar Aliados",
+        "description": "Enquanto em montaria você pode usar 1PA para direcionar um aliado, permitindo com que ele se mova uma distância equivalente a seu Carisma.",
+        "requirement": "Liderança 2"
+      },
+      {
+        "id": "oferecam-seus-coracoes",
+        "name": "Ofereçam Seus Corações",
+        "description": "Cada ação de movimento enquanto montado em direção a inimigos em um turno adiciona +1 para a rolagem de seus aliados, Máx 3.",
+        "requirement": "Liderança 3"
+      },
+      {
+        "id": "inimigo-em-comum",
+        "name": "Inimigo em Comum",
+        "description": "Rolagens contra um alvo que foi analisado, estudado ou caçado recebem +1 dado.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "guerreiro",
+    "name": "Guerreiro",
+    "description": "O guerreiro tende a ser um aventureiro médio, seu motivo de embarcar em uma aventura pode ser apenas heroismo barato, uma jornada para ser o maior espadachim de Amnia, ou uma missão de Honra e cumprir seu juramento de ajudar os fracos.",
+    "coreAbilities": [
+      {
+        "id": "surto-de-acao",
+        "name": "Surto de Ação",
+        "description": "Pode usar 1 Impeto para receber 2PA imediatamente. Só pode ser usado 1 vez por combate."
+      },
+      {
+        "id": "tecnica-especial",
+        "name": "Técnica Especial",
+        "description": "Você refinou uma magia e transformou em uma técnica Característica sua. Fazendo com que você possa criar uma Magia que terá -3 no custo final, e que permite você usar 1 Impeto para lançar ela com +1 dado na rolagem ou Dano."
+      },
+      {
+        "id": "manobra-marcial-exclusiva",
+        "name": "Manobra Marcial Exclusiva",
+        "description": "Você aprende uma manobra exclusiva;\nGolpe Heroico; Você golpeia o inimigo com uma força absurda, usando 1 Impeto e 1PA ao atacar você força o alvo a realizar um SAVE DC, se ele falhar no SAVE ele é arremessado a uma distância equivalente ao seu SAVE DC, se ele falhar o SAVE por uma margem de 3 ele perde 1PA.\nSalto Heroico; Usa 1 Ímpeto e 1PA para saltar e desferir um golpe poderoso no chão, forçando um SAVE DC para alvos no raio do golpe, ao falhar o SAVE DC eles caem no chão e recebem dano equivalente ao SAVE DC.\nAparagem Heroica; Pode usar 1SP ao usar a ação de Aparar, garantindo 2 sucessos automáticos e 1RD.\nImpacto Heroico: Ao ínves de se defender, você usa 1 Impeto e 1PA para atacar de volta, caso ganhe a rolagem por uma margem de 3 o inimigo é exposto, e case ganhe por 5 o alvo é arremessado no chão. Falhar a rolagem faz você receber 2 de dano extra."
+      }
+    ],
+    "talents": [
+      {
+        "id": "finta-fantasma",
+        "name": "Finta Fantasma",
+        "description": "Ao usar a manobra Finta pode usar 1 Ímpeto para causar -1 dado na rolagem inimiga.",
+        "requirement": ""
+      },
+      {
+        "id": "ataque-relampago",
+        "name": "Ataque Relâmpago",
+        "description": "Pode Usar 2 Ímpeto para ignorar a desvantagem de ataque em sequencia.",
+        "requirement": ""
+      },
+      {
+        "id": "golpe-de-misericordia",
+        "name": "Golpe de Misericordia",
+        "description": "Ao acertar um critico, o próximo ataque contra o alvo recebe +1 Dado.",
+        "requirement": ""
+      },
+      {
+        "id": "precisao-marcial",
+        "name": "Precisão Marcial",
+        "description": "Você recebe +1 dado ao atacar com uma arma caso seja especializado nela.",
+        "requirement": ""
+      },
+      {
+        "id": "heroi-nato",
+        "name": "Herói Nato",
+        "description": "Recebe PV igual sua Vontade.",
+        "requirement": ""
+      },
+      {
+        "id": "golpe-heroico",
+        "name": "Golpe Heroico",
+        "description": "Caso você ou um aliado esteja em situação critica, causa +2 Dano",
+        "requirement": ""
+      },
+      {
+        "id": "revanche",
+        "name": "Revanche",
+        "description": "Após ser acertado recebe +1 dado contra aquele alvo.",
+        "requirement": "Vontade 2"
+      },
+      {
+        "id": "tudo-de-si",
+        "name": "Tudo de Si",
+        "description": "Pode usar 2 Ímpeto para adicionar metade da sua VON como dados de ataque até o final do turno.",
+        "requirement": ""
+      },
+      {
+        "id": "muralha",
+        "name": "Muralha",
+        "description": "Recebe PV igual sua FOR novamente.",
+        "requirement": ""
+      },
+      {
+        "id": "sentinela",
+        "name": "Sentinela",
+        "description": "Quando um Aliado é atacado perto de você, você pode usar 1 Impeto para realizar um ataque contra o alvo.",
+        "requirement": ""
+      },
+      {
+        "id": "honra",
+        "name": "Honra",
+        "description": "Ao cumprir uma promessa recebe +1 dado para qualquer rolagem até o final da cena.",
+        "requirement": "Liderança 2"
+      },
+      {
+        "id": "robusto",
+        "name": "Robusto",
+        "description": "A Manobra de aparar concede 1 sucesso automático adicional.",
+        "requirement": "Manobra Marcial Exclusiva"
+      },
+      {
+        "id": "ataque-de-reflexo",
+        "name": "Ataque de Reflexo",
+        "description": "Ao desviar de um ataque pode usar 1 Ímpeto para realizar um contra ataque com -1 dado.",
+        "requirement": "Desvio 3"
+      },
+      {
+        "id": "ataque-de-saque",
+        "name": "Ataque de Saque",
+        "description": "Pode usar 1 Ímpeto ao sacar a arma para atacar com +1 dado.",
+        "requirement": "Destreza 2"
+      },
+      {
+        "id": "imprudencia-marcial",
+        "name": "Imprudência Marcial",
+        "description": "A manobra de atacar com tudo reduz seu dado de defesa em -1 adicional, mas aumenta seu dano em +2.",
+        "requirement": "Força 3"
+      },
+      {
+        "id": "golpe-de-vontade",
+        "name": "Golpe de Vontade",
+        "description": "Pode usar 1SP para atacar usando sua vontade e ignorar a RD do alvo.",
+        "requirement": "Vontade 2"
+      },
+      {
+        "id": "duelo-de-vontade",
+        "name": "Duelo de Vontade",
+        "description": "Durante um duelo sua técnica especial causa +1 de dano, e recebe -1 de complexidade.",
+        "requirement": "Técnica Especial"
+      },
+      {
+        "id": "nunca-desistir",
+        "name": "Nunca Desistir",
+        "description": "Enquanto nas portas da morte pode fazer um teste de VON+FOR Dif 4 para voltar para 1 PV e continuar lutando, Cada aliado caído ou em situação critica diminui a DIF em 1.",
+        "requirement": "Vontade 3"
+      },
+      {
+        "id": "baluarte",
+        "name": "Baluarte",
+        "description": "Pode usar 1SP para receber +1 Dado em manobras defensivas.",
+        "requirement": "Atletismo 2"
+      },
+      {
+        "id": "coragem",
+        "name": "Coragem",
+        "description": "Ao usar surto de ação recebe 1RD.",
+        "requirement": "Surto de Ação"
+      },
+      {
+        "id": "zona-de-defesa",
+        "name": "Zona de Defesa",
+        "description": "Pode usar 1SP para atacar Inimigos que entrarem em seu alcance corpo a corpo com -1 no dado.",
+        "requirement": "Briga 3"
+      }
+    ]
+  },
+  {
+    "id": "ladino",
+    "name": "Ladino",
+    "description": "Ladinos são indivíduos astutos e habilidosos que são frequentemente contratados para realizar o trabalho sujo para várias organizações e gangues. Essas atividades podem incluir a coleta de informações sensíveis que podem ser usadas para chantagem, roubo de magias únicas e autorias, até assassinato.",
+    "coreAbilities": [
+      {
+        "id": "golpe-furtivo",
+        "name": "Golpe Furtivo",
+        "description": "Pode usar 1 Ímpeto ao atacar um alvo exposto ou surpreso, adicionando metade de sua Destreza no dano."
+      },
+      {
+        "id": "ladrao-arcano",
+        "name": "Ladrão Arcano",
+        "description": "Uma vez por cena pode realizar um teste de Arcanismo + Int para entender uma magia ou aspectos dela, e ao entender completamente uma magia pode usar 2 Ímpeto para escrever a magia em um pergaminho permitindo usar ela com -50% de custo de mana. Os pergaminhos só tem 2 uso."
+      },
+      {
+        "id": "cobrador",
+        "name": "Cobrador",
+        "description": "Ao causar um efeito mental em um alvo, como ofuscado, cego, atordoado, intimidado e assustado por uma margem de 2 ou mais na rolagem, pode usar 2 Ímpeto para causar uma das seguintes condições;\nQuebrado: O alvo sofre -2 dados em todas as rolagens até o fim da cena.\nConfesso: O alvo revela uma informação importante ou segredo (a critério do Mestre).\nParalisado: O alvo fica paralisado por 1 turno."
+      }
+    ],
+    "talents": [
+      {
+        "id": "observar-o-alvo",
+        "name": "Observar o alvo",
+        "description": "Pode usar 3 Ímpeto ao observar um alvo, se ele não o viu você recebe 3 Sucessos Automáticos ao atacar furtivamente ele.",
+        "requirement": "Percepção 4"
+      },
+      {
+        "id": "ataque-furtivo",
+        "name": "Ataque Furtivo",
+        "description": "Acertar um inimigo enquanto enquanto você esta em modo furtivo causa +2 dados de dano extra.",
+        "requirement": "Golpe Furtivo"
+      },
+      {
+        "id": "fantasma",
+        "name": "Fantasma",
+        "description": "Recebe +1 em testes de furtividade.",
+        "requirement": ""
+      },
+      {
+        "id": "desonesto",
+        "name": "Desonesto",
+        "description": "Acertar um inimigo pelas costas ou flanqueado causa +1 de dano extra.",
+        "requirement": "Armas Brancas 3"
+      },
+      {
+        "id": "silenciar",
+        "name": "Silenciar",
+        "description": "Caso tenha observado ou saiba qual o método de canalização de um alvo, recebe +2 dados em testes de agarrar para tentar silenciar ou impedir que ele lance magias.",
+        "requirement": "Briga 3"
+      },
+      {
+        "id": "rolamento-defensivo",
+        "name": "Rolamento defensivo",
+        "description": "Ao receber um ataque pode realizar um teste de acrobacia equivalente a margem que ele lhe acertou para reduzir o dano em 2, as próximas tentativas na cena aumentam a dificuldade em +1.",
+        "requirement": "Destreza 4"
+      },
+      {
+        "id": "a-sua-hora-chegou",
+        "name": "A sua hora chegou",
+        "description": "Se passou pelo menos 2 turnos em furtividade, aumenta o dano em +2.",
+        "requirement": "Furtividade 4"
+      },
+      {
+        "id": "furtividade-bruta",
+        "name": "Furtividade Bruta",
+        "description": "Ataques Furtivos deixam o alvo sangrando caso falhe um SAVE DC de For + Von.",
+        "requirement": ""
+      },
+      {
+        "id": "brutalidade-precisa",
+        "name": "Brutalidade Precisa",
+        "description": "Atacar alvos sangrando ou envenenados causa +1 de dano.",
+        "requirement": "Furtividade 4"
+      },
+      {
+        "id": "torturador",
+        "name": "Torturador",
+        "description": "Recebe +1 dado contra alvos que sofreram efeitos mentais de você.",
+        "requirement": ""
+      },
+      {
+        "id": "olhar-de-serpente",
+        "name": "Olhar de Serpente",
+        "description": "Usa 1 Ímpeto para receber 1 sucesso automático em testes de intimidação.",
+        "requirement": ""
+      },
+      {
+        "id": "malandro-arcano",
+        "name": "Malandro Arcano",
+        "description": "Usa 1 Ímpeto para que Magias lançadas furtivamente recebem +1 no dano ou SAVE DC.",
+        "requirement": ""
+      },
+      {
+        "id": "copia-rapida",
+        "name": "Cópia rápida",
+        "description": "Usa 1 Ímpeto ao ver um aliado ou inimigo lançar uma magia, para tentar copiar algo dela, recebendo +1 nível em uma runa que ele utilizou na magia.",
+        "requirement": "Inteligência 3"
+      },
+      {
+        "id": "pergaminho-velho-e-que-faz-magia-boa",
+        "name": "Pergaminho Velho é que faz magia boa",
+        "description": "Seus pergaminhos tem um uso extra.",
+        "requirement": "Arcanismo 2"
+      },
+      {
+        "id": "nao-original",
+        "name": "Não-Original",
+        "description": "Ganha +2 dados ao usar magias que não são suas.",
+        "requirement": "Ladrão Arcano"
+      },
+      {
+        "id": "mao-arcana",
+        "name": "Mão Arcana",
+        "description": "Enquanto furtivo pode usar 1 Ímpeto para receber +2 níveis em runa de Manipulação(Miscelânea) ou Ilusão.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "arcano-das-sombras",
+        "name": "Arcano das sombras",
+        "description": "Lançar magias enquanto furtivo reduz o custo em -1.",
+        "requirement": "Furtividade e Arcanismo 3"
+      },
+      {
+        "id": "mao-ligeira",
+        "name": "Mão Ligeira",
+        "description": "Recebe +1 dado em ladroagem.",
+        "requirement": ""
+      },
+      {
+        "id": "maldade",
+        "name": "Maldade",
+        "description": "Ataques seus que acertam com margem de 4 causa a condição de Dor, que aumenta o dano do próximo ataque em +1.",
+        "requirement": ""
+      },
+      {
+        "id": "medo",
+        "name": "Medo",
+        "description": "Aumenta o seu SAVE DC equivalente a cada condição que o alvo que vai realizar o SAVE tem.",
+        "requirement": "Cobrador"
+      },
+      {
+        "id": "batatinha",
+        "name": "Batatinha",
+        "description": "Recebe +1 dado de ataque ao usar adagas.",
+        "requirement": "Especialização em Adagas"
+      }
+    ]
+  },
+  {
+    "id": "lutador",
+    "name": "Lutador",
+    "description": "O lutador é alguém em busca de glória pessoal, seja por meio de dentes quebrados de oponentes em becos e bares, seja num coliseu sendo banhado por flores e ouro após uma batalha, ou por meio do auto-aprimoramento e meditação no meio de uma montanha.",
+    "coreAbilities": [
+      {
+        "id": "acao-gloriosa",
+        "name": "Ação Gloriosa",
+        "description": "Pode usar 1 Ímpeto para declarar que vai realizar uma ação gloriosa, reduzindo seus dados de defesa em -2, fazendo com que você ataque ou use a pericia de performance ou carisma como parte da rolagem, e adicionando metade do seu carisma no dano final."
+      },
+      {
+        "id": "arte-marcial",
+        "name": "Arte Marcial",
+        "description": "Ao aparrar ou se defender com sucesso, pode usar 1 Ímpeto e 1 PA para causar dano equivalente a sua DEF+ a Margem de sucesso de sua última defesa ou aparrar."
+      },
+      {
+        "id": "brigador-de-rua",
+        "name": "Brigador De Rua",
+        "description": "Quando você acerta um alvo com golpes desarmados ou usando armas improvisadas, você pode usar 1 Ímpeto e 1 PA para realizar um golpe sujo e impor uma das seguintes condições no alvo caso ele falhe o SAVE DC; Cego, Surdo, Exposto, Prejudicado, Caído."
+      }
+    ],
+    "talents": [
+      {
+        "id": "estrela-do-ringue",
+        "name": "Estrela do Ringue",
+        "description": "Após usar ímpeto para um ataque ou talento, se você passou no ataque por uma margem de 4 você recupera 1 Ímpeto.",
+        "requirement": ""
+      },
+      {
+        "id": "dramatico",
+        "name": "Dramatico",
+        "description": "Ao ser acertado pode usar 1 Ímpeto para realizar um teste de performance+CAR DIF 4 para convencer o alvo que o ataque dele foi muito forte, concedendo ele +1 de dano no próximo ataque mas -2 dados de Defesa após o ataque.",
+        "requirement": "Performance 3"
+      },
+      {
+        "id": "provocador",
+        "name": "Provocador",
+        "description": "Você recebe +2 dados para usar a manobra de provocar.",
+        "requirement": "Manipulação 3"
+      },
+      {
+        "id": "ameaca",
+        "name": "Ameaça",
+        "description": "Quando utiliza ímpeto em um ataque, dois inimigos próximos devem fazer um SAVE DC de Int+Von para não serem intimidados por você.",
+        "requirement": "Intimidação 2"
+      },
+      {
+        "id": "jogo-de-pernas",
+        "name": "Jogo de Pernas",
+        "description": "Cada vez que desvia de um ataque inimigo ganha 1 dado extra de ataque( Limitado ao seu bónus de CAR). Errar um desvio ou se defender de outra maneira faz você perder os “acúmulos”.",
+        "requirement": "Desvio 4"
+      },
+      {
+        "id": "aposta",
+        "name": "Aposta",
+        "description": "Usa 1 ímpeto para apostar que conseguira realizar uma ação ou sequencia de ações especificas contra o inimigo, cada vez que uma ação apostada for concluída ganha +1 dados até concluir a aposta ou até falhar e perder todos acúmulos( Limitado ao seu MOD de CAR).",
+        "requirement": ""
+      },
+      {
+        "id": "ato-final",
+        "name": "Ato final",
+        "description": "Um ataque feito para finalizar o combate com sucesso, Você usa 3 Ímpeto, seu dano aumenta em +1 para cada desvio ou ação gloriosa realizado anteriormente, após realizar o ataque você ficara completamente exposto.",
+        "requirement": "Ação Gloriosa"
+      },
+      {
+        "id": "lutador-justo",
+        "name": "Lutador Justo",
+        "description": "Quando deixa um inimigo atordoado, com alguma desvantagem, ou após fazer uma ação que faria você quebrar um juramento ou convicção, você pode escolher não atacar e usar 1 Ímpeto para recuperar 3 de vida.",
+        "requirement": "Carisma 2"
+      },
+      {
+        "id": "mestre-do-improviso",
+        "name": "Mestre do Improviso",
+        "description": "Ao desviar de um ataque inimigo, pode realizar um teste de Reflexos CD15 para atacar com o objeto mais próximo, esse ataque conta como arma improvisada.",
+        "requirement": ""
+      },
+      {
+        "id": "bicho-ruim",
+        "name": "Bicho Ruim",
+        "description": "Enquanto está em um combate mano a mano usa 1 Ímpeto e recebe 1RD.",
+        "requirement": ""
+      },
+      {
+        "id": "peleia",
+        "name": "Peleia",
+        "description": "Cada ataque que recebe faz com que você ganha +1 dado de ataque.",
+        "requirement": "Briga 3"
+      },
+      {
+        "id": "rapa-de-brigadiano",
+        "name": "Rapa de Brigadiano",
+        "description": "Uma vez por rodada ao desviar de um ataque pode usar 1 ímpeto após acertar um ataque com margem 3, para derrubar o alvo caso ele falhe um SAVE DC de Des+Desvio.",
+        "requirement": "Desvio 3"
+      },
+      {
+        "id": "bifa",
+        "name": "Bifa",
+        "description": "Usa 1 Ímpeto e 1PA para dar um tapa desmoralizante em um alvo, forçando um SAVE DC de int + von para que ele não receba a condição de assustado.",
+        "requirement": "Briga 2"
+      },
+      {
+        "id": "maldade",
+        "name": "Maldade",
+        "description": "Atacar inimigos expostos ou prejudicados recupera 1 Ímpeto 1 vez por combate.",
+        "requirement": ""
+      },
+      {
+        "id": "sem-regras",
+        "name": "Sem Regras",
+        "description": "Ataques com arma improvisadas recebem +1 dado de ataque.",
+        "requirement": ""
+      },
+      {
+        "id": "mordecao",
+        "name": "Mordeção",
+        "description": "Cada vez que erra um ataque contra um inimigo, causa 1 dado de dano extra por cada vez que errou.",
+        "requirement": ""
+      },
+      {
+        "id": "desafio",
+        "name": "Desafio",
+        "description": "Ganha vantagem contra um inimigo especifico e só pode atacar ele por 3 turnos. Se acertar mais ataques que ele até o final do desafio, Ganha vantagem para todas rolagens até o final do combate ou cura 2d6 de Vida.",
+        "requirement": ""
+      },
+      {
+        "id": "sit-down-be-humble",
+        "name": "Sit down, be humble",
+        "description": "Usa uma ação de ataque para derrubar um inimigo, recupera 1d6 de vida.",
+        "requirement": ""
+      },
+      {
+        "id": "aparagem-extrema",
+        "name": "Aparagem extrema",
+        "description": "+1 dado para manobras defensivas.",
+        "requirement": "Destreza 3"
+      },
+      {
+        "id": "recuperacao-rapida",
+        "name": "Recuperação Rapida",
+        "description": "Após desviar de um ataque inimigo pode usar 2 Ímpeto para para recuperar 1d6 de vida.",
+        "requirement": ""
+      },
+      {
+        "id": "posturado",
+        "name": "Posturado",
+        "description": "Recebe +2 dados para resistir a quedas.",
+        "requirement": ""
+      },
+      {
+        "id": "dedo-ushi",
+        "name": "Dedo Ushi",
+        "description": "Ao agarrar um inimigo pode usar 1 Ímpeto e 1PA para tentar realizar o dedo Ushi. Teste de VON + Briga vs Des+Desvio do alvo, caso o alvo falhe ele recebe Dano equivalente a margem de diferença +4.",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "mago",
+    "name": "Mago",
+    "description": "O mago é alguém que estuda todos os processos da magia, se especializando em um círculo e se tornando um verdadeiro mestre",
+    "coreAbilities": [
+      {
+        "id": "potencia-arcana",
+        "name": "Potência Arcana",
+        "description": "Ao conjurar, gaste 1 ímpeto para escolher um bônus: +1 dado na rolagem, +1 de dano, duração dobrada ou área expandida em 1 espaço ou 1,5 metros."
+      },
+      {
+        "id": "dominio-elemental",
+        "name": "Domínio Elemental",
+        "description": "Pode usar 1 Ímpeto para que um elemento que está próximo faça com que a runa de elemento equivalente tenha -2 no custo final."
+      },
+      {
+        "id": "veu-do-ilusionista",
+        "name": "Véu do Ilusionista",
+        "description": "Pode usar 1 Ímpeto quando antes de usar uma magia de ilusão, fazendo com que metade de seu CAR arredondado pra baixo seja adicionado na rolagem."
+      },
+      {
+        "id": "emissao-controlada",
+        "name": "Emissão Controlada",
+        "description": "Gaste 2 Ímpeto para expandir sua Mana durante a etapa de Fluxo, permitindo que sua Mana seja moldada e manifestada em uma área pequena de 1 metro/espaço á 15 metros de distância/10 espaços."
+      },
+      {
+        "id": "invocacao-vinculada",
+        "name": "Invocação Vinculada",
+        "description": "Pode usar 2 Ímpeto para receber 6 PM que pode ser usado apenas para invocar familiares ou itens."
+      },
+      {
+        "id": "eco-de-mana",
+        "name": "Eco de Mana",
+        "description": "Ao conjurar magia de alvo único, gaste 2 SP para afetar um segundo alvo a até 6m de distância com o efeito completo."
+      }
+    ],
+    "talents": [
+      {
+        "id": "choque-termico",
+        "name": "Choque Térmico",
+        "description": "Ao lançar uma magia com elementos opostos como água/gelo e fogo, raio/ar e terra, causa +1 dano e ignora 1 ponto de RD.",
+        "requirement": "Domínio Elemental"
+      },
+      {
+        "id": "elemento-favorito",
+        "name": "Elemento Favorito",
+        "description": "Escolhe uma Runa de Elemento e Diminui o custo dela em -1.",
+        "requirement": ""
+      },
+      {
+        "id": "absorcao-elemental",
+        "name": "Absorção Elemental",
+        "description": "Pode usar 2 Ímpeto para absorver um elemento próximo, reduzindo o custo de runas equivalentes a ele em -2 mas aumentando o custo de outras em +2 até o fim da cena.",
+        "requirement": "Arcanismo 3"
+      },
+      {
+        "id": "destruicao-elemental",
+        "name": "Destruição Elemental",
+        "description": "Sua magias elementais tem um raio de efeito 1 espaço/metro maior.",
+        "requirement": ""
+      },
+      {
+        "id": "linhagem-elemental",
+        "name": "Linhagem Elemental",
+        "description": "Recebe 2RD contra um tipo de dano elemental.",
+        "requirement": ""
+      },
+      {
+        "id": "absorver-material",
+        "name": "Absorver Material",
+        "description": "Usa 1 Ímpeto para absorver um material, fazendo com que runas de alteração tenha o custo reduzido em -1 ao afetar esse material, só pode ser usado uma vez por cena.",
+        "requirement": ""
+      },
+      {
+        "id": "erudicao-avancada",
+        "name": "Erudição Avançada",
+        "description": "Runas avançadas tem o custo final reduzido em -1.",
+        "requirement": "Inteligência 4"
+      },
+      {
+        "id": "absorcao-de-mana",
+        "name": "Absorção de Mana",
+        "description": "Ao passar num SAVE ou teste contra uma magia por uma margem de 3, você recebe 3 de mana extra no próximo turno.",
+        "requirement": "Arcanismo 4"
+      },
+      {
+        "id": "aprimorar-tecnica-arcana",
+        "name": "Aprimorar Técnica Arcana",
+        "description": "Runas Intermediarias recebem -1 no custo final.",
+        "requirement": "Erudição 3"
+      },
+      {
+        "id": "sobrecarregar-aliado",
+        "name": "Sobrecarregar Aliado",
+        "description": "Usa 1 Ímpeto para sobrecarregar um familiar, fazendo ele receber 4 de dano, mas seu próximo ataque causa +2 de dano.",
+        "requirement": "Invocação Vinculada"
+      },
+      {
+        "id": "reabsorver",
+        "name": "Reabsorver",
+        "description": "Usa 1 Ímpeto para dissipar a Mana de um aliado, encerrando a conjuração dele e o curando 5PV.",
+        "requirement": ""
+      },
+      {
+        "id": "emissao-potente",
+        "name": "Emissão Potente",
+        "description": "Magias de projeção com runas de Potência tem seu SAVE DC aumentado em +1.",
+        "requirement": "Emissão Controlada"
+      },
+      {
+        "id": "corrente-de-mana",
+        "name": "Corrente de Mana",
+        "description": "Ao usar uma magia que “conecta” alguém ou algo a você, suas runas tem -2 no custo enquanto a conexão estiver ativa, mas o uso de mana de ambos aumenta o limiar de ambos ao mesmo tempo.",
+        "requirement": "Vontade 3"
+      },
+      {
+        "id": "efetividade-arcana",
+        "name": "Efetividade Arcana",
+        "description": "Você recebe +1 dado ao manipular ou lançar uma magia á 10 metros/9 espaços.",
+        "requirement": ""
+      },
+      {
+        "id": "reserva-de-mana",
+        "name": "Reserva de Mana",
+        "description": "Pode usar 1 Ímpeto para receber 2 de mana, só pode ser usado 1 vez por Cena.",
+        "requirement": "Inteligência 3"
+      },
+      {
+        "id": "cascada",
+        "name": "Cascada",
+        "description": "Ao usar uma Magia de Multiplicação, pode usar X Ímpeto para usar uma runa de nível equivalente a X na próxima magia, X sendo a quantidade de Ímpeto usado.",
+        "requirement": "Eco de Mana"
+      },
+      {
+        "id": "reflexao-arcana",
+        "name": "Reflexão Arcana",
+        "description": "Recebe +1 dado ao tentar refletir ou usar a manobra de contra magia.",
+        "requirement": ""
+      },
+      {
+        "id": "ilusao-persistente",
+        "name": "Ilusão Persistente",
+        "description": "Suas ilusões duram até o fim da cena.",
+        "requirement": "Arcanismo 3 e Subterfúgio 3"
+      },
+      {
+        "id": "ilusao-perfeita",
+        "name": "Ilusão Perfeita",
+        "description": "Aumenta a a dificuldade para perceber suas ilusões em +1 a cada 3 de mana gasto em runas de ilusão.",
+        "requirement": "Carisma 2"
+      },
+      {
+        "id": "magia-ofensiva",
+        "name": "Magia Ofensiva",
+        "description": "A cada 4 de mana gasto em runas de Reforço aumenta o SAVE DC delas em +1.",
+        "requirement": "Potência Arcana"
+      },
+      {
+        "id": "raio-dimensional",
+        "name": "Raio Dimensional",
+        "description": "Usa 2 Ímpeto para fazer com que a runa elemental em uso de uma magia seja aleatória, role 1d6 (Fogo, Água, Terra, Raio, Veneno, Natureza).",
+        "requirement": ""
+      }
+    ]
+  },
+  {
+    "id": "ocultista",
+    "name": "Ocultista",
+    "description": "",
+    "coreAbilities": [],
+    "talents": []
+  }
+]

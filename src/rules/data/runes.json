@@ -1,0 +1,1591 @@
+[
+  {
+    "id": "alteracao-criacao",
+    "name": "Criação",
+    "circle": "alteracao",
+    "description": "Cria objetos a partir do seu cenário, elemento ou si mesmo. Ter um elemento presente ou de outro material diminui o custo em -1 ( nunca abaixo de 0).",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Cria um objeto pequeno e simples: uma chave, uma moeda."
+      },
+      {
+        "level": 2,
+        "effect": "Cria um objeto médio simples: um copo, uma corda, uma caixa."
+      },
+      {
+        "level": 3,
+        "effect": "Cria um objeto complexo; uma espada longa, um arco, uma ferramenta de ferreiro mas com -1 no dado."
+      },
+      {
+        "level": 4,
+        "effect": "Cria um objeto mecânico: uma besta, uma fechadura elaborada, uma polia. Ou uma arma de qualidade normal"
+      },
+      {
+        "level": 5,
+        "effect": "Cria um objeto de múltiplas partes: uma armadura completa, uma tenda montada. Ou uma arma de qualidade boa causando +1 de dano"
+      },
+      {
+        "level": 6,
+        "effect": "Cria algo que requer materiais específicos ou propriedades mágicas simples, ou uma arma de qualidade superior causando +2 de dano."
+      },
+      {
+        "level": 7,
+        "effect": "Cria um objeto permanente e lendário. Indistinguível do real, pode receber runas eternas, ou uma arma de qualidade lendária causando +4 de dano."
+      }
+    ]
+  },
+  {
+    "id": "alteracao-envelopar",
+    "name": "Envelopar",
+    "circle": "alteracao",
+    "requirement": "Requer Técnica Intermediária",
+    "description": "Cobre um objeto comum com mana, permitindo que ele receba runas como se fosse feito de energia pura.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Envelopa um objeto pequeno por alguns turnos. Uma moeda, uma adaga curta."
+      },
+      {
+        "level": 2,
+        "effect": "Envelopa um objeto médio por uma cena inteira. Uma espada, um cajado."
+      },
+      {
+        "level": 3,
+        "effect": "Envelopa um objeto grande ou arma de duas mãos."
+      },
+      {
+        "level": 4,
+        "effect": "Envelopa uma armadura completa ou escudo grande."
+      },
+      {
+        "level": 5,
+        "effect": "Envelopa uma estrutura: uma porta, uma parede, um pilar."
+      },
+      {
+        "level": 6,
+        "effect": "Envelopa permanentemente, enquanto você mantiver mana fluindo. O objeto se torna parte do seu circuito."
+      },
+      {
+        "level": 7,
+        "effect": "Envelopa algo vivo ou uma área inteira. Uma pessoa, uma sala, um campo pequeno."
+      }
+    ]
+  },
+  {
+    "id": "alteracao-espaco",
+    "name": "Espaço",
+    "circle": "alteracao",
+    "requirement": "Requer Arcanismo 4",
+    "description": "Manipula a distância, o volume e a própria geometria da realidade.",
+    "levels": [
+      {
+        "level": 3,
+        "effect": "Distorce a trajetória local. Projéteis e golpes desviam de você ao entrar no seu espaço pessoal, como se o ar o repelisse."
+      },
+      {
+        "level": 4,
+        "effect": "Cria um pequeno bolsão dimensional (tamanho de uma mochila) para guardar objetos inanimados, ou realiza um \"Passo do Vazio” (teletransporte de até 5 metros)."
+      },
+      {
+        "level": 5,
+        "effect": "Dobra o espaço de uma área. Corredores se tornam labirintos infinitos, portas levam a lugares errados, e a distância entre dois pontos se estica."
+      },
+      {
+        "level": 6,
+        "effect": "Teletransporte de longo alcance (até 1 km) para lugares que você já viu, ou cria uma sala dimensional estável e habitável do tamanho de um quarto."
+      },
+      {
+        "level": 7,
+        "effect": "Rasga o tecido do espaço. Cria fendas bidimensionais que cortam qualquer matéria (ignorando defesa física) ou estabelece uma dimensão de bolso inteira, autossustentável e do tamanho de uma casa"
+      }
+    ]
+  },
+  {
+    "id": "alteracao-fisica",
+    "name": "Física",
+    "circle": "alteracao",
+    "description": "Manipula a parte física de objetos, alterando propriedades como textura e etc.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Altera uma propriedade menor: temperatura, cor, textura superficial."
+      },
+      {
+        "level": 2,
+        "effect": "Altera dureza ou flexibilidade de um objeto. Aço fica maismaleável, borracha fica levemente rígida."
+      },
+      {
+        "level": 3,
+        "effect": "Altera o estado da matéria localmente e numa quantidade grande suficiente para caber em sua mão."
+      },
+      {
+        "level": 4,
+        "effect": "Altera propriedades estruturais profundas: madeira com resistência de aço, pedra com leveza de cortiça."
+      },
+      {
+        "level": 5,
+        "effect": "Altera propriedades químicas: torna algo corrosivo, inflamável, tóxico ao toque, sólido vira líquido, líquido vira gás."
+      },
+      {
+        "level": 6,
+        "effect": "Transforma um material completamente em outro. Ferro em vidro, ouro em chumbo."
+      },
+      {
+        "level": 7,
+        "effect": "Altera múltiplas propriedades simultaneamente ou manipula propriedades que não fazem sentido com o material original."
+      }
+    ]
+  },
+  {
+    "id": "alteracao-inversao",
+    "name": "Inversão",
+    "circle": "alteracao",
+    "requirement": "Requer Técnica Avançada",
+    "description": "Inverte a polaridade de qualquer efeito. Dano vira cura. Lentidão vira acúmulo de energia. Um peteleco vira um golpe devastador. O maior potencial do sistema.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Inverte propriedades físicas simples. Quente vira frio, leve vira pesado."
+      },
+      {
+        "level": 3,
+        "effect": "Inverte propriedades elementares básicas. Fogo vira gelo, luz vira sombra."
+      },
+      {
+        "level": 4,
+        "effect": "Inverte dano em cura ou cura em dano com 25% de efetividade"
+      },
+      {
+        "level": 5,
+        "effect": "Inverte magnitude temporal. Lentidão extrema acumula energia para um único instante devastador."
+      },
+      {
+        "level": 6,
+        "effect": "Inverte proporção causa-efeito. Um peteleco tem a força de um chute, um sopro tem a força de um furacão. Inverte dano em cura ou cura em dano com 50% de efetividade"
+      },
+      {
+        "level": 7,
+        "effect": "Inverte completamente conceitos abstratos ou múltiplas propriedades simultaneamente. Sorte vira azar, vida vira morte, existência vira ausência."
+      }
+    ]
+  },
+  {
+    "id": "alteracao-peso",
+    "name": "Peso",
+    "circle": "alteracao",
+    "description": "Altera o peso de algo, cada vez que o peso aumenta mais que 50% do peso original aumenta o custo em 1.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Altera em 10%. Uma diferença sutil, quase imperceptível."
+      },
+      {
+        "level": 2,
+        "effect": "Altera em 25%. Uma espada parece mais leve ou mais pesada ao empunhar."
+      },
+      {
+        "level": 3,
+        "effect": "Altera em 50%. Um homem de 80kg pesa 40kg ou 120kg."
+      },
+      {
+        "level": 4,
+        "effect": "Dobra ou reduz à metade. Uma bigorna pode ser carregada, uma pena vira impossível de levantar."
+      },
+      {
+        "level": 5,
+        "effect": "Altera em 5 vezes. Um seixo pesa como uma pedra, um tronco flutua como palha."
+      },
+      {
+        "level": 6,
+        "effect": "Altera em 10 vezes. O chão cede sob uma moeda, ou uma carroça flutua nas mãos."
+      },
+      {
+        "level": 7,
+        "effect": "Torna algo quase sem peso ou impossivelmente pesado. Uma montanha pode ser movida, ou uma pena ancora um navio."
+      }
+    ]
+  },
+  {
+    "id": "alteracao-tamanho",
+    "name": "Tamanho",
+    "circle": "alteracao",
+    "description": "Altera o tamanho de algo, o custo pode aumentar em +1 adicional dependendo do tamanho atual da pessoa ou objeto.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Altera em 25%. Um objeto se torna notavelmente diferente."
+      },
+      {
+        "level": 3,
+        "effect": "Altera em 50%. Metade do tamanho ou uma vez e meia maior."
+      },
+      {
+        "level": 4,
+        "effect": "Dobra ou reduz à metade. Uma pessoa vira do tamanho de uma criança."
+      },
+      {
+        "level": 5,
+        "effect": "Aumenta 2.5 vezes. Um cavalo vira do tamanho de um cachorro."
+      },
+      {
+        "level": 6,
+        "effect": "Altera em 3 vezes. Um cavalo cabe na palma da mão, ou uma adaga vira uma lança."
+      },
+      {
+        "level": 7,
+        "effect": "Altera em 5 vezes ou mais. Uma casa vira uma miniatura, um anel vira um portão."
+      }
+    ]
+  },
+  {
+    "id": "alteracao-tempo",
+    "name": "Tempo",
+    "circle": "alteracao",
+    "requirement": "Requer Arcanismo 4",
+    "description": "Manipula o tempo, podendo acelerar ou desacelerar, necessita um nível altissimo de maestria para utilizar essa runa.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Acelera um processo simples por alguns segundos. Uma tocha queima rápido, gelo derrete mais rápido."
+      },
+      {
+        "level": 3,
+        "effect": "Desacelera um alvo por uma rodada inteira. Ele se move -2 espaços ou 4 metros de seus deslocamento."
+      },
+      {
+        "level": 4,
+        "effect": "Acelera a si mesmo. consegue realizar uma ação menor assim que essa runa é ativada."
+      },
+      {
+        "level": 5,
+        "effect": "Acelera a si mesmo ao ponto de realizar uma ação de 1PA livremente, ou desacelera algo ao ponto que ele fica 50% mais devagar."
+      },
+      {
+        "level": 6,
+        "effect": "Acelera ou diminui o tempo em 2 segundos, podendo congelar brevemente o tempo aonde você toca ou dentro de uma aura, presença ou Focal ."
+      },
+      {
+        "level": 7,
+        "effect": "Congela o tempo por 5 segundos."
+      }
+    ]
+  },
+  {
+    "id": "elemento-agua",
+    "name": "Água",
+    "circle": "elemento",
+    "description": "Manipula a fluidez, a pressão e a adaptação.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Condensa a umidade. Cria um copo d'água ou molha uma superfície."
+      },
+      {
+        "level": 2,
+        "effect": "Jato de água. Empurra alvos, apaga fogueiras e cria chicotes líquidos."
+      },
+      {
+        "level": 3,
+        "effect": "Controle de fluxo. Cria escudos de água que absorvem impacto e manipula riachos."
+      },
+      {
+        "level": 4,
+        "effect": "Manipulação interna. desidrata extraindo toda a água de um corpo.Alta pressão. Jatos que cortam madeira e pedra, ou extrai água do ar e das plantas."
+      },
+      {
+        "level": 5,
+        "effect": "Alta pressão. Jatos que cortam madeira e pedra, ou extrai água do ar e das plantas.."
+      },
+      {
+        "level": 6,
+        "effect": "Fúria do oceano. Invoca ondas massivas, redemoinhos que afogam e controla lagos inteiros."
+      }
+    ]
+  },
+  {
+    "id": "elemento-clima",
+    "name": "Clima",
+    "circle": "elemento",
+    "description": "Manipula a atmosfera, os ventos e as condições macroambientais.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Brisa súbita. Limpa neblina, muda a temperatura levemente e altera a direção de fumaça."
+      },
+      {
+        "level": 2,
+        "effect": "Nevoeiro denso e rajadas de vento. Dificulta a visão e desvia flechas e projéteis leves."
+      },
+      {
+        "level": 3,
+        "effect": "Tempestade local. Chuva torrencial, ventos que derrubam pessoas e granizo doloroso."
+      },
+      {
+        "level": 4,
+        "effect": "Furacão e nevasca. Ventos que arrancam telhados, neve cegante e tempestades de areia."
+      },
+      {
+        "level": 5,
+        "effect": "Clima extremo. Tornado, furacão em larga escala ou seca instantânea que racha o solo."
+      },
+      {
+        "level": 6,
+        "effect": "Fenômenos cataclísmicos. Chuva ácida, chuva de meteoros pequenos ou um eclipse solar forçado."
+      }
+    ]
+  },
+  {
+    "id": "elemento-elementia",
+    "name": "Elementia",
+    "circle": "elemento",
+    "requirement": "Requer Técnica Intermédiaria",
+    "description": "Funde elementos básicos com conceitos para criar substâncias complexas e compostas.",
+    "levels": [
+      {
+        "level": 3,
+        "effect": "Fusão simples. Mistura dois elementos (Fogo + Terra = Magma; Água + Terra = Lama)."
+      },
+      {
+        "level": 4,
+        "effect": "Propriedade alterada. Muda a regra do elemento (Água \"pesada\" que esmaga, Fogo \"frio\" que congela)."
+      },
+      {
+        "level": 5,
+        "effect": "Traço conceitual. O elemento ganha uma regra abstrata (Fogo que \"queima memórias\", Ácido que \"derrete magia\")."
+      },
+      {
+        "level": 6,
+        "effect": "Transmutação corporal. Você transforma seu próprio corpo no elemento conceitual (corpo de plasma, sangue de metal)."
+      },
+      {
+        "level": 7,
+        "effect": "Elemento impossível. Cria algo que desafia a física e a lógica (Luz Sólida, Fogo que cura, Vácuo Líquido)"
+      }
+    ]
+  },
+  {
+    "id": "elemento-fogo",
+    "name": "Fogo",
+    "circle": "elemento",
+    "description": "Manipula o calor e a combustão. A essência da destruição e da energia.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Cria uma chama do tamanho de uma vela. Acende tochas ou queima papel."
+      },
+      {
+        "level": 2,
+        "effect": "Gera o calor de uma tocha. Queima madeira e causa queimaduras na pele."
+      },
+      {
+        "level": 3,
+        "effect": "Evoca uma fogueira. O calor é notável, derretendo chumbo e incendiando portas."
+      },
+      {
+        "level": 4,
+        "effect": "O calor de uma forja. Derrete ferro e aço, criando um ambiente de deserto."
+      },
+      {
+        "level": 5,
+        "effect": "Calor vulcânico. A rocha derrete em magma e o ar ao redor distorce."
+      },
+      {
+        "level": 6,
+        "effect": "Fogo branco estelar. Não queima, desintegra. Metais se separam em átomos em segundos."
+      }
+    ]
+  },
+  {
+    "id": "elemento-gelo",
+    "name": "Gelo",
+    "circle": "elemento",
+    "description": "Manipula o frio, a rigidez e a ausência do calor.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Geada superficial. Resfria bebidas, congela poças d'água e escorrega o chão."
+      },
+      {
+        "level": 2,
+        "effect": "Frio mordente. Adormece membros, cria pequenas lâminas de gelo e queima pelo frio."
+      },
+      {
+        "level": 3,
+        "effect": "Congelamento sólido. Prende um alvo no gelo, cria escudos e armas de gelo resistente."
+      },
+      {
+        "level": 4,
+        "effect": "Flash freeze. Congela o ar em tempestades de granizo e torna o metal quebradiço como vidro."
+      },
+      {
+        "level": 5,
+        "effect": "Zero absoluto local. O movimento molecular para. O ar congela e cai como neve pesada."
+      },
+      {
+        "level": 6,
+        "effect": "Expansão glacial. Congela um lago inteiro, um prédio ou uma onda do mar em segundos."
+      }
+    ]
+  },
+  {
+    "id": "elemento-natureza",
+    "name": "Natureza",
+    "circle": "elemento",
+    "description": "Manipula a flora, a fauna e a força vital orgânica.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Acelera sementes. Faz flores desabrocharem, cria cipós finos e acalma animais pequenos."
+      },
+      {
+        "level": 2,
+        "effect": "Crescimento rápido. Cipós que amarram, escudos de madeira viva e espinhos venenosos."
+      },
+      {
+        "level": 3,
+        "effect": "Despertar da floresta. Árvores ganham movimento, raízes quebram pedra e enxames de insetos obedecem."
+      },
+      {
+        "level": 4,
+        "effect": "Ecossistema hostil. Esporos tóxicos, plantas carnívoras gigantes e pólen que causa alucinações."
+      },
+      {
+        "level": 5,
+        "effect": "Construtos sencientes. Cria bestas de madeira e folha, e manipula a floresta inteira como um único organismo."
+      },
+      {
+        "level": 6,
+        "effect": "Super-crescimento. A natureza devora casas inteiras em minutos, consumindo pedra e metal."
+      },
+      {
+        "level": 7,
+        "effect": "Gênese. Cria um bioma inteiramente novo ou dá à luz uma criatura mítica a partir da terra e da seiva."
+      }
+    ]
+  },
+  {
+    "id": "elemento-raio",
+    "name": "Raio",
+    "circle": "elemento",
+    "description": "Manipula a eletricidade e raios",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Uma faísca estática. Dá um choque leve ou acende pavios."
+      },
+      {
+        "level": 2,
+        "effect": "Choque forte. Travamento muscular em um membro ou alvo pequeno."
+      },
+      {
+        "level": 3,
+        "effect": "Um raio em arco. Queima madeira, eletrocuta metais e liquidos, e salta entre alvos próximos."
+      },
+      {
+        "level": 4,
+        "effect": "Tempestade elétrica. Múltiplos raios que causam choques fortes."
+      },
+      {
+        "level": 5,
+        "effect": "Um trovão forte suficiente para rachar uma pedra."
+      },
+      {
+        "level": 6,
+        "effect": "Múltiplos raios que caem no mesmo local, eletricidade forte o suficiente para criar magnetismo."
+      }
+    ]
+  },
+  {
+    "id": "elemento-sangue",
+    "name": "Sangue",
+    "circle": "elemento",
+    "description": "Manipula o sangue próprio ou alheio, o fluido da vida e do vínculo.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Sente o próprio sangue pulsando. Pode estancar um sangramento leve ou sentir a presença de sangue fresco próximo."
+      },
+      {
+        "level": 2,
+        "effect": "Controla pequenas quantidades de sangue fora do corpo. Cria gotas que flutuam, manchas que se movem, ou endurece sangue seco como uma crosta."
+      },
+      {
+        "level": 3,
+        "effect": "Manipula o sangue de feridas abertas. Pode fazer o sangue de um corte se mover como um chicote, ou puxar o sangue de uma ferida para selá-la."
+      },
+      {
+        "level": 4,
+        "effect": "Controla o fluxo sanguíneo interno. Causa tontura, acelera o coração, ou faz o sangue de um alvo \"ferver\" causando dor intensa."
+      },
+      {
+        "level": 5,
+        "effect": "O sangue obedece como uma extensão do corpo. Cria armas de sangue sólido, escudos cristalizados."
+      },
+      {
+        "level": 6,
+        "effect": "Vínculo de sangue. Você pode sentir e manipular o sangue de qualquer pessoa cujo sangue você já provou ou tocou, a qualquer distância."
+      }
+    ]
+  },
+  {
+    "id": "elemento-terra",
+    "name": "Terra",
+    "circle": "elemento",
+    "description": "Manipula a solidez, a pedra e a fundação do mundo.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Move pedregulhos levemente e endurece a terra solta."
+      },
+      {
+        "level": 2,
+        "effect": "Molda a pedra. Cria pequenos buracos e projéteis de rocha."
+      },
+      {
+        "level": 3,
+        "effect": "Terreno hostil. Cria espinhos de pedra, transforma o chão em areia movediça ou lama."
+      },
+      {
+        "level": 4,
+        "effect": "Força tectônica. Levanta pedregulhos gigantes, cria armaduras de rocha e causa tremores."
+      },
+      {
+        "level": 5,
+        "effect": "Fissura profunda. Abre o chão para engolir alvos, levanta muros de fortaleza e golens de pedra."
+      },
+      {
+        "level": 6,
+        "effect": "Terremoto localizado. A terra se liquefaz e depois se solidifica, esmagando estruturas e exércitos."
+      }
+    ]
+  },
+  {
+    "id": "elemento-veneno",
+    "name": "Veneno",
+    "circle": "elemento",
+    "description": "Manipula toxinas, ácidos e a corrupção biológica.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Irritação leve. Causa náusea, coceira ou adormece uma ferida pequena."
+      },
+      {
+        "level": 2,
+        "effect": "Toxina paralisante. Cega temporariamente, causa vômito ou queima a pele como ácido fraco."
+      },
+      {
+        "level": 3,
+        "effect": "Peçonha letal. Venenos mortais (se ingeridos/injetados) e ácidos que derretem couro e madeira."
+      },
+      {
+        "level": 4,
+        "effect": "Toxina ambiental. Gás neurotóxico no ar, ácidos que corroem metal e esporos que causam paranoia."
+      },
+      {
+        "level": 5,
+        "effect": "Peste necrótica. Ácidos que comem a carne até o osso e doenças mágicas contagiosas."
+      },
+      {
+        "level": 6,
+        "effect": "Colapso sistêmico. O veneno ataca o circuito de mana do alvo, impedindo-o de conjurar ou curar."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-camaleao",
+    "name": "Camaleão",
+    "circle": "ilusao",
+    "description": "Faz com que voce ou algo copie o cenário e objetos a sua volta automaticamente, menos convincente que invisibilidade.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Um objeto pequeno copia o ambiente ao redor, tornando-se difícil de notar se estiver parado."
+      },
+      {
+        "level": 3,
+        "effect": "Você e seu equipamento copiam o cenário em movimento, mas com um leve atraso se correr."
+      },
+      {
+        "level": 5,
+        "effect": "O efeito se estende a um grupo pequeno ou a uma montaria."
+      },
+      {
+        "level": 6,
+        "effect": "Você copia não só a imagem, mas a temperatura e o cheiro do ambiente, enganando cães de guarda e visão térmica."
+      },
+      {
+        "level": 7,
+        "effect": "Você se torna o próprio cenário. Não é apenas camuflagem; você é a parede, a árvore. como se fosse sempre esteve ali."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-espirito",
+    "name": "Espirito",
+    "circle": "ilusao",
+    "description": "Altera a aparência de seu espirito para que certas magias, selos e outros seres de outro plano o vejam diferente.",
+    "levels": [
+      {
+        "level": 3,
+        "effect": "Mascara sua alma como a de um animal ou objeto inanimado para espíritos e demônios."
+      },
+      {
+        "level": 4,
+        "effect": "Cria uma \"assinatura espiritual\" falsa em um local, atraindo ou repelindo entidades de outros planos."
+      },
+      {
+        "level": 5,
+        "effect": "Você se torna invisível para magias de detecção, selos e criaturas que caçam almas."
+      },
+      {
+        "level": 6,
+        "effect": "Sua alma projeta a assinatura de uma entidade poderosa (um demônio maior, um anjo), causando pavor espiritual."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-fisica",
+    "name": "Física",
+    "circle": "ilusao",
+    "description": "Muda a aparência física de alguém, algo ou magia, criando uma \"carapaça\" falsa ao redor do objeto/pessoa, fazendo com que a pessoa/objeto tenham a outra textura e características físicas",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Altera a cor e a textura superficial de um objeto pequeno."
+      },
+      {
+        "level": 2,
+        "effect": "Muda o material aparente de uma arma ou armadura. Ferro parece ouro, couro parece seda."
+      },
+      {
+        "level": 4,
+        "effect": "A ilusão engana o tato e o olfato. Um pedaço de madeira parece e tem o cheiro de carne assada."
+      },
+      {
+        "level": 5,
+        "effect": "Altera a aparência e sensação física de uma sala ou área pequena."
+      },
+      {
+        "level": 6,
+        "effect": "A carapaça resiste ao toque e ao impacto; parece 100% real e sólida para quem interage."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-mental",
+    "name": "Mental",
+    "circle": "ilusao",
+    "description": "Cria uma ilusão, podendo ser usado em si mesmo contra outros magos que podem ler mentes.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Projeta uma emoção falsa (calma, medo) em si mesmo ou em um alvo tocado."
+      },
+      {
+        "level": 3,
+        "effect": "Implanta uma memória curta e falsa na mente de um alvo (um rosto, um lugar)."
+      },
+      {
+        "level": 4,
+        "effect": "Constrói um \"palácio mental\" falso; quem ler sua mente se perde em labirintos de pensamentos ilusórios."
+      },
+      {
+        "level": 5,
+        "effect": "Implanta uma alucinação mental em um alvo: ele vê e acredita em algo que não existe, ignorando a realidade."
+      },
+      {
+        "level": 6,
+        "effect": "A ilusão se retroalimenta; o alvo racionaliza a alucinação e cria suas próprias justificativas para ela."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-ocultar",
+    "name": "Ocultar",
+    "circle": "ilusao",
+    "requirement": "Requer Técnica Intermediária",
+    "description": "Torna runas e mana imperceptíveis por meio de uma Supressão refinada, A magia parece um \"espaço vazio\".",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Oculta a preparação de uma magia; ninguém percebe seu limiar ou mana facilmente."
+      },
+      {
+        "level": 3,
+        "effect": "Oculta uma magia ativa; o efeito é visível, mas a origem e as runas são invisíveis."
+      },
+      {
+        "level": 5,
+        "effect": "Oculta sua própria presença mágica; para outros magos, você parece um humano comum sem circuito."
+      },
+      {
+        "level": 6,
+        "effect": "Oculta uma área inteira. Qualquer magia lançada ali dentro não deixa rastro arcano."
+      },
+      {
+        "level": 7,
+        "effect": "Oculta a própria existência da magia no local. O universo \"esquece\" que a magia aconteceu ali, anulando rastreamentos."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-sobrescrever",
+    "name": "Sobrescrever",
+    "circle": "ilusao",
+    "requirement": "Requer Técnica Avançada",
+    "description": "Impõe propriedades ilusórias sobre matéria real. A ilusão se torna fisicamente verdadeira enquanto sustentada.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Sobrescreve a textura: o chão de pedra escorrega como gelo. Quem pisa, escorrega de verdade."
+      },
+      {
+        "level": 2,
+        "effect": "Sobrescreve a resistência: uma porta de madeira se torna rígida como aço contra impactos físicos."
+      },
+      {
+        "level": 3,
+        "effect": "Sobrescreve o peso: uma pena cai e esmaga o chão como se fosse uma bigorna, enquanto a magia durar."
+      },
+      {
+        "level": 4,
+        "effect": "Sobrescreve o estado, o ar ao redor de um alvo se torna \"pesado como água\", dificultando fisicamente seus movimentos."
+      },
+      {
+        "level": 5,
+        "effect": "Sobrescreve a integridade, uma ponte quebrada se torna sólida e suporta o peso de uma carruagem."
+      },
+      {
+        "level": 6,
+        "effect": "Sobrescreve a letalidade: uma espada de madeira parece cortar carne e osso porque a ilusão de \"fio\" foi imposta à matéria."
+      },
+      {
+        "level": 7,
+        "effect": "Sobrescreve a natureza do elemento: você impõe que o fogo parece congelar, e as chamas causam uma sensação de frio intenso ao ponto de machucar."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-sonora",
+    "name": "Sonora",
+    "circle": "ilusao",
+    "description": "Cria ilusões sonoras",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Cria um som simples e curto em um ponto específico (um estalo, um sussurro)."
+      },
+      {
+        "level": 3,
+        "effect": "Cria sons ambientais contínuos (passos, vento, chuva) em uma área pequena."
+      },
+      {
+        "level": 4,
+        "effect": "Imita perfeitamente o som de uma batalha, multidão ou criatura grande para enganar ou distrair."
+      },
+      {
+        "level": 5,
+        "effect": "O som ganha propriedades físicas ilusórias: um grito que faz as pessoas taparem os ouvidos de dor, embora não haja volume real."
+      },
+      {
+        "level": 6,
+        "effect": "Cria vozes na mente dos alvos, indistinguíveis de seus próprios pensamentos ou de comandos divinos."
+      }
+    ]
+  },
+  {
+    "id": "ilusao-visual",
+    "name": "Visual",
+    "circle": "ilusao",
+    "description": "Altera apenas o visual de algo para que apenas você ou certas pessoas possam ver, por exemplo uma carta cujo só pode ser lida por uma pessoa especifica ou até mesmo mudar a aparência de alguma coisa dependendo de QUEM a vê.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Muda a aparência de um objeto dependendo de quem olha. Um aliado vê uma espada, um inimigo vê uma cobra."
+      },
+      {
+        "level": 3,
+        "effect": "Cria uma miragem visual que só existe para um grupo específico de até 5 pessoas."
+      },
+      {
+        "level": 4,
+        "effect": "Altera sua própria aparência de forma subjetiva: cada observador vê a pessoa em quem mais confia (ou mais teme)."
+      },
+      {
+        "level": 5,
+        "effect": "Cria um cenário visual falso (uma porta, um buraco) que só os alvos designados podem ver."
+      },
+      {
+        "level": 6,
+        "effect": "A ilusão se adapta em tempo real às expectativas de quem a observa, sem que você precise controlar."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-cura",
+    "name": "Cura",
+    "circle": "miscelanea",
+    "description": "Reverte danos, fecha feridas e restaura o corpo ao estado saudável, a cura sempre cura equivalente ao Nível da Runa + Margem de sucesso na rolagem.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Alivia dor e fecha cortes superficiais. Um curativo mágico."
+      },
+      {
+        "level": 2,
+        "effect": "Cura ferimentos leves: torções, queimaduras pequenas, hematomas profundos."
+      },
+      {
+        "level": 3,
+        "effect": "Cura ferimentos moderados: cortes profundos, fraturas simples, queimaduras graves."
+      },
+      {
+        "level": 4,
+        "effect": "Cura ferimentos sérios: ossos quebrados, queimaduras extensas, venenos fracos."
+      },
+      {
+        "level": 5,
+        "effect": "Cura ferimentos críticos: órgãos perfurados, membros esmagados, doenças graves."
+      },
+      {
+        "level": 6,
+        "effect": "Regeneração completa. Membros perdidos crescem de volta, cicatrizes somem, o corpo volta ao auge."
+      },
+      {
+        "level": 7,
+        "effect": "Ressurreição recente. Traz de volta alguém que morreu há menos de um minuto, se o corpo estiver intacto."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-entropia",
+    "name": "Entropia",
+    "circle": "miscelanea",
+    "description": "Apressa, enfraquece e drena processos vitais. O toque da morte.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Murcha uma flor, azeda leite, mata insetos pequenos ao toque."
+      },
+      {
+        "level": 3,
+        "effect": "Drena vitalidade, necrose localizada. O alvo envelhece visivelmente, cabelos embranquecem, força some."
+      },
+      {
+        "level": 5,
+        "effect": "Toque da morte. Um alvo com menos da metade da vida cai inconsciente e morre em minutos sem intervenção."
+      },
+      {
+        "level": 7,
+        "effect": "A morte se torna inevitável. O alvo não pode ser curado, regenerado ou salvo por magia. O destino está selado."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-lua",
+    "name": "Lua",
+    "circle": "miscelanea",
+    "description": "A essência da noite: gravidade sutil, marés, luz prateada, ciclos e ilusão.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Influência sutil. Induz sonolência, melancolia ou introspecção em alvos próximos."
+      },
+      {
+        "level": 3,
+        "effect": "Maré interna. Afeta fluidos corporais: causa náusea, tontura, ou acelera sangramentos."
+      },
+      {
+        "level": 4,
+        "effect": "Véu de ilusão. A luz da lua cria miragens convincentes, esconde caminhos, confunde direções."
+      },
+      {
+        "level": 6,
+        "effect": "Eclipse pessoal. Você se torna um foco de escuridão lunar, anulando luz, magia solar e esperança na área."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-manipulacao",
+    "name": "Manipulação",
+    "circle": "miscelanea",
+    "description": "O ato de controlar algo à distância. Telecinese utilitária e universal.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Move objetos muito leves (moedas, penas, folhas) com um gesto sutil."
+      },
+      {
+        "level": 2,
+        "effect": "Levanta objetos pequenos (livros, adagas, taças) e os manipula com precisão."
+      },
+      {
+        "level": 3,
+        "effect": "Controla objetos médios (espadas, cadeiras, escudos) em combate, arremessando ou defendendo."
+      },
+      {
+        "level": 4,
+        "effect": "Manipula objetos pesados (barris, troncos, portas) ou múltiplos objetos simultaneamente."
+      },
+      {
+        "level": 5,
+        "effect": "Controla o equivalente a uma pessoa em peso. Pode levantar um aliado ou arremessar um inimigo."
+      },
+      {
+        "level": 6,
+        "effect": "Manipula objetos enormes (carroças, pedregulhos, estruturas pequenas) com fluidez."
+      },
+      {
+        "level": 7,
+        "effect": "Controla dezenas de objetos ao mesmo tempo com precisão cirúrgica, ou move massas colossais como se fossem plumas."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-metamorfose",
+    "name": "Metamorfose",
+    "circle": "miscelanea",
+    "description": "Altera a forma corporal.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Mudança cosmética: cor de pele, olhos, cabelo, pequenas marcas."
+      },
+      {
+        "level": 2,
+        "effect": "Mudança parcial: garras, presas, escamas localizadas, orelhas pontudas."
+      },
+      {
+        "level": 3,
+        "effect": "Mudança estrutural leve: braços mais longos, cauda, altura alterada em até 30cm."
+      },
+      {
+        "level": 4,
+        "effect": "Metamorfose em animal de porte similar ao seu, mantendo seus atributos mentais."
+      },
+      {
+        "level": 5,
+        "effect": "Metamorfose em animal maior ou menor (até o dobro ou metade do seu tamanho)."
+      },
+      {
+        "level": 6,
+        "effect": "Metamorfose em criatura fantástica menor (drake, quimera parcial, sereia)."
+      },
+      {
+        "level": 7,
+        "effect": "Metamorfose total em qualquer forma que você já tenha estudado ou tocado, mantendo sua mente intacta."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-sol",
+    "name": "Sol",
+    "circle": "miscelanea",
+    "description": "A essência do astro-rei: luz pura, calor radiante, purificação.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Luz intensa. Cega quem olha diretamente, purifica água e alimentos, afasta criaturas da sombra."
+      },
+      {
+        "level": 3,
+        "effect": "Calor radiante. Queima criaturas das trevas, purifica áreas amaldiçoadas, ilumina um campo."
+      },
+      {
+        "level": 4,
+        "effect": "Raio solar concentrado. Um feixe de luz pura que queima e perfura como uma lança."
+      },
+      {
+        "level": 6,
+        "effect": "Amanhecer forçado. Uma explosão de luz e calor que imita o nascer do sol, purificando uma área vasta."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-sorte",
+    "name": "Sorte",
+    "circle": "miscelanea",
+    "description": "Manipula probabilidades, coincidências e o tecido do destino.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Pequeno golpe de sorte. Um inimigo tropeça, uma flecha desvia por um fio, você acha o que procura."
+      },
+      {
+        "level": 3,
+        "effect": "Sorte sustentada. Por uma cena, coisas improváveis acontecem a seu favor com frequência."
+      },
+      {
+        "level": 5,
+        "effect": "Azar forçado. Um inimigo erra golpes que acertaria, armas falham, planos desmoronam por detalhes."
+      },
+      {
+        "level": 6,
+        "effect": "Destino manipulado. Você escolhe um evento improvável e ele acontece, desde que não seja impossível."
+      },
+      {
+        "level": 7,
+        "effect": "Probabilidade quebrada. Eventos com 1% de chance acontecem sempre; eventos com 99% de chance falham."
+      }
+    ]
+  },
+  {
+    "id": "miscelanea-vida",
+    "name": "Vida",
+    "circle": "miscelanea",
+    "description": "Envolve a criação de vida seja brevemente ou permanente.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Revigora um alvo exausto, concedendo energia para mais algumas horas de atividade."
+      },
+      {
+        "level": 5,
+        "effect": "Explosão vital. Um alvo ganha força e velocidade sobre-humanas por uma cena, ao custo de envelhecimento leve depois."
+      },
+      {
+        "level": 7,
+        "effect": "Imortalidade temporária. O alvo não pode morrer enquanto a magia durar; feridas letais se fecham antes de matar."
+      }
+    ]
+  },
+  {
+    "id": "multiplicacao-exponencializar",
+    "name": "Exponencializar",
+    "circle": "multiplicacao",
+    "requirement": "Requer Técnica Intermédiaria",
+    "description": "Suprime todo o circuito exceto uma única runa, concentrando toda a mana nela. Acesso a níveis lendários. Durante a preparação, o conjurador fica vulnerável.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Suprime uma runa de nível 2 e libera com +2 níveis."
+      },
+      {
+        "level": 3,
+        "effect": "Suprime uma runa de nível 3 e libera com +2 níveis."
+      },
+      {
+        "level": 4,
+        "effect": "Suprime uma runa de nível 4 e libera com +2 níveis."
+      },
+      {
+        "level": 5,
+        "effect": "Suprime uma runa de nível5 e libera com +2 níveis. Acesso ao níveis lendários."
+      },
+      {
+        "level": 6,
+        "effect": "Suprime qualquer runa e a libera no nível 6 (lendário)."
+      },
+      {
+        "level": 7,
+        "effect": "Suprime qualquer runa e a libera no nível 7 (mítico). Se interrompido, o efeito colapsa sobre você."
+      }
+    ]
+  },
+  {
+    "id": "multiplicacao-fracionamento",
+    "name": "Fracionamento",
+    "circle": "multiplicacao",
+    "requirement": "Requer Técnica Avançada",
+    "description": "Separa as propriedades de algo e as redistribui. Uma espada pode ter sua afiação separada de sua resistência, e diminuída de acordo permitindo aumentar a força e potência de algo enquanto reduz a de outra para um fracionamento equivalente de poder.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Separa 1 propriedade de um objeto (peso, dureza, afiação) e a reduz pela metade."
+      },
+      {
+        "level": 2,
+        "effect": "Separa 2 propriedades. Você pode transferir metade de uma para outro objeto."
+      },
+      {
+        "level": 3,
+        "effect": "Separa 3 propriedades. A transferência é total: o que sai de um entra no outro."
+      },
+      {
+        "level": 4,
+        "effect": "Fraciona um alvo vivo (força, velocidade, resistência). Reduz uma para aumentar outra equivalente."
+      },
+      {
+        "level": 5,
+        "effect": "Fraciona múltiplas propriedades simultaneamente. O equilíbrio se mantém: nada se cria, tudo se redistribui."
+      },
+      {
+        "level": 6,
+        "effect": "Fraciona propriedades conceituais (sorte, memória, vontade). O preço é proporcional ao que se move."
+      },
+      {
+        "level": 7,
+        "effect": "Fraciona a essência de um ser. O que você tira dele pode ser dado a outro, permanentemente."
+      }
+    ]
+  },
+  {
+    "id": "multiplicacao-propagar",
+    "name": "Propagar",
+    "circle": "multiplicacao",
+    "description": "O efeito \"pula\" de alvo em alvo. Um corte que passa para o próximo inimigo. Uma chama que se espalha.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "efeito pula para 1 alvo adjacente com metade da potência."
+      },
+      {
+        "level": 2,
+        "effect": "Pula para 2 alvos. A potência se mantém em 75%."
+      },
+      {
+        "level": 3,
+        "effect": "Pula para 2 alvos. A potência se mantém integral."
+      },
+      {
+        "level": 4,
+        "effect": "Pula para 3 alvos em um raio de 5 metros pequeno."
+      },
+      {
+        "level": 5,
+        "effect": "Pula para todos os alvos em um raio de 10 metros."
+      },
+      {
+        "level": 7,
+        "effect": "Pula indefinidamente enquanto houver alvos vivos."
+      }
+    ]
+  },
+  {
+    "id": "multiplicacao-quantidade-falsa",
+    "name": "Quantidade Falsa",
+    "circle": "multiplicacao",
+    "description": "Multiplica algo, mas com qualidade muito menor, servindo apenas como distração.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Cria uma cópia ilusórias de um objeto pequeno. Desaparecem ao toque."
+      },
+      {
+        "level": 2,
+        "effect": "Cópias Duram uma cena, mas se desfazem com um golpe."
+      },
+      {
+        "level": 3,
+        "effect": "Cópias fazem som e movimento, enganando à distância, mas sendo facilmente vistas como algo falso de perto."
+      },
+      {
+        "level": 4,
+        "effect": "Um observador casual não distingue as reais das falsas sem fazer um teste de INT+ Percepção DIF 4."
+      },
+      {
+        "level": 5,
+        "effect": "Cópias imitam ações mais complicadas como correr, atacar, defender."
+      }
+    ]
+  },
+  {
+    "id": "multiplicacao-quantidade-verdadeira",
+    "name": "Quantidade Verdadeira",
+    "circle": "multiplicacao",
+    "description": "Multiplica algo perfeitamente, necessita de alta maestria, cada copia extra aumenta o custo em+1",
+    "levels": [
+      {
+        "level": 4,
+        "effect": "Cópias Funcionam como o original em todos os aspectos."
+      },
+      {
+        "level": 5,
+        "effect": "Cópias de armas e armaduras mantêm o dano e a defesa."
+      },
+      {
+        "level": 6,
+        "effect": "Cópias de criaturas simples agem de forma autônoma por uma cena."
+      },
+      {
+        "level": 7,
+        "effect": "Indistinguíveis do original, mesmo sob escrutínio mágico."
+      }
+    ]
+  },
+  {
+    "id": "multiplicacao-repeticao",
+    "name": "Repetição",
+    "circle": "multiplicacao",
+    "requirement": "Requer Técnica Avançada",
+    "description": "Repete uma ação ou efeito se repita, podendo ser apenas uma cópia da ação, ou fazer a realidade forçar a ação a acontecer novamente.",
+    "levels": [
+      {
+        "level": 3,
+        "effect": "Repete uma ação física simples (um golpe, um passo) 1 vez com metade da potência."
+      },
+      {
+        "level": 5,
+        "effect": "Repete uma ação ou efeito com potencia total."
+      },
+      {
+        "level": 6,
+        "effect": "Repete uma vez adicional um efeito."
+      },
+      {
+        "level": 7,
+        "effect": "Repete duas vezes adicionais algo vezes, causando +1 de dano por repetição."
+      }
+    ]
+  },
+  {
+    "id": "projecao-alma",
+    "name": "Alma",
+    "circle": "projecao",
+    "description": "Permite conectar sua alma em algo, aumentando a força e potência, e podendo afetar outro plano de existência.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Força sua alma a se manifestar fortemente, sendo percebida como uma massa de cores que ondulam como uma nascente."
+      },
+      {
+        "level": 3,
+        "effect": "Conecta sua alma a um objeto. Ele se torna uma extensão de você, você aumenta a potência de runas nele em +1, e ele causa dano mágico."
+      },
+      {
+        "level": 4,
+        "effect": "Conecta sua alma a um ser. Fazendo com que o Limiar de vocês seja compartilhado."
+      },
+      {
+        "level": 6,
+        "effect": "Sua alma se desloca de seu corpo conseguindo agir independentemente."
+      },
+      {
+        "level": 7,
+        "effect": "Toca o tecido de outro plano inteiro. Sua vontade ecoa lá, você fica entre o mundo físico e o Aigaam."
+      }
+    ]
+  },
+  {
+    "id": "projecao-aura",
+    "name": "Aura",
+    "circle": "projecao",
+    "requirement": "Requer Técnica Intermediária",
+    "description": "Expande sua mana além de seu corpo com um fluxo potente, expandindo em uma área muito maior, permitindo imbuir Runas e Magias aonde ela toca, mas com um alto custo.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Expansão de 3 metros. Aqueles muito próximos sentem uma “fina camada” que parece mais densa ao chegar perto."
+      },
+      {
+        "level": 3,
+        "effect": "Expansão de 10 metros. O ar parece mais pesado dentro desse raio."
+      },
+      {
+        "level": 5,
+        "effect": "Expansão de 30 metros. A cor do ar afetado pela sua aura é cintilante e ondula como uma bolha."
+      },
+      {
+        "level": 6,
+        "effect": "Expansão de 50 metros. Você controla o fluxo da mana ambiente dentro do raio, dificultando a conjuração alheia diminuindo -1 dados em testes de Magia que falharem no SAVE DC  de VON+INT."
+      }
+    ]
+  },
+  {
+    "id": "projecao-condensar",
+    "name": "Condensar",
+    "circle": "projecao",
+    "description": "Condensa uma quantidade grande de Mana em alvo, para ser utilizado separadamente de seu limiar, ou servindo como um potencializador de runas menos potente e mais preciso.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Condensa 2PM, Suficiente para ativar uma runa simples, dura alguns minutos."
+      },
+      {
+        "level": 3,
+        "effect": "Condensa 3PM. Pode aumentar o nível de uma runa em +1, dura algumas horas."
+      },
+      {
+        "level": 5,
+        "effect": "Condensa 5PM. Dura um dia inteiro."
+      },
+      {
+        "level": 6,
+        "effect": "Condensa 6PM. Aumenta o Nível de uma runa em +2, dura uma semana."
+      }
+    ]
+  },
+  {
+    "id": "projecao-externalizar",
+    "name": "Externalizar",
+    "circle": "projecao",
+    "description": "Emite sua mente para o exterior, projetando um pensamentos e palavras em algo como telepatia. Permite emitir comandos e gatilhos remotamente.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Projeta uma palavra ou imagem simples na mente de alguém tocado."
+      },
+      {
+        "level": 2,
+        "effect": "Projeta uma frase até 5 metros."
+      },
+      {
+        "level": 3,
+        "effect": "Projeta algumas frases em até 10 metros."
+      },
+      {
+        "level": 4,
+        "effect": "Consegue se comunicar telepaticamente com alguém a 15 metros."
+      },
+      {
+        "level": 5,
+        "effect": "Emite um comando que o alvo pode obedecer."
+      },
+      {
+        "level": 6,
+        "effect": "Programa gatilhos e comandos adormecidos que despertam sob condição."
+      },
+      {
+        "level": 7,
+        "effect": "Reprograma memórias e lealdades à distâncias do tamanho de uma cidade."
+      }
+    ]
+  },
+  {
+    "id": "projecao-focal",
+    "name": "Focal",
+    "circle": "projecao",
+    "description": "Foca sua mana em um local pequeno permitindo imbuir runas nessa área pequena, precisa manter uma linha fina de mana ou alguma maneira de conectar sua mana ao local.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Imbui em uma área de 1 metro. Uma linha visível de mana conecta você ao alvo até 5 metros."
+      },
+      {
+        "level": 3,
+        "effect": "Imbui em uma área de 3 metros. A conexão se mantém firme até 10 metros.."
+      },
+      {
+        "level": 4,
+        "effect": "Imbui em uma área de 5 metros. A conexão se mantém firme até 10 metros."
+      },
+      {
+        "level": 5,
+        "effect": "Imbui em uma área de 10 metros. A linha se torna invisível até 25 metros."
+      },
+      {
+        "level": 6,
+        "effect": "Imbui em uma área de 20 metros, a linha se estende por 50 metros."
+      },
+      {
+        "level": 7,
+        "effect": "Imbui em uma área de 50 metros, a linha se estende por mais de 200 metros."
+      }
+    ]
+  },
+  {
+    "id": "projecao-presenca",
+    "name": "Presença",
+    "circle": "projecao",
+    "requirement": "Requer Técnica Avançada",
+    "description": "Expande sua mana além de seu corpo com um fluxo potente e imbuindo sua vontade nela, fazendo com que sua vontade reescreva outras magias aonde sua mana toca, pode ser ativa passivamente.",
+    "levels": [
+      {
+        "level": 3,
+        "effect": "Sua presença se torna percepitivel, como se o ar ficasse denso e díficil de respirar a aonde sua Mana toca."
+      },
+      {
+        "level": 4,
+        "effect": "Sua Vontade choca com Runas Alheias, aumentando a complexidade delas em +1."
+      },
+      {
+        "level": 5,
+        "effect": "Sua Vontade pesa fisicamente em aqueles que entram em contato com sua mana, forçando um SAVE DC  de VON+INT para não perder 1PA ao entrar em contato com sua mana."
+      },
+      {
+        "level": 6,
+        "effect": "Sua vontade se torna opressiva para aqueles despreparados, forçando um SAVE DC  de VON+INT para não recebe -2 em rolagens ao entrar em contato com sua mana."
+      },
+      {
+        "level": 7,
+        "effect": "Sua vontade se torna lei. Onde sua mana toca, você comanda, forçando um SAVE DC  de VON+INT quando alguém lança uma magia para que a Mana da magia não seja dissipada."
+      }
+    ]
+  },
+  {
+    "id": "reforco-forca",
+    "name": "Força",
+    "circle": "reforco",
+    "description": "Aumenta a força de si mesmo ou de outra pessoa, colocando bónus no atributo.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Aumenta levemente sua FOR, permite re-rolar 2 dados em testes relacionados a FOR. Levanta +10kg, Quebra portas de madeira facilmente."
+      },
+      {
+        "level": 2,
+        "effect": "Aumenta moderadamente sua FOR. Adiciona +1 em testes de força. Levanta +20kg, Quebra cadeados e trancas facilmente."
+      },
+      {
+        "level": 3,
+        "effect": "Reforça seus músculos, aumentando em +1 o SAVE DC para ações e manobras que envolvem força com Agarrar. Levanta +35kg, quebra tijolos e vigas de madeira facilmente."
+      },
+      {
+        "level": 4,
+        "effect": "Sua força se torna explosiva, Aumenta em +1 o dano de ataques físicos. Levanta +50kg, consegue quebrar grades e correntes de ferro pesadas com dificuldade."
+      },
+      {
+        "level": 5,
+        "effect": "Você fica forte ao ponto de conseguir quebrar rocha e dobrar metal com facilidade. Levanta +100kg,"
+      },
+      {
+        "level": 6,
+        "effect": "Sua força se torna absurda, adiciona +2 dados para teste de Força, e causa +1 de dano em ataques físicos. Levanta +500kg, Derruba portões de ferro e muralhas com facilidade."
+      },
+      {
+        "level": 7,
+        "effect": "Sua força se torna mítica. Adiciona 2 sucessos automáticos a uma rolagem e +2 de dano em ataques físicos. Levanta 1 tonelada+, você é capaz de levantar e bater de frente com dragões e animais colossais,"
+      }
+    ]
+  },
+  {
+    "id": "reforco-potencia",
+    "name": "Potência",
+    "circle": "reforco",
+    "requirement": "Requer Técnica Intermédiaria",
+    "description": "Aumenta a potência de algo, seja um veneno, ou um atributo e capacidade.",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Aumenta ligeiramente a capacidade de algo, aumentando em +1 dado a rolagem do atributo. Podendo fazer com que seus olhos vejam com mais precisão, sua audição percebendo coisas que antes eram imperceptíveis, ou fazendo a chama de uma vela queimar forte como a chama de uma tocha."
+      },
+      {
+        "level": 4,
+        "effect": "Aumenta consideravelmente a capacidade de algo, aumentando em +2 dados a rolagem do atributo. E fazendo com um de seus sentidos seja tal qual de um animal selvagem, aumentando o dano de algo em +1, ou aumentando uma runa equivalente a 1 nível."
+      },
+      {
+        "level": 6,
+        "effect": "Aumenta o fluxo de mana para uma capacidade ou runa, de maneira com que adiciona +3 dados a rolagem. Aumenta o dano de algo em +2, ou aumentando uma runa equivalente a 1 nível. E fazendo com que o limiar do alvo atingido seja transbordado subindo em 6 pontos."
+      }
+    ]
+  },
+  {
+    "id": "reforco-resistencia",
+    "name": "Resistência",
+    "circle": "reforco",
+    "description": "Aumenta o quão resistente um objeto, ou si mesmo é, adicionando bónus em sua Defesa.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Aumenta sua resistência, permitindo re-rolar 2 dados em testes de resistência. Você aguenta impactos leves sem sentir muita dor."
+      },
+      {
+        "level": 2,
+        "effect": "Ignora uma desvantagem física ou mental, ou concede 1RD para um tipo de dano. A dor não abala tanto você."
+      },
+      {
+        "level": 3,
+        "effect": "Aumenta tua robustez, concedendo +1 Dado para defesa. Sua pele se torna resistente como um couro grosso."
+      },
+      {
+        "level": 4,
+        "effect": "+1 redução de Dano elemental ou física. Você consegue segurar algo como uma brasa sem se queimar."
+      },
+      {
+        "level": 5,
+        "effect": "Se a quantidade de sucessos em um ataque contra você não for maior que sua RD o ataque é repelido sem que você precise defender. Você se torna sólido como uma rocha."
+      },
+      {
+        "level": 6,
+        "effect": "Aumenta muito sua robustez, concedendo +1 dado para defesa e +2 redução de dano. Você se torna dificil de mover ao ponto que parece que você está enraizado no chão."
+      },
+      {
+        "level": 7,
+        "effect": "Ignora o dano de dois ataques e as desvantagens. Você se torna tão resistente quanto uma montanha, nem mesmo um tsunami move você."
+      }
+    ]
+  },
+  {
+    "id": "reforco-sacrificio",
+    "name": "Sacrifício",
+    "circle": "reforco",
+    "description": "Sacrifica parte de si ou algo para recuperar, intensificar, ou reforçar parte de si mesmo, aumentando o nível de uma runa. (Os níveis extra concedidos a uma runa por causa do sacrifico não conta no custo de mana)",
+    "levels": [
+      {
+        "level": 2,
+        "effect": "Sacrifica algo pequeno de valor, algumas moedas de ouro, 1ponto de Ímpeto, 2 pontos de PV para adicionar +1 dado para um teste."
+      },
+      {
+        "level": 4,
+        "effect": "Sacrifica algo médio de valor, gemas raras, objetos caros, 2 pontos de Ímpeto, 4 pontos de PV para adicionar +1 sucesso automático para um  teste, ou +1 Nível para uma Runa (não acessa níveis lendários)"
+      },
+      {
+        "level": 5,
+        "effect": "Sacrifica algo grande de valor, um item único, 3 pontos de Ímpeto, 6 pontos de PV para adicionar +2 sucessos automáticos para um teste, ou +2 níveis para uma runa."
+      },
+      {
+        "level": 6,
+        "effect": "Sacrifica um sentido, 4 pontos de Ímpeto, 10 pontos de PV para adicionar +2 sucessos automáticos para um teste, ou +3 Níveis para uma runa."
+      },
+      {
+        "level": 7,
+        "effect": "Sacrifica algo permanentemente, 6 pontos de Ímpeto, metade dos seus PVs, para adicionar 4 sucessos automáticos para um teste, ou +4 Níveis para uma runa"
+      }
+    ]
+  },
+  {
+    "id": "reforco-velocidade",
+    "name": "Velocidade",
+    "circle": "reforco",
+    "description": "Aumenta a velocidade de uma magia, objeto, ou si mesmo, adicionando bónus no atributo.",
+    "levels": [
+      {
+        "level": 1,
+        "effect": "Aumenta levemente sua DEX, permitindo re-rolar 2 dados em testes que envolvem DEX. Consegue reagir mais rapidamente a estimulos como se você tivesse reflexos de um felino."
+      },
+      {
+        "level": 2,
+        "effect": "Melhora seus reflexos, adicionando +1 para testes de Defesa. Seus reflexo ficam rápidos ao ponto de perceber uma flecha vindo na sua direção."
+      },
+      {
+        "level": 3,
+        "effect": "Aumenta sua velocidade consideravelmente, permitindo você realizar uma ação simples não relacionada a combate como ação livre. Permite você pegar cobertura enquanto vê uma flecha vindo sem sua direção."
+      },
+      {
+        "level": 4,
+        "effect": "Aumenta muito sua velocidade, permitindo com que você faça uma ação de múltiplos turnos em um turno a menos, e consiga canalizar magias gestuais por -1PA. Permite desviar de projeteis a distância."
+      },
+      {
+        "level": 5,
+        "effect": "Seu corpo se move antes que você pense, você consegue realizar uma ação de até 1PA com 1 sucesso automático. Permite combater e reagir a múltiplos oponentes simultaneamente."
+      },
+      {
+        "level": 6,
+        "effect": "Seus movimentos são difíceis de ver, você recebe 2 sucessos automáticos para teste físicos. Seu corpo consegue reagir a ataques e ações que você nem percebeu ainda."
+      },
+      {
+        "level": 7,
+        "effect": "Seu movimento se torna um borrão, concedendo 2 sucessos automático para defesa, e +2 dados de ataque. Se move rápido ao ponto de deixar imagens consecutivas."
+      }
+    ]
+  },
+  {
+    "id": "reforco-vontade",
+    "name": "Vontade",
+    "circle": "reforco",
+    "description": "Adiciona seu bónus de vontade a uma magia, ou a si mesmo, podendo ser usada para sair ou superar resistência e situações.",
+    "levels": [
+      {
+        "level": 3,
+        "effect": "Permite re-rolar todos os dados de uma rolagem. Mantém seu foco sob pressão intensa."
+      },
+      {
+        "level": 4,
+        "effect": "Aumenta o SAVE DC da magia em +1. Consegue aguentar um medo primal e fobia sua."
+      },
+      {
+        "level": 5,
+        "effect": "Aumenta o Dano base equivalente a metade de sua VON. Sua convicção banha suas ações."
+      },
+      {
+        "level": 6,
+        "effect": "Se a quantidade de sucessos para o teste do alvo for menor que sua VON o ataque causa metade do dano, ou o efeito da magia é reduzido pela metade. Sua vontade é Imposta sob o mundo de maneira que ela se torna uma barreira."
+      },
+      {
+        "level": 7,
+        "effect": "Concede Sucessos automáticos equivalente a sua VON-1. Você impõe sua vontade sob a realidade em si."
+      }
+    ]
+  }
+]

@@ -1,0 +1,166 @@
+import { Badge, Callout, Card, SectionTitle } from '@/components/ui'
+import { cn } from '@/lib/cn'
+import { impulses } from '@/rules/amnia'
+import { classes } from '@/rules/data'
+import { useDraft } from '@/store/draft'
+
+export function StepClass() {
+  const character = useDraft((state) => state.character)
+  const patch = useDraft((state) => state.patch)
+
+  const selectedClass = classes.find((item) => item.id === character.classId) ?? null
+
+  return (
+    <div className="space-y-6">
+      <SectionTitle hint="A classe dá uma habilidade central e um talento de graça. O Ímpeto é a sua energia para feitos além do normal.">
+        4 · Classe & Ímpeto
+      </SectionTitle>
+
+      <Card>
+        <h3 className="mb-3 font-display text-lg tracking-wide">Classe</h3>
+
+        {classes.length === 0 ? (
+          <Callout>
+            Os dados das classes ainda estão sendo extraídos do material. A estrutura já está pronta.
+          </Callout>
+        ) : (
+          <>
+            <div className="flex flex-wrap gap-2">
+              {classes.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() =>
+                    patch({ classId: item.id, classAbilityId: null, classTalentId: null })
+                  }
+                  className={cn(
+                    'rounded-md border px-3 py-1.5 text-sm transition',
+                    character.classId === item.id
+                      ? 'border-accent bg-accent/10 text-ink'
+                      : 'border-ink/15 text-ink-soft hover:border-ink/30 hover:text-ink',
+                  )}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+
+            {selectedClass ? (
+              <div className="mt-5 space-y-5">
+                <p className="text-sm leading-relaxed text-ink-soft">{selectedClass.description}</p>
+
+                {selectedClass.coreAbilities.length > 0 ? (
+                  <div>
+                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+                      Habilidade Central — escolha 1
+                    </p>
+                    <div className="space-y-2">
+                      {selectedClass.coreAbilities.map((ability) => {
+                        const active = character.classAbilityId === ability.id
+                        return (
+                          <button
+                            key={ability.id}
+                            type="button"
+                            onClick={() => patch({ classAbilityId: ability.id })}
+                            className={cn(
+                              'w-full rounded-lg border p-3 text-left transition',
+                              active
+                                ? 'border-accent bg-accent/[0.07]'
+                                : 'border-ink/12 hover:border-ink/30',
+                            )}
+                          >
+                            <span className="flex items-center justify-between gap-2">
+                              <span className="font-semibold">{ability.name}</span>
+                              {active ? <Badge tone="accent">escolhida</Badge> : null}
+                            </span>
+                            <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
+                              {ability.description}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+
+                {selectedClass.talents.length > 0 ? (
+                  <div>
+                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+                      Talento de Classe — escolha 1 de graça
+                    </p>
+                    <div className="max-h-80 space-y-2 overflow-y-auto pr-1">
+                      {selectedClass.talents.map((talent) => {
+                        const active = character.classTalentId === talent.id
+                        return (
+                          <button
+                            key={talent.id}
+                            type="button"
+                            onClick={() => patch({ classTalentId: talent.id })}
+                            className={cn(
+                              'w-full rounded-lg border p-3 text-left transition',
+                              active
+                                ? 'border-gold bg-gold/[0.12]'
+                                : 'border-ink/12 hover:border-ink/30',
+                            )}
+                          >
+                            <span className="flex items-baseline justify-between gap-2">
+                              <span className="font-semibold">{talent.name}</span>
+                              {talent.requirement ? (
+                                <span className="shrink-0 text-[11px] text-ink-soft">
+                                  {talent.requirement}
+                                </span>
+                              ) : null}
+                            </span>
+                            <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
+                              {talent.description}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+          </>
+        )}
+      </Card>
+
+      <Card>
+        <h3 className="mb-1 font-display text-lg tracking-wide">Ímpeto</h3>
+        <p className="mb-4 text-sm text-ink-soft">
+          Escolha o que move o seu personagem. Você recupera Ímpeto ao descansar (valor de Carisma)
+          ou ao cumprir o gatilho escolhido.
+        </p>
+
+        <div className="grid gap-2 sm:grid-cols-2">
+          {impulses.map((impulse) => {
+            const active = character.impulseId === impulse.id
+            return (
+              <button
+                key={impulse.id}
+                type="button"
+                onClick={() => patch({ impulseId: impulse.id })}
+                className={cn(
+                  'rounded-lg border p-3 text-left transition',
+                  active ? 'border-accent bg-accent/[0.07]' : 'border-ink/12 hover:border-ink/30',
+                )}
+              >
+                <span className="flex items-center justify-between gap-2">
+                  <span className="font-display text-base tracking-wide">{impulse.name}</span>
+                  {active ? <Badge tone="accent">escolhido</Badge> : null}
+                </span>
+                <span className="mt-0.5 block text-[11px] italic text-ink-soft">
+                  {impulse.archetype}
+                </span>
+                <span className="mt-1 block text-xs leading-snug text-ink-soft">
+                  {impulse.description}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </Card>
+    </div>
+  )
+}

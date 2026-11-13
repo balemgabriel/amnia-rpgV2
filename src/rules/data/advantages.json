@@ -1,0 +1,861 @@
+[
+  {
+    "id": "lingua-dos-sinais-ou-codigos",
+    "name": "Língua dos Sinais ou Códigos",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Linguística",
+    "description": "Você conhece uma forma de comunicação silenciosa (sinais de ladrões, linguagem de gestos militar, etc.), permitindo comunicação sem falar."
+  },
+  {
+    "id": "poliglota",
+    "name": "Poliglota",
+    "kind": "vantagem",
+    "points": 2,
+    "category": "Linguística",
+    "description": "Você fala fluentemente 2 idiomas adicionais além do seu nativo. Pode gastar XP para adicionar mais."
+  },
+  {
+    "id": "sotaque-ou-gagueira",
+    "name": "Sotaque ou Gagueira",
+    "kind": "desvantagem",
+    "points": 1,
+    "pointsMax": 2,
+    "category": "Linguística",
+    "description": "Sua fala chama atenção. Em interações sociais formais ou ao tentar mentir, você sofre -1d6. (1 pt para sotaque regional, 2 pts para gagueira severa ou idioma quebrado)."
+  },
+  {
+    "id": "jogador-compulsivo",
+    "name": "Jogador Compulsivo",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Vícios",
+    "description": "Você não consegue recusar uma aposta ou um risco calculado quando provocado. Deve gastar 1 Ímpeto e para sair de uma situação de jogo/aposta."
+  },
+  {
+    "id": "kleptomania",
+    "name": "Kleptomania",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Vícios",
+    "description": "Diante de algo de valor ou específico, você deve fazer um teste de Vontade (DC 3). Se falhar, sente uma necessidade incontrolável de pegá-lo ou interagir com o objeto."
+  },
+  {
+    "id": "viciado-completamente-em-substancia",
+    "name": "Víciado Completamente em Substância",
+    "kind": "desvantagem",
+    "points": 3,
+    "category": "Vícios",
+    "description": "Você precisa de algo específico (erva, álcool, pó mágico) a cada 24h. Sem isso, sofre -1d6 em todas as rolagens e perde 1 de Vontade Temporária por dia até satisfazer o vício."
+  },
+  {
+    "id": "sangue-runico",
+    "name": "Sangue Rúnico",
+    "kind": "vantagem",
+    "points": 2,
+    "category": "Misticismo",
+    "description": "Seu sangue acaba facilitando e acelerando muito a moldagem da mana, fazendo com que você resfrie 2 pontos adicionais durante supressão."
+  },
+  {
+    "id": "sensitivo-arcano",
+    "name": "Sensitivo Arcano",
+    "kind": "vantagem",
+    "points": 2,
+    "category": "Misticismo",
+    "description": "Você sente \"calafrios\" quando há magia ativa ou itens mágicos poderosos a até 10 metros de você. O Mestre deve avisá-lo passivamente."
+  },
+  {
+    "id": "repulso-pela-magia",
+    "name": "Repulso pela Magia",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Misticismo",
+    "description": "Seu corpo rejeita energia mágica. Magias de cura ou buff em você custam +2PM o conjurador, e curam 2PV a menos."
+  },
+  {
+    "id": "canal-vanciano",
+    "name": "Canal Vanciano",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Misticismo",
+    "description": "Sua conexão com a mana é rígida e estruturada. Você recebe -3 no custo final de magias, Porém, você só pode lançar um total de 5 magias por descanso. Ao atingir esse limite, você fica completamente incapaz de conjurar qualquer magia até descansar, não importa quanto Limiar tenha sobrado."
+  },
+  {
+    "id": "anomalia-de-intensificacao",
+    "name": "Anomalia de Intensificação",
+    "kind": "desvantagem",
+    "points": 3,
+    "category": "Misticismo",
+    "description": "Sua alma e corpo são fundidos de forma anômala. Seu Limiar de Mana máximo é 3 pontos menor. Em compensação, uma runa de Reforço se manifesta em sua pele, e você pode usar 1 Ímpeto para aumentar o Nível dela de acordo com sua FOR ou DES."
+  },
+  {
+    "id": "fanatismo",
+    "name": "Fanatismo",
+    "kind": "vantagem",
+    "points": 1,
+    "pointsMax": 3,
+    "category": "Psicológico",
+    "description": "Para cada ponto nessa vantagem, você pode tornar um dado falho em um sucesso, uma vez por sessão."
+  },
+  {
+    "id": "foco-inabalavel",
+    "name": "Foco Inabalável",
+    "kind": "vantagem",
+    "points": 3,
+    "category": "Psicológico",
+    "description": "Uma vez por sessão Você recebe 3 sucessos automáticos em um teste não relacionado a combate."
+  },
+  {
+    "id": "penitencia",
+    "name": "Penitência",
+    "kind": "vantagem",
+    "points": 1,
+    "pointsMax": 5,
+    "category": "Psicológico",
+    "description": "Para cada ponto nessa vantagem, você pode uma vez por sessão, receber 1 ponto de dano e recuperar 2 de Ímpeto ."
+  },
+  {
+    "id": "tomador-de-riscos",
+    "name": "Tomador de Riscos",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Psicológico",
+    "description": "Você sempre quer pular na pior situação possível, recebendo -2 dados para aguentar essa vontade de fazer merda."
+  },
+  {
+    "id": "fobia",
+    "name": "Fobia",
+    "kind": "desvantagem",
+    "points": 1,
+    "pointsMax": 3,
+    "category": "Psicológico",
+    "description": "Você tem fobia a algo especifico, perdendo 1 dado em rolagens contra essa coisa ou algo por ponto."
+  },
+  {
+    "id": "crise-de-fe",
+    "name": "Crise de Fé",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Psicológico",
+    "description": "Ao falhar por uma margem de 3 você perde 1 Ímpeto."
+  },
+  {
+    "id": "covardia-em-desvantagem",
+    "name": "Covardia em Desvantagem",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Psicológico",
+    "description": "Se estiver em minoria numérica ou ferido, deve fazer um teste de Vontade (DC 3) para não recuar ou hesitar no combate."
+  },
+  {
+    "id": "paranoia",
+    "name": "Paranoia",
+    "kind": "desvantagem",
+    "points": 3,
+    "category": "Psicológico",
+    "description": "Você assume traição em tudo. Sofre -1d6 em testes de Introspecção ou Empatia para confiar em aliados, e o Mestre pode forçar um teste de Vontade para você aceitar ajuda."
+  },
+  {
+    "id": "rosto-famoso",
+    "name": "Rosto Famoso",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Aparência",
+    "description": "Você parece alguém famoso, adiciona +1 dado para rolagens aonde isso pode ser aplicável."
+  },
+  {
+    "id": "rostinho-inocente",
+    "name": "Rostinho Inocente",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Aparência",
+    "description": "Adiciona +1 dado em testes que envolvam fingir inocência."
+  },
+  {
+    "id": "belo",
+    "name": "Belo",
+    "kind": "vantagem",
+    "points": 2,
+    "category": "Aparência",
+    "description": "Adiciona +1 dado em testes sociais."
+  },
+  {
+    "id": "deslumbrante",
+    "name": "Deslumbrante",
+    "kind": "vantagem",
+    "points": 4,
+    "category": "Aparência",
+    "description": "Adiciona +2 dados em testes sociais."
+  },
+  {
+    "id": "feio",
+    "name": "Feio",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Aparência",
+    "description": "Recebe -1 dado em testes sociais."
+  },
+  {
+    "id": "expressivo-demais",
+    "name": "Expressivo Demais",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Aparência",
+    "description": "Recebe -1 dado em Subterfúgio ou testes para mentir, seu subterfúgio não pode subir além de 3 pontos."
+  },
+  {
+    "id": "fedorento",
+    "name": "Fedorento",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Aparência",
+    "description": "Recebe -1 dado em testes de sedução, e -2 em testes de furtividade caso o vento não esteja ao seu favor."
+  },
+  {
+    "id": "repulsivo",
+    "name": "Repulsivo",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Aparência",
+    "description": "Recebe -2 dados em testes sociais."
+  },
+  {
+    "id": "rosto-peculiar",
+    "name": "Rosto Peculiar",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Aparência",
+    "description": "As pessoas lembram de você com facilidade recebendo -1 dado em testes sociais para tentar fugir ou mentir em um local aonde foi visto cometendo crimes."
+  },
+  {
+    "id": "desfigurado-marca-visivel",
+    "name": "Desfigurado / Marca Visível",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Aparência",
+    "description": "Uma cicatriz, queimadura ou deformidade. Você sofre -1d6 em primeiras impressões sociais, mas ganha +1d6 em Intimidação."
+  },
+  {
+    "id": "tradicao-oral",
+    "name": "Tradição Oral",
+    "kind": "vantagem",
+    "points": 2,
+    "category": "Arcaico",
+    "description": "Sua memória para histórias, canções e linhagens é perfeita. Você não precisa de testes de Erudição para lembrar de lendas que ouviu, o Mestre deve fornecer a informação."
+  },
+  {
+    "id": "analfabeto",
+    "name": "Analfabeto",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Arcaico",
+    "description": "Você não sabe ler nem escrever. Depende de outros para decifrar textos, mapas ou pergaminhos."
+  },
+  {
+    "id": "avesso-a-tecnologia",
+    "name": "Avesso à Tecnologia",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Arcaico",
+    "description": "Você não confia ou não entende mecanismos complexos. Sofre -2d6 em testes de Ofícios (Tecnologia) ou Ladroagem (fechaduras complexas)."
+  },
+  {
+    "id": "dependencia-ambiental-elemento",
+    "name": "Dependência Ambiental (Elemento)",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Falhas de Círculos",
+    "description": "Para lançar magias de um círculo específico (ex: Fogo), o elemento deve estar presente no ambiente (uma fogueira). Sem ele, o limiar sobre 3 pontos extras."
+  },
+  {
+    "id": "ressonancia-dolorosa-reforco",
+    "name": "Ressonância Dolorosa (Reforço)",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Falhas de Círculos",
+    "description": "Ao lançar magias que fortalecem a carne ou o espírito, você sofre 1 ponto de dano psíquico ou físico por magia lançada, pois seu corpo luta para conter a energia."
+  },
+  {
+    "id": "eco-da-verdade-ilusao",
+    "name": "Eco da Verdade (Ilusão)",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Falhas de Círculos",
+    "description": "Suas ilusões ou magias de controle mental são potentes, mas deixam um \"sabor\" inconfundível da sua mente. Se o alvo resistir ou a ilusão for desfeita, ele sabe exatamente quem foi o responsável."
+  },
+  {
+    "id": "ponto-cego-projecao",
+    "name": "Ponto Cego (Projeção)",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Falhas de Círculos",
+    "description": "Ao lançar uma magia de projeção, enquanto ela está ativa você fica com um ponto cego aonde você não consegue ver nada naquela direção, você escolhe se é na sua frente, esquerda ou direita."
+  },
+  {
+    "id": "calor-arcano-multiplicacao",
+    "name": "Calor Arcano (Multiplicação)",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Falhas de Círculos",
+    "description": "você não sabe calibrar direito a mana, fazendo com que ao criar mais de uma cópia o limiar sobe 2 pontos extras."
+  },
+  {
+    "id": "especifismo-arcano-alteracao",
+    "name": "Especifismo Arcano (Alteração)",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Falhas de Círculos",
+    "description": "Você é bom em uma das seguintes coisas, usar alteração em objetos inanimados, ou seres vivos, ao usar em algo que você não seja bom, você sofre -1 no dado e seu limiar sobe 2 a mais ao usar a magia."
+  },
+  {
+    "id": "aliado-1",
+    "name": "Aliado",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Aliados",
+    "description": "Um servo leal, um jovem aprendiz ou um informante de rua. Útil para tarefas simples e vigiar locais."
+  },
+  {
+    "id": "aliado-2",
+    "name": "Aliado",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Aliados",
+    "description": "Um guarda veterano, um artesão habilidoso ou um mercenário confiável. Pode lutar ao seu lado ou fornecer equipamentos de boa qualidade."
+  },
+  {
+    "id": "aliado-3",
+    "name": "Aliado",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Aliados",
+    "description": "Um cavaleiro respeitado, um oficial da guarda ou um pequeno nobre. Possui recursos próprios e pode mobilizar algumas pessoas em seu nome."
+  },
+  {
+    "id": "aliado-4",
+    "name": "Aliado",
+    "kind": "ficha",
+    "points": 4,
+    "category": "Aliados",
+    "description": "Um mestre de guilda, um barão local ou um mago renomado. Tem poder significativo e pode intervir em assuntos regionais para ajudá-lo."
+  },
+  {
+    "id": "aliado-5",
+    "name": "Aliado",
+    "kind": "ficha",
+    "points": 5,
+    "category": "Aliados",
+    "description": "Uma figura lendária, um general de exército ou um alto nobre. Trata você como um igual ou protegido de valor inestimável, podendo mover exércitos ou riquezas por sua causa."
+  },
+  {
+    "id": "inimigo",
+    "name": "Inimigo",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Aliados",
+    "description": "Um inimigo que o persegue, de acordo com os pontos colocados aqui ele será o equivalente dos aliados, mas será alguém que deseja e quer fazer o mal a você."
+  },
+  {
+    "id": "fama-1",
+    "name": "Fama",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Fama",
+    "description": "Conhecido em sua vila ou bairro. As pessoas confiam em você localmente."
+  },
+  {
+    "id": "fama-2",
+    "name": "Fama",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Fama",
+    "description": "Conhecido em sua cidade ou entre um grupo profissional específico (ex: \"Aquele ferreiro brilhante\" ou \"O caçador de lobos\")."
+  },
+  {
+    "id": "fama-3",
+    "name": "Fama",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Fama",
+    "description": "Fama regional. Sua reputação se espalha por vilarejos e cidades vizinhas."
+  },
+  {
+    "id": "fama-4",
+    "name": "Fama",
+    "kind": "ficha",
+    "points": 4,
+    "category": "Fama",
+    "description": "Fama nacional. Suas façanhas são cantadas em tavernas e conhecidas pela nobreza do reino."
+  },
+  {
+    "id": "fama-5",
+    "name": "Fama",
+    "kind": "ficha",
+    "points": 5,
+    "category": "Fama",
+    "description": "Lendário. Seu nome é conhecido em todo o continente. Reis, monstros e deuses sabem quem você é."
+  },
+  {
+    "id": "influente",
+    "name": "Influente",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Fama",
+    "description": "Requer Fama ○○+, você é influente ao ponto que pessoas ativamente vão querer fazer favores para você."
+  },
+  {
+    "id": "fama-que-nao-some",
+    "name": "Fama que não some",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Fama",
+    "description": "Requer Fama ○○○+, independente do que acontecer, sua Fama nunca vai sumir, e sempre vai se recuperar eventualmente em pouco tempo."
+  },
+  {
+    "id": "segredo-obscuro",
+    "name": "Segredo Obscuro",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Fama",
+    "description": "Você tem um segredo, algo que você fez ou fez parte, que pode facilmente arruinar sua vida."
+  },
+  {
+    "id": "infama",
+    "name": "Infama",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Fama",
+    "description": "Efeito negativo aonde você é conhecido por uma Má fama equivalente."
+  },
+  {
+    "id": "banido",
+    "name": "Banido",
+    "kind": "desvantagem",
+    "points": 1,
+    "pointsMax": 3,
+    "category": "Fama",
+    "description": "Você foi banido de respectivamente de acordo com os ○ gastos, um bairro ○, uma cidade ○○ ou um reino inteiro ○○○."
+  },
+  {
+    "id": "mentor-1",
+    "name": "Mentor",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Mentor",
+    "description": "Um aventureiro aposentado ou um sábio local que dá conselhos ocasionais."
+  },
+  {
+    "id": "mentor-2",
+    "name": "Mentor",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Mentor",
+    "description": "Um mestre artesão ou um cavaleiro veterano que treina você e empresta equipamentos menores."
+  },
+  {
+    "id": "mentor-3",
+    "name": "Mentor",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Mentor",
+    "description": "Um mestre reconhecido em sua área, um nobre influente ou um mago respeitado que ativamente guia sua carreira."
+  },
+  {
+    "id": "mentor-4",
+    "name": "Mentor",
+    "kind": "ficha",
+    "points": 4,
+    "category": "Mentor",
+    "description": "Uma figura lendária, um alto oficial ou um arquimago que tem interesse pessoal em seu sucesso e o protege de ameaças maiores."
+  },
+  {
+    "id": "mentor-5",
+    "name": "Mentor",
+    "kind": "ficha",
+    "points": 5,
+    "category": "Mentor",
+    "description": "Um herói mítico, um dragão antigo ou um governante que o vê como seu sucessor escolhido."
+  },
+  {
+    "id": "adversario",
+    "name": "Adversário",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Mentor",
+    "description": "O seu antigo mestre agora faz de tudo para arruinar sua vida."
+  },
+  {
+    "id": "mestre-secreto",
+    "name": "Mestre Secreto",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Mentor",
+    "description": "Seu mestre o concede missões que devem ser feitas durante sessões."
+  },
+  {
+    "id": "recurso-1",
+    "name": "Recurso",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Recursos",
+    "description": "Subsistência. Você tem o suficiente para comida e um teto, mas sem luxos ou economias. Começa com 50zg."
+  },
+  {
+    "id": "recurso-2",
+    "name": "Recurso",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Recursos",
+    "description": "Confortável. Pode comprar equipamentos de boa qualidade, hospedar-se bem e guardar um pouco de dinheiro. Começa com 75zg"
+  },
+  {
+    "id": "recurso-3",
+    "name": "Recurso",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Recursos",
+    "description": "Rico. Pode comprar armas e armaduras finas, cavalos de qualidade e financiar pequenas expedições. Começa com 150zg"
+  },
+  {
+    "id": "recurso-4",
+    "name": "Recurso",
+    "kind": "ficha",
+    "points": 4,
+    "category": "Recursos",
+    "description": "Muito rico. Pode financiar grandes projetos, comprar itens mágicos raros e viver no luxo absoluto. Começa com 300zg + Renda Passiva de 25 zgs por semana"
+  },
+  {
+    "id": "recurso-5",
+    "name": "Recurso",
+    "kind": "ficha",
+    "points": 5,
+    "category": "Recursos",
+    "description": "Riqueza ilimitada. Pode erguer exércitos, comprar castelos ou encomendar artefatos lendários sem se preocupar com o custo. Começa com 500zg + Renda Passsiva de 50zg por semana"
+  },
+  {
+    "id": "mendigo",
+    "name": "Mendigo",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Recursos",
+    "description": "Você não tem nem aonde cair morto, sem dinheiro, sem casa, o único valor que você tem é você mesmo."
+  },
+  {
+    "id": "influencia-1",
+    "name": "Influência",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Influência",
+    "description": "Respeitado localmente. Pode conseguir favores menores de autoridades locais ou evitar multas pequenas."
+  },
+  {
+    "id": "influencia-2",
+    "name": "Influência",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Influência",
+    "description": "Nobreza menor ou oficial de nível médio. Pode influenciar leis locais e conseguir audiências com líderes da cidade."
+  },
+  {
+    "id": "influencia-3",
+    "name": "Influência",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Influência",
+    "description": "Alta nobreza, oficial superior ou mestre de guilda. Pode mudar políticas regionais ou comandar esquadrões."
+  },
+  {
+    "id": "influencia-4",
+    "name": "Influência",
+    "kind": "ficha",
+    "points": 4,
+    "category": "Influência",
+    "description": "Conselheiro real, general ou líder de uma grande ordem religiosa. Pode alterar leis regionais e comandar exércitos."
+  },
+  {
+    "id": "influencia-5",
+    "name": "Influência",
+    "kind": "ficha",
+    "points": 5,
+    "category": "Influência",
+    "description": "Monarca, sumo sacerdote ou grão-mestre. Sua palavra é lei em seu domínio; você molda o destino de nações."
+  },
+  {
+    "id": "suspeito",
+    "name": "Suspeito",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Influência",
+    "description": "Você fez algo de errado na sua organização, concedendo -2 dados em testes sociais com a facção ofendida."
+  },
+  {
+    "id": "desprezado",
+    "name": "Desprezado",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Influência",
+    "description": "você é desprezado por uma facção, seita ou etc. você passou uma linha aonde eles faram de tudo contra você se a oportunidade aparecer."
+  },
+  {
+    "id": "contato-1",
+    "name": "Contato",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Contatos",
+    "description": "Um taberneiro, um vendedor de mercado ou um servo de mansão. Sabe os boatos locais."
+  },
+  {
+    "id": "contato-2",
+    "name": "Contato",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Contatos",
+    "description": "Um capitão da guarda, um mercador de médio porte ou um bibliotecário. Tem acesso a informações restritas de sua área."
+  },
+  {
+    "id": "contato-3",
+    "name": "Contato",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Contatos",
+    "description": "Um espião, um contrabandista bem conectado ou um conselheiro real. Sabe segredos que podem derrubar ou erguer carreiras."
+  },
+  {
+    "id": "refugio-1",
+    "name": "Refúgio",
+    "kind": "ficha",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Um quarto compartilhado em uma taverna barata, um sótão escondido ou um acampamento básico."
+  },
+  {
+    "id": "refugio-2",
+    "name": "Refúgio",
+    "kind": "ficha",
+    "points": 2,
+    "category": "Refúgio",
+    "description": "Uma casa pequena, um quarto privativo em uma estalagem de boa qualidade ou um esconderijo seguro na floresta."
+  },
+  {
+    "id": "refugio-3",
+    "name": "Refúgio",
+    "kind": "ficha",
+    "points": 3,
+    "category": "Refúgio",
+    "description": "Uma mansão fortificada, uma torre de mago ou um esconderijo subterrâneo bem equipado (com forja, biblioteca ou laboratório básico)."
+  },
+  {
+    "id": "refugio-4",
+    "name": "Refúgio",
+    "kind": "ficha",
+    "points": 4,
+    "category": "Refúgio",
+    "description": "Um pequeno castelo, uma propriedade rural com servos leais ou um complexo subterrâneo com defesas mágicas/físicas."
+  },
+  {
+    "id": "refugio-5",
+    "name": "Refúgio",
+    "kind": "ficha",
+    "points": 5,
+    "category": "Refúgio",
+    "description": "Uma fortaleza inexpugnável, um santuário mágico oculto ou uma propriedade nobre com sua própria guarnição privada e instalações de primeiro mundo."
+  },
+  {
+    "id": "cela",
+    "name": "Cela",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Requer Refúgio ○○, Uma cela que permite ter 2 prisioneiros, e cada ponto adicional permite ter o dobro de prisioneiros, assim como dificulta a fuga em +1."
+  },
+  {
+    "id": "vigias",
+    "name": "Vigias",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Cada ponto concede 4 pessoas comuns que são vigias, e uma pessoa competente."
+  },
+  {
+    "id": "laboratorio",
+    "name": "Laboratório",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Cada ponto concede +1 Dado para testes de Tecnologia, Alquimia ou Medicina."
+  },
+  {
+    "id": "biblioteca",
+    "name": "Biblioteca",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Cada ponto concede +1 dado em testes de Erudição, Investigação e Arcanismo."
+  },
+  {
+    "id": "localizacao",
+    "name": "Localização",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "A localização do local, seja numa viela cheia de bandidos, seja perto de um templo ou no centro comercial de uma cidade concede +2 dados para o teste que seja relacionado ao local."
+  },
+  {
+    "id": "luxo",
+    "name": "Luxo",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Seu refúgio é extremamente luxuoso, concedendo +2 dados em testes sociais dentro dele. Sem 3 Pontos em recurso esse luxo todo foi roubado ou obtido de maneira ilegal."
+  },
+  {
+    "id": "entrada-secreta",
+    "name": "Entrada Secreta",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "O refúgio tem uma saída secreta, aonde você pode fugir sem que alguém o note, para cada ponto adiciona +1 dado para escapar ou evadir de vigilância ao redor."
+  },
+  {
+    "id": "sistema-de-defesa",
+    "name": "Sistema de Defesa",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Adiciona obstáculos naturais, barreiras, muros ou muralhas, dificultando em +1 a entrada de visitantes indesejados."
+  },
+  {
+    "id": "sigilos-magicos",
+    "name": "Sigilos Mágicos",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Dificulta a entrada de seres supernaturais ou mágicos, forçando um teste de VON quando entram no local equivalente aos pontos gastos."
+  },
+  {
+    "id": "chao-sagrado",
+    "name": "Chão Sagrado",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "O local tem significância para sua cultura, culto ou religião, permitindo chamar um grupo para defender esse local uma vez."
+  },
+  {
+    "id": "santuario",
+    "name": "Santuário",
+    "kind": "vantagem",
+    "points": 1,
+    "pointsMax": 3,
+    "category": "Refúgio",
+    "description": "Um santuário é presente em seu refúgio, adicionando +1 dado para preparar rituais ou cerimônias."
+  },
+  {
+    "id": "local-de-comercio",
+    "name": "Local de Comércio",
+    "kind": "vantagem",
+    "points": 2,
+    "pointsMax": 3,
+    "category": "Refúgio",
+    "description": "Um local de comércio que concede recursos e dinheiro para você mas ao mesmo tempo é vigiado."
+  },
+  {
+    "id": "segmento-de-terra-magica",
+    "name": "Segmento de Terra Mágica",
+    "kind": "vantagem",
+    "points": 1,
+    "pointsMax": 3,
+    "category": "Refúgio",
+    "description": "Seu refúgio fica em um local aonde o Aigaam é mais forte, adicionando +1 dado para rituais e cerimônias feitos ali."
+  },
+  {
+    "id": "oficina",
+    "name": "Oficina",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Uma oficina especializada que adiciona +1 dado para ofícios por ponto."
+  },
+  {
+    "id": "refugio-movel",
+    "name": "Refúgio Movél",
+    "kind": "vantagem",
+    "points": 1,
+    "pointsMax": 3,
+    "category": "Refúgio",
+    "description": "Seu refúgio é movél, seja uma caravana, nas costas de Um \"Oasis-Móvel\", ou um barco até."
+  },
+  {
+    "id": "blindado",
+    "name": "Blindado",
+    "kind": "vantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Requer refúgio movél, concede uma Redução de dano de 3 para o seus refúgio móvel, seja uma blindagem na caravana, ou proteção no casco de um barco."
+  },
+  {
+    "id": "esconderijo-do-contrabandista",
+    "name": "Esconderijo do Contrabandista",
+    "kind": "vantagem",
+    "points": 1,
+    "pointsMax": 2,
+    "category": "Refúgio",
+    "description": "Requer Refúgio Móvel, um espaço secreto aonde a dificuldade para achar itens seja 2 pontos maior."
+  },
+  {
+    "id": "sem-teto",
+    "name": "Sem Teto",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Você não tem casa nem local, e deve toda noite procurar um lugar pra dormir."
+  },
+  {
+    "id": "assustador",
+    "name": "Assustador",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Refúgio",
+    "description": "Seu refúgio é estranho, recebe -2 dados em testes sociais dentro dele."
+  },
+  {
+    "id": "assombrado",
+    "name": "Assombrado",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Um ser sobrenatural se manifesta em seus aposentos, indo de um simples espirito brincalhão que o atrapalha até uma entidade maligna."
+  },
+  {
+    "id": "comprometido",
+    "name": "Comprometido",
+    "kind": "desvantagem",
+    "points": 2,
+    "category": "Refúgio",
+    "description": "Seu refúgio esta numa lista negra, muitos sabem aonde ele fica."
+  },
+  {
+    "id": "compartilhado",
+    "name": "Compartilhado",
+    "kind": "desvantagem",
+    "points": 1,
+    "pointsMax": 2,
+    "category": "Refúgio",
+    "description": "Seu refúgio é compartilhado com outra pessoa, seja um mendigo, um inquilino, ou você está pagando aluguel."
+  },
+  {
+    "id": "nos-trilhos",
+    "name": "Nos trilhos",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Requer Refúgio Movel, a movimentação de seu refúgio não está sob seu controle, como um barco ou caravana, e sua movimentação pode ser planejada sem que você saiba."
+  },
+  {
+    "id": "temperamental",
+    "name": "Temperamental",
+    "kind": "desvantagem",
+    "points": 1,
+    "category": "Refúgio",
+    "description": "Requer Refúgio Movel, o refúgio tende a falhar quando você precisa, falhar um teste de condução ou navegação faz ele parar completamente, precisando de reparos por 1 hora."
+  }
+]

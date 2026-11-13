@@ -1,0 +1,1519 @@
+[
+  {
+    "id": "humanos",
+    "name": "Humanos",
+    "group": "humanoide",
+    "description": "Humanos habitam praticamente todos os continentes de Amnia, sendo um dos grupos mais populosos e diversos em Amnia.",
+    "lineages": [
+      {
+        "id": "soltianos",
+        "name": "Soltianos",
+        "traits": [
+          {
+            "id": "impeto-solar",
+            "name": "Ímpeto Solar",
+            "cost": 2,
+            "description": "A determinação soltiana é famosa. Uma vez por sessão, quando você falha em um teste de atributo ou sofre um revés narrativo, você pode declarar um \"Segundo Fôlego\" e re-rolar todos os dados falhos."
+          },
+          {
+            "id": "cidadao-da-estrela-de-solsticio",
+            "name": "Cidadão da Estrela de Solstício",
+            "cost": 2,
+            "description": "Você cresceu no centro do mundo. , você sabe como navegar pela burocracia, encontrar um contato ou se misturar a uma cultura diferente da sua. Ganha +1 dado para obter informações ou favores menores em centros urbanos."
+          }
+        ]
+      },
+      {
+        "id": "asdaw",
+        "name": "Asdaw",
+        "traits": [
+          {
+            "id": "ritual-de-shar",
+            "name": "Ritual de Shar",
+            "cost": 1,
+            "costMax": 3,
+            "description": "Você passou pelo ritual de Shar e parte de seu corpo ou seu corpo inteiro passou pelo Ritual. E a Chama de Shar habita seu corpo, permitindo você usar 1PA para aumentar a Potência de uma Runa de Chama equivalente a seus pontos nesse ritual.\n1 - O ritual afetou apenas sua mão, ou rosto.\n2 - O ritual afetou suas pernas ou braços.\n3 - O ritual afetou seu corpo inteiro, você é um Devoto de Shar e recebe 3RD a Fogo."
+          },
+          {
+            "id": "coracao-ardente",
+            "name": "Coração Ardente",
+            "cost": 1,
+            "description": "Seu coração arde figurativamente e literalmente em momentos tensos, permitindo você usar 1 Ímpeto para aumentar seus atributos físicos em +1 por uma ação.."
+          }
+        ]
+      },
+      {
+        "id": "romani",
+        "name": "Romani",
+        "traits": [
+          {
+            "id": "disciplina-de-ferro",
+            "name": "Disciplina de Ferro",
+            "cost": 2,
+            "description": "Sua mente é uma fortaleza treinada contra o caos. Você ganha +1 Dado em testes de resistência contra efeitos de medo, charme ou para manter a concentração em habilidades sob pressão."
+          },
+          {
+            "id": "cacador-de-feiticeiros",
+            "name": "Caçador de Feiticeiros",
+            "cost": 2,
+            "description": "Sua cultura estudou a magia apenas para destruí-la. Ganha +1 dado para resistir a magias."
+          }
+        ]
+      },
+      {
+        "id": "knowlin",
+        "name": "Knowlin",
+        "traits": [
+          {
+            "id": "tocado-pela-lua",
+            "name": "Tocado pela Lua",
+            "cost": 2,
+            "description": "Dependendo de qual fase lunar você nasceu, a lua o presenteia com benções diferentes.\nNova: Recebe +2 PM e +3 no Limiar.\nCrescente: Você absorve metade do dano mágico que recebe e resfria seu Limiar equivalente a esse dano.\nCheia: Recebe +4PM mas recebe +1 de dano mágico extra.\nMinguante: Recebe 2 Runas de Ilusão."
+          },
+          {
+            "id": "veu-de-prata",
+            "name": "Véu de Prata",
+            "cost": 3,
+            "description": "A luz da lua o concede conhecimento, enquanto sob ela você pode usar 1 Ímpeto para receber 2 sucessos automáticos em testes de Pericias Mentais."
+          }
+        ]
+      },
+      {
+        "id": "redawlin",
+        "name": "Redawlin",
+        "traits": [
+          {
+            "id": "tocado-pelo-aigaam",
+            "name": "Tocado pelo Aigaam",
+            "cost": 2,
+            "description": "Devido ao fato que você ficou mil anos deslocado do mundo normal, sua conexão com o Aigaam se tornou mais potente, fazendo com que a fase lunar que você nasceu receba benções melhores mas a um custo;\nNova: Recebe +3 PM e +4 no Limiar, mas recebe -1 dado de defesa.\nCrescente: Você absorve metade do dano mágico que recebe e resfria seu Limiar equivalente a esse dano+2, mas você recebe +1 de dano físico.\nCheia: Recebe +5PM mas recebe +2 de dano mágico extra.\nMinguante: Recebe 2 Runas de Ilusão e elas tem o custo reduzido em -2, mas ao estar sob o efeito de uma magia você recebe +1 de dano."
+          },
+          {
+            "id": "eco-de-luneen",
+            "name": "Eco de Luneen",
+            "cost": 1,
+            "description": "Sua mente retém fragmentos oníricos do conhecimento afundado. Uma vez por sessão, você pode fazer uma pergunta ao Mestre sobre um mistério mágico, uma ruína ou um evento histórico. O Mestre deve fornecer uma pista verdadeira, mas criptografada ou poética, como um eco da Biblioteca."
+          }
+        ]
+      },
+      {
+        "id": "tsuniano",
+        "name": "Tsuniano",
+        "traits": [
+          {
+            "id": "tres-sintonias",
+            "name": "Três Sintonias",
+            "cost": 2,
+            "description": "Você nasceu em uma etapa especifica do dia, sintonizando você ao mundo. escolha sua sintonia:\nTarde: +1 em testes de Atletismo ou Resistência.\nManha: +1 em testes de Investigação ou Arcanismo.\nNoite: +1 em testes de Intuição ou Empatia."
+          },
+          {
+            "id": "peregrino-do-oriente",
+            "name": "Peregrino do Oriente",
+            "cost": 1,
+            "description": "Apesar do isolamento, os tsunianos são exploradores natos. Você ganha +1 em testes de Sobrevivência ou Cultura quando está em um ambiente completamente estranho, hostil ou selvagem."
+          }
+        ]
+      },
+      {
+        "id": "hjalvar",
+        "name": "Hjalvar",
+        "traits": [
+          {
+            "id": "robustez-dos-picos",
+            "name": "Robustez dos Picos",
+            "cost": 2,
+            "description": "Seu corpo foi forjado no frio e no trabalho árduo. Seu ataques físicos recebem +1 no SAVE DC."
+          },
+          {
+            "id": "maos-da-velha-guarda",
+            "name": "Mãos da Velha Guarda",
+            "cost": 1,
+            "description": "Você aprendeu a fazer as coisas do jeito certo, não do jeito fácil. Ganha +1 dado em testes de Ofício, Sobrevivência ou Reparos quando utiliza ferramentas tradicionais, manuais ou quando trabalha com materiais brutos (madeira, ferro, pedra, couro). Qualquer item que você conserte ou crie ganha uma durabilidade notável, sendo difícil de quebrar."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "inquebravel",
+        "name": "Inquebrável",
+        "cost": 2,
+        "description": "Usar Ímpeto para re-rolar dados permite re-rolar 1 dado extra."
+      },
+      {
+        "id": "bem-vivido",
+        "name": "Bem Vívido",
+        "cost": 2,
+        "description": "Recebe 2 pontos para distribuir em Fichas de Cultura ou Conhecimento"
+      },
+      {
+        "id": "resiliencia",
+        "name": "Resiliência",
+        "cost": 2,
+        "description": "Escolhe um atributo e recebe +1 dado em SAVES desse atributo."
+      },
+      {
+        "id": "determinacao-humana",
+        "name": "Determinação Humana",
+        "cost": 1,
+        "description": "Você recebe 1 dado extra para resistir as Portas da Morte."
+      },
+      {
+        "id": "conhecimento-vasto",
+        "name": "Conhecimento Vasto",
+        "cost": 0,
+        "description": "Você recebe 2 especializações."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "falta-de-confianca",
+        "name": "Falta de Confiança",
+        "cost": -1,
+        "description": "Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto."
+      },
+      {
+        "id": "ser-falho",
+        "name": "Ser Falho",
+        "cost": -2,
+        "description": "Recebe -1 Dado em SAVES relacionado a um atributo."
+      },
+      {
+        "id": "complexado",
+        "name": "Complexado",
+        "cost": -2,
+        "description": "Você distribui 2 pontos em desvantagens."
+      }
+    ]
+  },
+  {
+    "id": "saifoni",
+    "name": "Saifoni",
+    "group": "humanoide",
+    "description": "Soifoni, também conhecidos como Elfos, são nativos das Ilhas Élficas, um conjunto de 3 ilhas aonde os três principais grupos élficos habitam atualmente.",
+    "lineages": [
+      {
+        "id": "tserof",
+        "name": "Tserof",
+        "traits": [
+          {
+            "id": "passos-nas-copas",
+            "name": "Passos nas Copas",
+            "cost": 2,
+            "description": "Você se move com fluidez em terrenos verticais ou irregulares. Ganha +1 em testes de Acrobacia e Furtividade em florestas, especialmente ao se mover entre galhos, cordas ou ruínas cobertas de vegetação."
+          },
+          {
+            "id": "odio-de-eniahc",
+            "name": "Ódio de Eniahc",
+            "cost": 2,
+            "description": "O ódio contra ser impedido faz com que sempre que sofre um efeito negativo recebe +1 dado na proxima rolagem, e sempre pode re-rolar 2 dados para resistir a um efeito."
+          }
+        ]
+      },
+      {
+        "id": "senialp",
+        "name": "Senialp",
+        "traits": [
+          {
+            "id": "cultivador-de-ema-ruelfs",
+            "name": "Cultivador de Ema-Ruelfs",
+            "cost": 2,
+            "description": "Você entende a linguagem silenciosa das plantas. Ganha +1 em testes de Sobrevivência ou Medicina para identificar, colher e preparar chás, cataplasmas ou infusões arcanas a partir de flora local. Uma vez por dia, você pode preparar uma infusão que concede um bônus narrativo (ex: acalmar os nervos de um aliado antes de uma batalha)."
+          },
+          {
+            "id": "coracao-das-planicies",
+            "name": "Coração das Planícies",
+            "cost": 1,
+            "description": "Sua presença é naturalmente calmante para bestas e pessoas. Ganha +1 em testes de Adestramento (Animais) ou Empatia para acalmar uma criatura hostil ou um NPC em estado de pânico ou fúria."
+          }
+        ]
+      },
+      {
+        "id": "snegatnom",
+        "name": "Snegatnom",
+        "traits": [
+          {
+            "id": "educacao-de-eila-snegat",
+            "name": "Educação de Eila-Snegat",
+            "cost": 1,
+            "description": "A magia é sua língua nativa, do plebeu ao lorde. Ganha +1 em testes de Arcanismo para identificar componentes mágicos, desativar armadilhas arcanas simples ou entender a \"assinatura\" de um feiticeiro."
+          },
+          {
+            "id": "magia-pessoal",
+            "name": "Magia Pessoal",
+            "cost": 2,
+            "description": "Durante sua vida você desenvolveu uma magia pessoal para auxiliar você em situações especificas desde a infância, e você usa ela a tanto tempo que você refinou a Mana com ela perfeitamente, Uma de usas magias tem Custo reduzido em -3 e ela deve ser anotada na sua ficha como uma Magia Pessoal."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "expertise-elfica",
+        "name": "Expertise Élfica",
+        "cost": 2,
+        "description": "Você pode re-rolar 1 dado falho em testes que envolvem suas especializações."
+      },
+      {
+        "id": "explorador-agil",
+        "name": "Explorador Ágil",
+        "cost": 2,
+        "description": "Não recebe desvantagem de terreno díficil."
+      },
+      {
+        "id": "agilidade-elfica",
+        "name": "Agilidade Élfica",
+        "cost": 2,
+        "description": "Ao usar a ação de desvio você recebe os beneficios da ação de desvio completo."
+      },
+      {
+        "id": "passos-leves",
+        "name": "Passos Leves",
+        "cost": 1,
+        "description": "Você se desloca 2 espaços extras."
+      },
+      {
+        "id": "visao-elfica",
+        "name": "Visão Élfica",
+        "cost": 0,
+        "description": "Você recebe +1 em testes de percepção contra alvos camuflados ou para perceber ilusões."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "ego-elfico",
+        "name": "Ego Élfico",
+        "cost": -1,
+        "description": "Falhar um teste social contra não-elfos faz você perder 1 Ímpeto."
+      },
+      {
+        "id": "vida-isolada",
+        "name": "Vida Isolada",
+        "cost": -1,
+        "description": "Você recebe -1 dado de etiqueta ao lidar com pessoas de culturas diferentes."
+      },
+      {
+        "id": "fragil",
+        "name": "Frágil",
+        "cost": -2,
+        "description": "Recebe -2 de PV."
+      }
+    ]
+  },
+  {
+    "id": "berglavi",
+    "name": "Berglavi",
+    "group": "humanoide",
+    "description": "Berglavi, também conhecidos como anões são seres robustos, que vivem sempre perto em montanhas, e sendo famosos pela qualidade de seu trabalho.",
+    "lineages": [
+      {
+        "id": "deisenbart",
+        "name": "Deisenbart",
+        "traits": [
+          {
+            "id": "cabeca-dura",
+            "name": "Cabeça Dura",
+            "cost": 2,
+            "description": "Sua constituição é densa e ancorada. Você ganha +1RD até o final da rodada, quando usa Ímpeto em testes de Combate ou testes de resistência."
+          },
+          {
+            "id": "sem-frescura",
+            "name": "Sem frescura",
+            "cost": 1,
+            "description": "Suas ferramentas contam como armas, causando +1 de dano."
+          }
+        ]
+      },
+      {
+        "id": "gorvnon",
+        "name": "Gorvnon",
+        "traits": [
+          {
+            "id": "sentido-de-tremor",
+            "name": "Sentido de tremor",
+            "cost": 2,
+            "description": "Você é naturalmente sintonizado a terra, conseguindo perceber movimentos por meio de vibrações no Solo, Você recebe a Runa de Elemento Terra e você pode usar PM nessa runa para adicionar Dados equivalentes em testes de percepção relacionado a vibrações na terra. Por exemplo usando 3PM Na Runa de terra você adiciona 3 Dados e um teste de percepção."
+          },
+          {
+            "id": "coracao-da-forja",
+            "name": "Coração da Forja",
+            "cost": 1,
+            "description": "Você recebe 2 de RD a fogo, e não recebe desvantagens em ambientes de calor extremo."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "pele-de-pedra",
+        "name": "Pele de Pedra",
+        "cost": 2,
+        "description": "Recebe 1RD quando não usa armadura."
+      },
+      {
+        "id": "artesao-nato",
+        "name": "Artesão Nato",
+        "cost": 2,
+        "description": "Recebe uma especialização em oficios para um tipo de item."
+      },
+      {
+        "id": "robusto",
+        "name": "Robusto",
+        "cost": 2,
+        "description": "Recebe +1 dado em testes de resistência física."
+      },
+      {
+        "id": "sangue-de-pedra",
+        "name": "Sangue de Pedra",
+        "cost": 1,
+        "description": "Você recebe 1 dado extra para resistir a sangramento."
+      },
+      {
+        "id": "fortitude-berglavi",
+        "name": "Fortitude Berglavi",
+        "cost": 0,
+        "description": "Você recebe +3PV."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "pesado",
+        "name": "Pesado",
+        "cost": -1,
+        "description": "-1 em testes de acrobacia."
+      },
+      {
+        "id": "rancoroso",
+        "name": "Rancoroso",
+        "cost": -2,
+        "description": "Recebe -1 Dado em testes sociais ao interagir com Elfos e Outra raça."
+      },
+      {
+        "id": "perna-curta",
+        "name": "Perna Curta",
+        "cost": -2,
+        "description": "Diminui seu deslocamento em -1."
+      }
+    ]
+  },
+  {
+    "id": "rediano",
+    "name": "Rediano",
+    "group": "nao-humano",
+    "description": "Redianos são o povo de pele vermelha e cabelos vermelhos como o fogo que vivem nas Ilhas Vermelhas, ilhas vulcanicas extremamente hostis para qualquer forma de vida, mas ao mesmo tempo rica em minerios e templos perdidos.",
+    "lineages": [],
+    "racialTraits": [
+      {
+        "id": "motivacao-extra",
+        "name": "Motivação Extra",
+        "cost": 2,
+        "description": "receber Ímpeto pela primeira vez em uma cena concede 1PA."
+      },
+      {
+        "id": "corredor-natural",
+        "name": "Corredor Natural",
+        "cost": 2,
+        "description": "Você se desloca 2 metros extra."
+      },
+      {
+        "id": "vivencia",
+        "name": "Vivência",
+        "cost": 2,
+        "description": "Escolhe um atributo e recebe +1 dado em SAVES desse atributo."
+      },
+      {
+        "id": "adaptado-ao-calor",
+        "name": "Adaptado ao Calor",
+        "cost": 1,
+        "description": "Você recebe 1RD contra fogo, e runas de fogo tem o custo final reduzido em -1."
+      },
+      {
+        "id": "espirito-de-kaipokai",
+        "name": "Espírito de Kaipokai",
+        "cost": 0,
+        "description": "Você é naturalmente obcecado por uma área específica da vida, recebendo +2 dados ao usar pericias diretamente relacionadas a essa área que não envolve combate."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "desatento",
+        "name": "Desatento",
+        "cost": -1,
+        "description": "recebe -1 dado de Defesa caso tenha gastado todos seus PA."
+      },
+      {
+        "id": "frustracao",
+        "name": "Frustração",
+        "cost": -2,
+        "description": "Falhar em testes físicos e mentais por uma margem de 4 diminui faz você perder 1 Ímpeto."
+      },
+      {
+        "id": "obsessao",
+        "name": "Obsessão",
+        "cost": -2,
+        "description": "Você deve dedicar tempo, recursos e foco ao seu Kaipokai, recebendo -2 dados em testes se você estiver distraído pensando no seu objeto de obsessão, ou você pode ser compelido a agir para proteger/estudar esse assunto, mesmo em situações de risco."
+      }
+    ]
+  },
+  {
+    "id": "golshoy",
+    "name": "Golshoy",
+    "group": "nao-humano",
+    "description": "Golshoy são gigantes nomades que habitam as florestas de Amnia, sua civilização foi construida nas costas de mamutes e eles são um povo raramente visto por Amnia, eles sempre tendem a seres Druidas e extremamente pacificos mesmo tendo quase 4 metros de altura. Se você esta em uma cidade grande e vê um gigante ele provavelmente decidiu partir em busca do Gut’zir, ou “O caminho da vida” e se tornou um peregrino buscando conhecer outras culturas e morrer fazendo aquilo que mais gostava.",
+    "lineages": [],
+    "racialTraits": [
+      {
+        "id": "caminho-da-vida",
+        "name": "Caminho da Vida",
+        "cost": 1,
+        "description": "No momento da criação, escolha o fenômeno climático que marcou seu nascimento. Você ganha afinidade com o clima e Especialização no elemento correspondente, além de um direcionamento para seu Gut’zir:\nTempestade: Você nasceu sob raios que derrubariam castelos. Seu Gut’zir é a compreensão e o estudo. Você mantém a calma no caos. (Recebe a Runa de Raio).\nNevasca: Você nasceu em um frio que gelaria um urso polar. Seu espírito é inabalável e seu Gut’zir é a robustez e a superação das dificuldades diárias. (Recebe a Runa de Gelo).\nTerremoto: O solo se movia e montanhas se rachavam ao seu redor. Você se sente em casa nos momentos mais caóticos e imprevisíveis. (Recebe a Runa de Terra).\nEnchente: A água o tocava antes mesmo de você respirar. Você quase viu a morte antes de conhecer a vida. Seu Gut’zir é a celebração do ciclo entre a vida e a morte. (Recebe a Runa de Água).\nQueimada: O horizonte estava vermelho e seu sangue fervia. Você busca a sensação de adrenalina e sobrevivência pura. Seu Gut’zir é o combate e a superação física. (Recebe a Runa de Fogo)."
+      },
+      {
+        "id": "parede-ambulante",
+        "name": "Parede Ambulante",
+        "cost": 2,
+        "description": "Magias ou ataques que tentam causar condições físicas em você recebem -1 dado."
+      },
+      {
+        "id": "erudicao-do-nomade",
+        "name": "Erudição do Nômade",
+        "cost": 2,
+        "description": "Recebe uma especialização em Sobrevivência e Erudição."
+      },
+      {
+        "id": "presenca-intimidadora",
+        "name": "Presença Intimidadora",
+        "cost": 2,
+        "description": "Recebe +1 em testes de intimidação."
+      },
+      {
+        "id": "saude-de-gigante",
+        "name": "Saúde de Gigante",
+        "cost": 1,
+        "description": "Você recebe 5 de PV extra."
+      },
+      {
+        "id": "corpo-gigante",
+        "name": "Corpo Gigante",
+        "cost": 0,
+        "description": "Você recebe 1 sucesso automático em testes de Força, e causa +1 de dano físico."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "visao-ruim",
+        "name": "Visão Ruim",
+        "cost": -1,
+        "description": "Sua visão não é muito boa, Recebe -1 em testes de percepção visual."
+      },
+      {
+        "id": "passos-pesados",
+        "name": "Passos Pesados",
+        "cost": -2,
+        "description": "Recebe -1 Dado em testes de Furtividade e Acrobacia/equilibrio."
+      },
+      {
+        "id": "passos-de-mamute",
+        "name": "Passos de Mamute",
+        "cost": -2,
+        "description": "Recebe -1 em deslocamento."
+      }
+    ]
+  },
+  {
+    "id": "wyad",
+    "name": "Wyad",
+    "group": "nao-humano",
+    "description": "Wyads são o povo constituido apenas por mulheres pálidas nomades que vivem nos Picos Nortes em meio as geleiras, extremamente temidas por todos que as veem, as Wyads raramente saem das montanhas dos picos nortes e planicies gelidas, mas após a lenda da Famosa Pirata Seville, muitas Wyads começaram a se aventurar devido a Seville, famosa navegadora da tripulação Fúria sem Nome.",
+    "lineages": [
+      {
+        "id": "ulfhednar",
+        "name": "Ulfhednar (Fúria Vermelha)",
+        "traits": [
+          {
+            "id": "furia-da-lua-sangrenta",
+            "name": "Fúria da Lua Sangrenta",
+            "cost": 0,
+            "description": "Quando você se transforma sua FOR aumenta em +1, você ganha 1RD físico enquanto estiver na forma bestial."
+          }
+        ]
+      },
+      {
+        "id": "vargsold",
+        "name": "Vargsold (Sussuro Prata)",
+        "traits": [
+          {
+            "id": "passos-do-predador",
+            "name": "Passos do Predador",
+            "cost": 0,
+            "description": "Você ganha +1 em testes de Furtividade em ambientes naturais ou noturnos. Quando ataca de surpresa, seu primeiro ataque causa dano adicional equivalente a metade de sua Destreza"
+          }
+        ]
+      },
+      {
+        "id": "managard",
+        "name": "Managard (Guardiãs da Noite)",
+        "traits": [
+          {
+            "id": "fortitude-bestial",
+            "name": "Fortitude Bestial",
+            "cost": 0,
+            "description": "Magias e habilidades de defesa ou de resistência a efeitos recebem 1 sucesso automático, e recupera 1 Ímpeto na primeira vez que defende ou resiste a algo na cena."
+          }
+        ]
+      },
+      {
+        "id": "nattvandr",
+        "name": "Nattvandr (Bestas Errantes)",
+        "traits": [
+          {
+            "id": "caminhos-da-lua",
+            "name": "Caminhos da Lua",
+            "cost": 0,
+            "description": "Você tem um senso de direção sobrenatural sob a luz da lua. Ganha +1 em testes de Percepção, e consegue ver através de ilusões."
+          }
+        ]
+      },
+      {
+        "id": "sylvrath",
+        "name": "Sylvrath (Espíritos da Noite)",
+        "traits": [
+          {
+            "id": "visoes-da-lua",
+            "name": "Visões da Lua",
+            "cost": 0,
+            "description": "Você recebe 1 sucessos automáticos em efeitos de ilusão e efeitos mentais a alvos, você pode usar 1 Ímpeto para ter uma premonição curta do futuro."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "olhos-purpura",
+        "name": "Olhos Púrpura",
+        "cost": 2,
+        "description": "Seus olhos brilham com um tom violeta sobrenatural. Uma vez por cena, como reação, você pode fazer um teste de Vontade+Intimidação vs Vontade+Inteligência contra um inimigo em alcance visual. Se ele falhar, fica intimidado até o início do próximo turno dele, se você ganhar por uma margem de 4 ele fica paralisado."
+      },
+      {
+        "id": "fora-das-normas",
+        "name": "Fora das Normas",
+        "cost": 2,
+        "description": "Recebe +1 em testes de DES ou CAR quando não está usando roupas e armaduras de metal ou “civilizadas”."
+      },
+      {
+        "id": "nascida-na-nevasca",
+        "name": "Nascida na Nevasca",
+        "cost": 2,
+        "description": "Recebe 2 de RD a dano de gelo, não recebe desvantagem por causa do frio."
+      },
+      {
+        "id": "se-banhar-na-noite",
+        "name": "Se banhar na noite",
+        "cost": 1,
+        "description": "Você recebe 1PA extra enquanto for noite."
+      },
+      {
+        "id": "maldicao-de-varulv",
+        "name": "Maldição de Varulv",
+        "cost": 0,
+        "description": "Você nasceu ou foi assimilada a uma tribo, recebendo a maldição dela, Durante uma noite você deve realizar um teste de VON+Carisma para não manifestar o aspecto de sua tribo, assim como você pode forçar esse aspecto usando 2 Ímpeto."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "bestialidade",
+        "name": "Bestialidade",
+        "cost": -1,
+        "description": "Recebe -1 Dado em testes para manter o controle."
+      },
+      {
+        "id": "abracar-a-besta",
+        "name": "Abraçar a Besta",
+        "cost": -2,
+        "description": "Recebe -1 Dado ao usar magias que não envolvam Metamorfose ou Reforço."
+      },
+      {
+        "id": "presenca-intimidadora",
+        "name": "Presença Intimidadora",
+        "cost": -2,
+        "description": "Você recebe +1 em testes de intimidação mas você raramente vai ser recebida de braços abertos em locais."
+      }
+    ]
+  },
+  {
+    "id": "corvianos",
+    "name": "Corvianos",
+    "group": "nao-humano",
+    "description": "Corvianos são o povo pálido de cabelo escuro que habitam as cavernas e ravinas de Amnia, extremamente estranhos para uma pessoa normal com seus costumes e jeito de vida. Eles vivem sob o comando da rainha Corviana. Antigamente era muito comum a pratica de necromancia em na cultura deles, mas após a rebelião de Kassius a arte da necromancia foi proibida em todos cantos do mundo.",
+    "lineages": [
+      {
+        "id": "kalik",
+        "name": "Kalik (Homem)",
+        "traits": [
+          {
+            "id": "lingua-de-sesilik",
+            "name": "Língua de Sesilik",
+            "cost": 0,
+            "description": "Você nasceu mudo. Em troca desse sacrifício, suas palavras (quando proferidas) afetam a realidade. Uma vez por turno, você pode proferir uma única palavra, Essa palavra emana em um raio de 3 metros e caso seja uma Runa ela tem o Nível equivalente a seu Carisma."
+          },
+          {
+            "id": "bencao-dos-corvos",
+            "name": "Benção dos Corvos",
+            "cost": 1,
+            "description": "Qualquer teste de enganação, ou teste de carisma em geral contra você recebe -1 dado."
+          }
+        ]
+      },
+      {
+        "id": "kadin",
+        "name": "Kadin",
+        "traits": [
+          {
+            "id": "visao-de-kor",
+            "name": "Visão de Kor",
+            "cost": 0,
+            "description": "Você nasceu cega para o mundo físico. Em troca, você vê o mundo através de auras mágicas e almas em um raio de 3 metros. Você raramente precisa rolar testes para identificar runas, auras ou a natureza espiritual de um objeto/pessoa. Além disso, você emite uma Aura passiva e silenciosa que permite comunicação telepática básica (emoções, intenções simples) com aliados dentro desse raio, suprindo sua falta de visão física."
+          },
+          {
+            "id": "voto-do-veu",
+            "name": "Voto do Véu",
+            "cost": 1,
+            "description": "Seus olhos são um portal direto do Aigaam, você fez o Oy-Duvak, o voto do véu, e ele envolve usar um véu para tampar completamente seus olhos, e caso você encare diretamente nos olhos de outra pessoa, você aumenta o limiar dela e o seu igual a 8+ seu CAR, e forçando uma Mácula em ambos caso o Limiar passe do limite. É necessário um SAVE de VON+Fortitude DIF 6 para resistir ao efeito."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "conhecimento-ancestral",
+        "name": "Conhecimento Ancestral",
+        "cost": 2,
+        "description": "Pode usar Ímpeto para receber uma orientação de um de seus ancestrais uma vez por dia, necessita realizar um ritual de uma rodada."
+      },
+      {
+        "id": "conexao-funebre",
+        "name": "Conexão Fúnebre",
+        "cost": 2,
+        "description": "Você tem uma conexão com aquilo que não vive, recebendo a Runa de Alma."
+      },
+      {
+        "id": "esguio",
+        "name": "Esguio",
+        "cost": 2,
+        "description": "Teste que envolvem equilíbrio, acrobacia e ladroagem recebem +1 dado."
+      },
+      {
+        "id": "dualidade",
+        "name": "Dualidade",
+        "cost": 1,
+        "description": "Caso seja um Kalik recebe uma especialização em Investigação ou Percepção, E Kadins recebem especialização em Persuasão ou Instrospecção."
+      },
+      {
+        "id": "nascido-sob-sombra",
+        "name": "Nascido Sob Sombra",
+        "cost": 0,
+        "description": "Você recebe +1 dado em furtividade."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "vulneravel",
+        "name": "Vulnerável",
+        "cost": -1,
+        "description": "Você recebe -1 dados em testes relacionados a um atributo específico."
+      },
+      {
+        "id": "obsessao-funebre",
+        "name": "Obsessão Fúnebre",
+        "cost": -2,
+        "description": "você sempre tenta se comunicar com espíritos e mortos."
+      },
+      {
+        "id": "fragilidade",
+        "name": "Fragilidade",
+        "cost": -2,
+        "description": "Você recebe -1 dado em testes físicos."
+      }
+    ]
+  },
+  {
+    "id": "skaraeb",
+    "name": "Skaraeb",
+    "group": "nao-humano",
+    "description": "Habitando as profundezas do Vale de Lethesab, os Skaraeb foram descobertos pelos habitantes de Amnia a pouco tempo, mas por milenios eles tiveram seus imperios, guerras e conquistas nas imensas cavernas abaixo do lago das Cinzas nas Planicies centrais. Os Skaraeb são semelhantes aos Lirizatls no sentido que são uma raça cheia de sub-especies dentro dela. Cada uma com sua função para o avanço da colônia.",
+    "lineages": [
+      {
+        "id": "trabalhador",
+        "name": "Trabalhador",
+        "traits": [
+          {
+            "id": "construtor-instintivo",
+            "name": "Construtor Instintivo",
+            "cost": 0,
+            "description": "Você naturalmente entende como construir objetos, recebendo 1 especialização em Ofícios."
+          },
+          {
+            "id": "bracos-insectoides",
+            "name": "Braços Insectoídes",
+            "cost": 2,
+            "description": "Você tem um par de braços pequenos extras diretamente abaixo de seus braços, eles podem realizar ações menores sem gastar PA, e trabalham duas vezes mais rápido quando envolvem Ofícios."
+          }
+        ]
+      },
+      {
+        "id": "protetor",
+        "name": "Protetor",
+        "traits": [
+          {
+            "id": "carapaca-do-guardiao",
+            "name": "Carapaça do Guardião",
+            "cost": 0,
+            "description": "Você tem uma carapaça mais grossa que o normal, concedendo +1RD, mas armaduras devem ser customizadas para servir em você."
+          },
+          {
+            "id": "sendo-de-protecao",
+            "name": "Sendo de Proteção",
+            "cost": 2,
+            "description": "Ações ou manobras defensivas recebem +1 dado, e caso envolvam proteger alguém recebem +2."
+          }
+        ]
+      },
+      {
+        "id": "cacador",
+        "name": "Caçador",
+        "traits": [
+          {
+            "id": "visao-predatoria",
+            "name": "Visão Predatória",
+            "cost": 0,
+            "description": "Você tem olhos naturalmente mais perceptivos que outros, concedendo +1 dado de percepção."
+          },
+          {
+            "id": "armas-naturais",
+            "name": "Armas Naturais",
+            "cost": 2,
+            "description": "Você desenvolveu uma arma natural, seja uma cauda com ferrão, presas ou garras, recebendo +1 de Dano ao usar elas e especialização em Armas Naturais."
+          }
+        ]
+      },
+      {
+        "id": "qatae",
+        "name": "Qatae",
+        "traits": [
+          {
+            "id": "forca-faz-a-uniao",
+            "name": "Força faz a União",
+            "cost": 1,
+            "description": "Ao usar a ação de ajuda, concede 1 sucesso automático para o teste de um aliado junto do +1 dado extra."
+          },
+          {
+            "id": "aura-de-protecao",
+            "name": "Aura de Proteção",
+            "cost": 0,
+            "description": "Aliados a sua volta recebem 1RD."
+          },
+          {
+            "id": "feromonios-de-medo",
+            "name": "Feromônios de Medo",
+            "cost": 1,
+            "description": "Você naturalmente espanta todos a sua volta, fazendo com que todos fiquem intimidados com sua presença facilmente, Você pode usar 1 Ímpeto para adicionar seu atributo chave em testes de intimidação."
+          }
+        ]
+      },
+      {
+        "id": "khayat",
+        "name": "Khayat",
+        "traits": [
+          {
+            "id": "tecelao-de-mana",
+            "name": "Tecelão de Mana",
+            "cost": 1,
+            "description": "Você consegue tecer teias finas reforçadas por mana, fazendo com que você possa criar ou manipular objetos com suas teias, objetos criados por sua teia recebem o seu bónus de CAR nos respectivos testes."
+          },
+          {
+            "id": "instinto-do-vigia",
+            "name": "Instinto do Vigia",
+            "cost": 1,
+            "description": "Você naturalmente percebe ações minúsculas que podem ser suspeitas, recebendo +1 em testes de percepção, pode usar testes de percepção para tentar prever exatamente oq um alvo irá fazer."
+          },
+          {
+            "id": "feromonios-do-fantasma",
+            "name": "Feromônios do fantasma",
+            "cost": 1,
+            "description": "Pessoas naturalmente não percebem sua presença desde que não tentem o procurar, pessoas devem passar em um teste de Percepção+Investigação = Sua Furtividade+ Subterfúgio para o perceber. Se você interagir com alguém ela obviamente consegue o perceber."
+          }
+        ]
+      },
+      {
+        "id": "rasasa",
+        "name": "Rasasa",
+        "traits": [
+          {
+            "id": "fazendo-sua-parte",
+            "name": "Fazendo sua parte",
+            "cost": 1,
+            "description": "Você sempre sabe cobrir a posição necessária, assim que uma cena ou combate começa você pode assumir uma posição e receber +1 dado para atacar ou defender."
+          },
+          {
+            "id": "carapaca-negra",
+            "name": "Carapaça Negra",
+            "cost": 1,
+            "description": "Sua carapaça é extremamente pesada e robusta, fazendo com que ataques precisam ter uma margem de sucesso maior que sua RD para que eles não sejam ricocheteados. Mas recebe -2 em testes de Destreza."
+          },
+          {
+            "id": "duelista-nato",
+            "name": "Duelista Nato",
+            "cost": 1,
+            "description": "Entrar em um confronto ou duelo contra apenas um alvo o concede +1 em todos testes contra esse alvo, mas caso alguém atrapalhe seu confronto você perde esse bónus e deve confrontar aquele que atrapalhou sobre isso(ele vai pagar)."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "bom-trabalhador",
+        "name": "Bom trabalhador",
+        "cost": 2,
+        "description": "Você foi um bom trabalhador em sua Colmeia, você recebe 2 pontos de Vantagens e Antecedentes extra."
+      },
+      {
+        "id": "funcao-biologica",
+        "name": "Função Biológica",
+        "cost": 2,
+        "description": "Você sabe sua função desde que nasceu, você escolhe um tipo de pericia, seja física, mental ou social, e permite re-rolar 1 dado falho nesse tipo de pericia."
+      },
+      {
+        "id": "sangue-das-profundezas",
+        "name": "Sangue das Profundezas",
+        "cost": 2,
+        "description": "Recebe +1 dado em testes de Fortitude, e recebe uma especialização em Fortitude."
+      },
+      {
+        "id": "visao-de-inseto",
+        "name": "Visão de Inseto",
+        "cost": 1,
+        "description": "Você não recebe desvantagem quando está no escuro, e recebe +1 dado em testes de percepção em cavernas."
+      },
+      {
+        "id": "nascido-da-colmeia",
+        "name": "Nascido da Colmeia",
+        "cost": 0,
+        "description": "Você nasceu dentro de uma das Cidades Colmeias, você esc escolhe um Casta que dita sua posição na vida e sociedade Skaraeb."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "choque-cultural",
+        "name": "Choque Cultural",
+        "cost": -1,
+        "description": "Você é um estrangeiro em seu próprio mundo. Sofre -2 no primeiro teste social com não-Skaraeb, pois eles o veem com desconfiança ou fascínio desconfortável."
+      },
+      {
+        "id": "acostumado-com-a-escuridao",
+        "name": "Acostumado com a Escuridão",
+        "cost": -2,
+        "description": "viver a vida inteira no Vale do Lethesab acostumou você a escuridão, fazendo com que luzes fortes machuquem sua vista e causem -2 dados em rolagens suas."
+      },
+      {
+        "id": "comunicacao-estranha",
+        "name": "Comunicação Estranha",
+        "cost": -2,
+        "description": "Sua forma de comunicação inclui feromônios, sons de mandíbula ou movimentos de antenas que não-Skaraeb acham perturbadores. Sofre -2 dados em testes Sociais com não-Skaraeb, a menos que passe tempo adaptando sua comunicação (1 semana de convívio, ou traços positivos de linguistica)."
+      }
+    ]
+  },
+  {
+    "id": "lirizatl",
+    "name": "Lirizatl",
+    "group": "nao-humano",
+    "description": "Lirizatl são um povo reptiliano que vive majoritariamente no Pântano de Izguratl, nascidos por meio da Seiva que sai de Arvores Ancestrais, os Lirizatil nascem em castas diferentes, Kuets sendo a casta mais comum que é presente em toda Amnia, e Tlahkoa, uma casta de líderes e santos, na qual raramente nascem, apenas durante eventos especiais ou Calamidades.",
+    "lineages": [
+      {
+        "id": "kameyotl",
+        "name": "Kameyotl",
+        "traits": [
+          {
+            "id": "mestre-da-camuflagem",
+            "name": "Mestre da Camuflagem",
+            "cost": 0,
+            "description": "Sua pele se adapta ao ambiente. Recebendo a runa de Camaleão, e efeitos de ilusão em você tem custo reduzido em -1."
+          }
+        ]
+      },
+      {
+        "id": "kaispalin",
+        "name": "Kaispalin",
+        "traits": [
+          {
+            "id": "aprendiz-do-pantano",
+            "name": "Aprendiz do Pantâno",
+            "cost": 0,
+            "description": "Sua versatilidade é sua maior arma. Você recebe 3 especializações de sua escolha (que não sejam de combate direto)."
+          }
+        ]
+      },
+      {
+        "id": "siskoatl",
+        "name": "Siskoatl",
+        "traits": [
+          {
+            "id": "mestre-dos-venenos",
+            "name": "Mestre dos Venenos",
+            "cost": 0,
+            "description": "Você é naturalmente resistente a venenos recebendo +1 em dados para resistir venenos, e além disso, qualquer dano de veneno que você receba cura você igual a metade a margem de sucesso no SAVE."
+          }
+        ]
+      },
+      {
+        "id": "toroyotl",
+        "name": "Toroyotl",
+        "traits": [
+          {
+            "id": "muralha-de-escamas",
+            "name": "Muralha de Escamas",
+            "cost": 0,
+            "description": "Sua carapaça é uma fortaleza. Você ganha +1RD e +1 em dados de Defesa, mas diminui seu deslocamento em -3."
+          }
+        ]
+      },
+      {
+        "id": "ketsapuek",
+        "name": "Ketsapuek",
+        "traits": [
+          {
+            "id": "magia-nas-escamas",
+            "name": "Magia nas Escamas",
+            "cost": 0,
+            "description": "Suas escamas canalizam magia, magias de reforço ou alteração tem o custo reduzido em -1 ao afetar suas escamas."
+          }
+        ]
+      },
+      {
+        "id": "krepetl",
+        "name": "Krepetl",
+        "traits": [
+          {
+            "id": "mandibula-do-devorador",
+            "name": "Mandíbula do Devorador",
+            "cost": 0,
+            "description": "Suas mandíbulas são armas letais. Ao agarrar um alvo pode desferir uma mordida que causa +2 de dano físico."
+          },
+          {
+            "id": "fardo-fome-insaciavel",
+            "name": "Fardo - Fome Insaciável",
+            "cost": 0,
+            "description": "Sua natureza colossal exige muito de você. Você precisa consumir o dobro de comida e água de um Lirizatl comum, e se ficar mais de 4 horas sem comer, sofre -2 dado em todos os testes."
+          }
+        ]
+      },
+      {
+        "id": "kolotl",
+        "name": "Kolotl",
+        "traits": [
+          {
+            "id": "canalizador-elemental",
+            "name": "Canalizador Elemental",
+            "cost": 0,
+            "description": "Você é naturalmente adepto aos elementos, todo módulo de elemento tem seu custo reduzido em -2, pois sua biologia canaliza magia com eficiência sobrenatural."
+          },
+          {
+            "id": "fardo-responsabilidade-do-sabio",
+            "name": "Fardo - Responsabilidade do Sábio",
+            "cost": 0,
+            "description": "Por serem vistos como santos, as pessoas esperam que você tenha todas as respostas. Em situações de crise, você sofre -2 em testes de Intimidação ou Persuasão se tentar se esquivar de responsabilidades ou admitir ignorância."
+          }
+        ]
+      },
+      {
+        "id": "xalimikol",
+        "name": "Xalimikol",
+        "traits": [
+          {
+            "id": "garras-que-cortam-a-terra",
+            "name": "Garras que Cortam a Terra",
+            "cost": 0,
+            "description": "Suas garras podem cavar qualquer solo e rasgar rocha. O dano base é equivalente +2, e recebe 2 sucessos automáticos ao atacar estruturas ou objetos."
+          },
+          {
+            "id": "fardo-claustrofobia-inversa",
+            "name": "Fardo - Claustrofobia Inversa",
+            "cost": 0,
+            "description": "Você se sente sufocado em espaços abertos demais. Em ambientes sem teto ou muito vastos (como planícies ou céus abertos), você sofre -2em testes de Percepção e Vontade, pois se sente exposto e vulnerável."
+          }
+        ]
+      },
+      {
+        "id": "kamaxa",
+        "name": "Kamaxa",
+        "traits": [
+          {
+            "id": "magia-toxica",
+            "name": "Magia Tóxica",
+            "cost": 0,
+            "description": "Módulos de elementos têm seu custo reduzido em -2 se forem misturados com o veneno de seu corpo, pois sua biologia amplifica efeitos mágicos."
+          },
+          {
+            "id": "fardo-mau-agouro",
+            "name": "Fardo - Mau Agouro",
+            "cost": 0,
+            "description": "Sua casta é temida e odiada. Você sofre -2 em todos os testes sociais iniciais com estranhos, pois eles instintivamente desconfiam ou temem de você."
+          }
+        ]
+      },
+      {
+        "id": "axokatol",
+        "name": "Axokatol",
+        "traits": [
+          {
+            "id": "regeneracao-de-izguratl",
+            "name": "Regeneração de Izguratl",
+            "cost": 0,
+            "description": "Seu poder de regeneração é extremo. Você pode regenerar membros e órgãos em horas ou minutos. Todo turno, você regenera PV o equivalente ao sua FOR."
+          },
+          {
+            "id": "fardo-sede-da-agua",
+            "name": "Fardo - Sede da Água",
+            "cost": 0,
+            "description": "Você precisa estar submerso ou em contato com água regularmente. Se ficar fora de submersão por mais de 3 horas, recebe -2 em todas as rolagens, pois seu corpo começa a secar e enfraquecer."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "bencao-de-izguratl",
+        "name": "Benção de Izguratl",
+        "cost": 2,
+        "description": "Uma vez por cena pode regenerar 2PV."
+      },
+      {
+        "id": "sangue-da-seiva",
+        "name": "Sangue da Seiva",
+        "cost": 2,
+        "description": "Efeitos de Magias Elementais que afetam tem o custo final reduzido em -1."
+      },
+      {
+        "id": "sangue-do-pantano",
+        "name": "Sangue do Pântano",
+        "cost": 2,
+        "description": "Você recebe +1 sucesso automático para resistir efeitos de venenos."
+      },
+      {
+        "id": "humor-inabalavel",
+        "name": "Humor Inabalável",
+        "cost": 1,
+        "description": "Você recebe +1 dado para resistir efeitos de medo, raiva, intimidação e encanto."
+      },
+      {
+        "id": "nascido-da-siteotl",
+        "name": "Nascido da Siteotl",
+        "cost": 0,
+        "description": "Você nasceu da Seiva de uma Siteotl, fazendo com que você seja de uma das castas, Kuetz ou Tlahkoa."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "sangue-frio",
+        "name": "Sangue Frio",
+        "cost": -1,
+        "description": "você recebe -1 dado enquanto em ambientes frios."
+      },
+      {
+        "id": "especializado",
+        "name": "Especializado",
+        "cost": -2,
+        "description": "Recebe -1 Dado em uma Pericia e +1 em outra.."
+      },
+      {
+        "id": "costumes-diferentes",
+        "name": "Costumes Diferentes",
+        "cost": -2,
+        "description": "Você recebe -1 em testes sociais ao falar com Raças diferentes."
+      }
+    ]
+  },
+  {
+    "id": "orcs",
+    "name": "Orcs",
+    "group": "ogroide",
+    "description": "Um dos grupos de Ogroides que habitam as planicies dos Campos centrais, Orcs valorizam combate e honra acima de tudo, muito vagam por Amnia buscando justamente isso.",
+    "lineages": [
+      {
+        "id": "ghullen",
+        "name": "Ghullen",
+        "traits": [
+          {
+            "id": "a-verdade-do-aco",
+            "name": "A Verdade do Aço",
+            "cost": 2,
+            "description": "A mentira é uma ferrugem na alma. Um Orc deve enfrentar os problemas de frente, falar a verdade (mesmo que doa) e nunca atacar pelas costas. Quando faz isso recebe +2 dados, quando não faz isso recebe 2 de dano."
+          }
+        ]
+      },
+      {
+        "id": "suhcrin",
+        "name": "Suhcrin",
+        "traits": [
+          {
+            "id": "o-peso-do-sangue",
+            "name": "O Peso do Sangue",
+            "cost": 2,
+            "description": "O clã, os aliados e os juramentos vêm antes do eu. Um Orc deve proteger os seus até a morte. Quando protege seus aliados recebe 1 Ímpeto e recupera 1 PV, ao não fazer isso perde 1 Ímpeto e 1PV."
+          }
+        ]
+      },
+      {
+        "id": "aldar-suu",
+        "name": "Aldar-Suu",
+        "traits": [
+          {
+            "id": "a-gloria-do-espirito",
+            "name": "A Glória do Espírito",
+            "cost": 2,
+            "description": "Um Orc deve buscar a maestria em si mesmo e deixar um nome que ecoe, A mediocridade é o verdadeiro inimigo. Agir na oportunidade de aprender e se aprimorar o concede 1 sucesso automático, não agir faz você perder 2PV"
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "shramugol",
+        "name": "Shramugol",
+        "cost": 2,
+        "description": "Suas cicatrizes de batalha contam sua historia, uma vez por cena uma cicatriz antiga em você concede RD Igual sua FOR contra um ataque."
+      },
+      {
+        "id": "coracao-do-intensificador",
+        "name": "Coração do Intensificador",
+        "cost": 2,
+        "description": "Recebe 1 Runa de Reforço naturalmente."
+      },
+      {
+        "id": "guerreiro-nato",
+        "name": "Guerreiro Nato",
+        "cost": 2,
+        "description": "Armas na qual você é especializado recebem +1 de dano."
+      },
+      {
+        "id": "rancor-da-morte",
+        "name": "Rancor da Morte",
+        "cost": 1,
+        "description": "Enquanto nas portas da Morte recebe +1PA."
+      },
+      {
+        "id": "teimosia-de-ogro",
+        "name": "Teimosia de Ogro",
+        "cost": 0,
+        "description": "Você sempre tem direito a tentar um teste novamente, mas a segunda rolagem será feita com apenas sua FOR, caso você falhe a rolagem de FOR ela sempre sera considerada uma falha critica."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "lorem",
+        "name": "lorem",
+        "cost": -1,
+        "description": "Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto."
+      },
+      {
+        "id": "forca-acima-de-tudo",
+        "name": "Força acima de tudo",
+        "cost": -2,
+        "description": "Seu limiar é 4 pontos menor."
+      },
+      {
+        "id": "sangue-fervente",
+        "name": "Sangue Fervente",
+        "cost": -2,
+        "description": "Quando em uma cena aonde não há conflito deve realizar um teste de INT+VON de DIF 4, para conseguir se segurar e não ser impulsivo, se falhar você vai tentar agir de maneira bruta no momento, ao invés de cuidadosamente se esgueirar você vai correr com passos pesados."
+      }
+    ]
+  },
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "group": "ogroide",
+    "description": "Goblins habitam as planicies norte dos Campos centrais, quando um Goblin nasce de acordo com o fomrato de suas orelhas ele pode ser um Gabul ou Gobbo, e pode mudar isso durante a vida.",
+    "lineages": [
+      {
+        "id": "gabul",
+        "name": "Gabul",
+        "traits": [
+          {
+            "id": "colheita-do-azar",
+            "name": "Colheita do Azar",
+            "cost": 1,
+            "description": "Sempre que você falha em um teste por 4 pontos ou mais, você ganha 1 \"Dado do Azar\". Em caso de Falha Crítica, ganha 2 Dados do Azar.\nVocê pode rolar esses dados antecipadamente e, a qualquer momento, substituir o resultado de qualquer rolagem sua (ou de um aliado próximo) pelo resultado de um Dado do Azar que você tenha guardado."
+          },
+          {
+            "id": "mentalidade-do-gabul",
+            "name": "Mentalidade do Gabul",
+            "cost": 1,
+            "description": "Você recupera 1 Ímpeto ao substituir a rolagem de alguém por um dado de azar."
+          },
+          {
+            "id": "lealdade-de-gabul",
+            "name": "Lealdade de Gabul",
+            "cost": 2,
+            "description": "Caso um aliado seu caia nas portas da morte ou receba um crítico, o próximo ataque contra um alvo recebe 3 sucessos automáticos. Só pode ativar uma vez por cena."
+          }
+        ]
+      },
+      {
+        "id": "gobbo",
+        "name": "Gobbo",
+        "traits": [
+          {
+            "id": "bom-nao-o-melhor",
+            "name": "Bom não….O melhor",
+            "cost": 1,
+            "description": "Sempre que alguém fizer algo melhor que você em seu campo de excelência, você deve fazer um teste de CAR+INT para que seu Ego não tome conta de você e lhe obrigue a demonstrar para esse cara que você não é um bunda mole."
+          },
+          {
+            "id": "choque-de-ego",
+            "name": "Choque de Ego",
+            "cost": 1,
+            "description": "Passar em um teste por até 4 pontos faz com que o inimigo que fez você realizar essa rolagem receba -1 na próxima rolagem."
+          },
+          {
+            "id": "ego",
+            "name": "Ego",
+            "cost": 2,
+            "description": "Você pode usar 2 Ímpeto para adicionar dados equivalente a sua vontade em uma rolagem."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "o-ajudante",
+        "name": "O Ajudante",
+        "cost": 2,
+        "description": "A ação de ajudar e ataque em conjunto concede 1 sucesso automático."
+      },
+      {
+        "id": "motivacao-de-gabul",
+        "name": "Motivação de Gabul",
+        "cost": 2,
+        "description": "Quando alguém falha um teste de VON por uma margem de 3 você recupera 1 Ímpeto, só pode acontecer 1 vez por cena."
+      },
+      {
+        "id": "teimosia",
+        "name": "Teimosia",
+        "cost": 2,
+        "description": "Causa +1 de dano ao atacar com armas ou objetos maiores e mais pesadas que você."
+      },
+      {
+        "id": "inocencia",
+        "name": "Inocência",
+        "cost": 1,
+        "description": "Pessoas tendem a não lhe ver como uma ameaça."
+      },
+      {
+        "id": "crianca-das-estepes",
+        "name": "Criança das Estepes",
+        "cost": 0,
+        "description": "Seu tamanho é pequeno, você consegue ocupar o mesmo espaço que alguém, e recebe +1 em testes de desvio."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "desmotivado",
+        "name": "Desmotivado",
+        "cost": -1,
+        "description": "Quando você ou alguém falha um teste de VON ou CAR você recebe -1 na próxima rolagem."
+      },
+      {
+        "id": "humilhado",
+        "name": "Humilhado",
+        "cost": -2,
+        "description": "Recebe -1 Dado em saves e testes de carisma caso o carisma do alvo seja maior que o seu."
+      },
+      {
+        "id": "ima-do-azar",
+        "name": "Imã do Azar",
+        "cost": -2,
+        "description": "Quando alguém falha um teste por uma margem de 4, um efeito negativo de sorte irá afetar a próxima rolagem de alguém que está a 6 metros de você."
+      }
+    ]
+  },
+  {
+    "id": "troll",
+    "name": "Troll",
+    "group": "ogroide",
+    "description": "Trolls são eximios artesões por mais que sua aparência intimidadora pareça dizer o contrario, trolls são gigantes pacificos extremamente dedicados a um tipo de Artesanato especifico, enquanto anões criam pela glória e reconhecimento, trolls criam pelo amor a arte de criar.",
+    "lineages": [
+      {
+        "id": "forghum",
+        "name": "Forghum (Ferreiros)",
+        "traits": [
+          {
+            "id": "olho-da-forja",
+            "name": "Olho da Forja",
+            "cost": 1,
+            "description": "Você pode identificar a qualidade, origem e defeitos de qualquer metal ou arma com com facilidade, recebendo 2 sucesso automático em testes de percepção ou investigação quando o assunto é esse."
+          },
+          {
+            "id": "toque-do-ferreiro",
+            "name": "Toque do Ferreiro",
+            "cost": 1,
+            "description": "Suas criações metálicas são lendárias. Uma vez por sessão, você pode gastar 1 hora para \"aperfeiçoar\" uma arma ou armadura, concedendo a ela +1 de bônus em dano ou defesa até o final da próxima cena."
+          }
+        ]
+      },
+      {
+        "id": "laanghum",
+        "name": "Laanghum (Crônistas)",
+        "traits": [
+          {
+            "id": "leitura-dos-fios",
+            "name": "Leitura dos Fios",
+            "cost": 1,
+            "description": "Reconhecendo padrões nas historias, você consegue perceber quando elas falam de lendas semelhantes, ou de historias que você já ouviu muitas vezes, concedendo +2 dados em testes de erudição relacionados a historias e culturas."
+          },
+          {
+            "id": "voz-do-cronista",
+            "name": "Voz do Crônista",
+            "cost": 1,
+            "description": "Sua voz tem um timbre e ritmo muito cativante, fazendo com que quando comece a contar uma historia naturalmente chame a atenções daqueles a sua volta, reduzindo dados de resistência contra magias de canalização oral em -1."
+          }
+        ]
+      },
+      {
+        "id": "barimachuul",
+        "name": "Barimachuul (Escultores)",
+        "traits": [
+          {
+            "id": "olhar-do-escultor",
+            "name": "Olhar do Escultor",
+            "cost": 1,
+            "description": "Você pode identificar a estrutura e fragilidade de qualquer pedra ou estrutura com apenas um olhar. Ganha 2 sucessos automáticos em testes de Percepção ou Ofício para avaliar estruturas, estátuas ou rochas."
+          },
+          {
+            "id": "maos-que-libertam",
+            "name": "Mãos que Libertam",
+            "cost": 1,
+            "description": "Suas criações em pedra são tão perfeitas que parecem vivas, Runas de elementos quando moldadas tem o custo reduzido em -2 caso afetem uma escultura ou objeto que você construiu."
+          }
+        ]
+      },
+      {
+        "id": "tagooch",
+        "name": "Tagooch (Cozinheiro)",
+        "traits": [
+          {
+            "id": "paladar-absoluto",
+            "name": "Paladar Absoluto",
+            "cost": 1,
+            "description": "Você pode identificar todos os ingredientes de um prato ou poção com apenas um gole. Ganha +2 sucessos automáticos em testes de Investigação ou Ofício para analisar comidas, bebidas ou poções."
+          },
+          {
+            "id": "banquete-da-alma",
+            "name": "Banquete da Alma",
+            "cost": 1,
+            "description": "Suas criações culinárias possuem uma leve aura mágica. quando prepara uma comida, você pode imbuir runas nela que teram o custo reduzido equivalente a seu pontos em Oficio, e essas runas duram uma cena inteira."
+          }
+        ]
+      },
+      {
+        "id": "nairamdal",
+        "name": "Nairamdal (Músicos)",
+        "traits": [
+          {
+            "id": "ouvido-absoluto",
+            "name": "Ouvido Absoluto",
+            "cost": 1,
+            "description": "Você pode identificar a afinação, qualidade e \"alma\" de qualquer instrumento ou som com apenas uma audição. Ganha +2 dados em testes de Percepção ou Ofício para avaliar instrumentos musicais ou sons."
+          },
+          {
+            "id": "sinfonia-da-alma",
+            "name": "Sinfonia da Alma",
+            "cost": 1,
+            "description": "Suas criações musicais possuem uma leve aura mágica. Uma vez por sessão, músicas que você toca recebem A runa de Alma de nível equivalente a seus pontos em Ofício."
+          }
+        ]
+      }
+    ],
+    "racialTraits": [
+      {
+        "id": "sangue-de-troll",
+        "name": "Sangue de Troll",
+        "cost": 2,
+        "description": "Você regenera 1PV por rodada."
+      },
+      {
+        "id": "perfeccionista",
+        "name": "Perfeccionista",
+        "cost": 2,
+        "description": "Você ganha +1 dado relacionado a sua obsessão, e runas custam -1 quando envolve sua obsessão."
+      },
+      {
+        "id": "dependencia-positiva",
+        "name": "Dependência Positiva",
+        "cost": 2,
+        "description": "Você recebe a desvantagem de Dependência, mas quando entra em contato com ela uma vez por cena recebe +1 na rolagem do próximo teste."
+      },
+      {
+        "id": "corpo-grande",
+        "name": "Corpo grande",
+        "cost": 1,
+        "description": "Você recebe +1 em testes de Força."
+      },
+      {
+        "id": "maldicao-de-uchitell",
+        "name": "Maldição de Uchitell",
+        "cost": 0,
+        "description": "Você tem uma paixão obsessiva por uma arte, fazendo você receber 1 especialização voltada a ela, essa obsessão pode ser combate, artesanato, culinária, magia e etc."
+      }
+    ],
+    "negativeTraits": [
+      {
+        "id": "compulsao-do-perfeccionista",
+        "name": "Compulsão do Perfeccionista",
+        "cost": -1,
+        "description": "Sempre que você ver algo relacionado à sua arte sendo feito de maneira \"errada\" ou \"ruim\", você DEVE intervir, corrigir ou criticar, independentemente da situação social ou de perigo."
+      },
+      {
+        "id": "lorem",
+        "name": "lorem",
+        "cost": -2,
+        "description": "Recebe -1 Dado em SAVES relacionado a um atributo."
+      },
+      {
+        "id": "lorem-2",
+        "name": "lorem",
+        "cost": -2,
+        "description": "Você distribui 2 pontos em desvantagens."
+      }
+    ]
+  },
+  {
+    "id": "dongwu",
+    "name": "Dongwu",
+    "wip": true,
+    "group": "nao-humano",
+    "description": "",
+    "lineages": [],
+    "racialTraits": [],
+    "negativeTraits": []
+  },
+  {
+    "id": "khefaret",
+    "name": "Khefaret",
+    "wip": true,
+    "group": "nao-humano",
+    "description": "",
+    "lineages": [],
+    "racialTraits": [],
+    "negativeTraits": []
+  },
+  {
+    "id": "shrumakara",
+    "name": "Shrumakara",
+    "wip": true,
+    "group": "nao-humano",
+    "description": "",
+    "lineages": [],
+    "racialTraits": [],
+    "negativeTraits": []
+  }
+]

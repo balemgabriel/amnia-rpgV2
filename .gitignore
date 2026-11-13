@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+
+# material de referência (PDFs, docs) não versionado
+docs/*
+!docs/LEIA-ME.md

@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/*
+ * Tipografia oficial do Amnia v2.
+ *
+ * - Vinque (Regular): títulos e cabeçalhos. Só existe peso 400 — nunca usar
+ *   negrito com ela, a hierarquia vem de tamanho, caixa alta e espaçamento.
+ * - Bricolage Grotesque (variável 200–800): corpo de texto, peso 500 por padrão.
+ *
+ * Os arquivos .woff2 estão em public/fonts e foram gerados a partir das fontes
+ * originais em docs/ (subset latino, o que reduz Bricolage de 408 KB para 153 KB).
+ */
+@font-face {
+  font-family: "Vinque";
+  src: url("/fonts/vinque-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: "Vinque", ui-serif, Georgia, "Times New Roman", serif;
+  --font-body: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+
+  --color-parchment: #f3ece0;
+  --color-parchment-deep: #e8ddcb;
+  --color-ink: #201a14;
+  --color-ink-soft: #5c5044;
+  --color-accent: #7b2d26;
+  --color-gold: #b08d57;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-parchment font-body text-ink antialiased;
+    font-weight: 500;
+    font-optical-sizing: auto;
+  }
+}
+
+/*
+ * Impressão / PDF da ficha.
+ * A ficha é feita para caber em A4: removemos a navegação, deixamos o papel
+ * branco e evitamos quebrar blocos pequenos no meio.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  body {
+    font-size: 10.5pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Títulos não ficam órfãos no fim da página. */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  /* Blocos pequenos (tiles, linhas) não se partem ao meio. */
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+}
