@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { toPng } from 'html-to-image'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
 import { DotRating } from '@/components/DotRating'
+import { RuneCard } from '@/components/RuneCard'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
-import { attributes, circles, impulses, runeCircleLabels, skillGroups, skills } from '@/rules/amnia'
+import { attributes, circles, impulses, skillGroups, skills } from '@/rules/amnia'
 import {
   characterSchema,
   rulesVersion,
@@ -12,7 +13,8 @@ import {
   type Character,
 } from '@/rules/character'
 import { computeDerived } from '@/rules/derive'
-import { classes, lineages, runes } from '@/rules/data'
+import { classes, lineages } from '@/rules/data'
+import { runeById } from '@/rules/runes'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
 import { circleColor } from '@/rules/circleColors'
 import { skillGroupColor } from '@/rules/skillColors'
@@ -328,52 +330,39 @@ export function SheetView({
           })}
         </section>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6">
           <Card className="print-avoid-break">
             <h2 className="mb-2 font-display text-xl tracking-wide">Arcanae</h2>
-            <ArcanaeHexagon innate={character.innateCircle} />
-            <div className="mt-2">
-              {circle ? (
-                <>
-                  <p className="font-display text-lg tracking-wide">{circle.name}</p>
-                  <p className="text-sm leading-snug text-ink-soft">{circle.description}</p>
-                </>
-              ) : (
-                <p className="text-sm text-ink-soft">Círculo Inato não definido.</p>
-              )}
+            <div className="grid gap-4 sm:grid-cols-[minmax(0,20rem)_1fr] sm:items-center">
+              <ArcanaeHexagon innate={character.innateCircle} />
+              <div>
+                {circle ? (
+                  <>
+                    <p className="font-display text-lg tracking-wide">{circle.name}</p>
+                    <p className="text-sm leading-snug text-ink-soft">{circle.description}</p>
+                  </>
+                ) : (
+                  <p className="text-sm text-ink-soft">Círculo Inato não definido.</p>
+                )}
+              </div>
             </div>
           </Card>
 
           <Card>
-            <h2 className="mb-2 font-display text-xl tracking-wide">Runas Conhecidas</h2>
-            {character.runes.length === 0 ? (
+            <h2 className="mb-1 font-display text-xl tracking-wide">Runas Conhecidas</h2>
+            <p className="mb-3 text-xs text-ink-soft">
+              Acesso às runas; o nível de cada uma é escolhido em cada magia.
+            </p>
+            {character.knownRunes.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhuma runa registrada.</p>
             ) : (
-              <ul className="space-y-2 text-sm">
-                {character.runes.map((rune) => {
-                  const source = runes.find((item) => item.id === rune.sourceId)
-                  const runeEffect = source?.levels.find(
-                    (item) => item.level === rune.level,
-                  )?.effect
-                  return (
-                    <li
-                      key={rune.id}
-                      className="print-avoid-break border-l-4 border-ink/15 pl-2"
-                      style={{ borderLeftColor: circleColor(rune.circle) ?? undefined }}
-                    >
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span>{rune.name}</span>
-                        <span className="text-xs text-ink-soft">
-                          {runeCircleLabels[rune.circle]} · {rune.level}
-                        </span>
-                      </div>
-                      {runeEffect ? (
-                        <p className="text-xs leading-relaxed text-ink-soft">{runeEffect}</p>
-                      ) : null}
-                    </li>
-                  )
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {character.knownRunes.map((runeId) => {
+                  const def = runeById(runeId)
+                  if (!def) return null
+                  return <RuneCard key={runeId} rune={def} className="print-avoid-break" />
                 })}
-              </ul>
+              </div>
             )}
           </Card>
         </div>

@@ -113,7 +113,7 @@ export function StepFinal({ onSaved }: { onSaved: (id: string) => void }) {
                 : '—'
             }
           />
-          <Row label="Runas" value={String(character.runes.length)} />
+          <Row label="Runas" value={String(character.knownRunes.length)} />
           <Row label="Perícias com pontos" value={String(countSkilled(character.skills))} />
           <Row
             label="Vantagens / Desvantagens"

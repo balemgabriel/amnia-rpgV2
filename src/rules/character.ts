@@ -9,11 +9,12 @@ import {
   circleOrder,
   skills,
 } from './amnia'
+import { migrateCharacterData } from './migrate'
 import { spellSchema } from './spell'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 2
+export const SHEET_VERSION = 3
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)
@@ -49,16 +50,7 @@ export const specializationSchema = z.object({
   name: z.string(),
 })
 
-export const runeSchema = z.object({
-  id: z.string(),
-  /** Id da runa no catálogo (runes.json), quando vier de lá. */
-  sourceId: z.string().optional(),
-  name: z.string(),
-  circle: z.enum([...circleOrder, 'miscelanea']),
-  level: z.number().int().min(1).max(7),
-})
-
-export const characterSchema = z.object({
+const characterObjectSchema = z.object({
   id: z.string(),
   name: z.string(),
   concept: z.string(),
@@ -84,7 +76,11 @@ export const characterSchema = z.object({
 
   // Etapa 3 — Círculo & Runas
   innateCircle: z.enum([...circleOrder]).nullable(),
-  runes: z.array(runeSchema),
+  /**
+   * Runas a que o personagem TEM ACESSO (ids do catálogo, ex.: "reforco-forca").
+   * Só acesso: o nível nunca é guardado aqui; ele é escolhido em cada magia.
+   */
+  knownRunes: z.array(z.string()),
   channelingMethodId: z.string().nullable(),
   channelingLevel: z.number().int().min(1).max(2),
 
@@ -116,7 +112,13 @@ export const characterSchema = z.object({
   updatedAt: z.number(),
 })
 
-export type Character = z.infer<typeof characterSchema>
+/**
+ * Valida a ficha. Fichas salvas no formato antigo (runas com nível, condições
+ * na magia inteira) são migradas antes da validação.
+ */
+export const characterSchema = z.preprocess(migrateCharacterData, characterObjectSchema)
+
+export type Character = z.infer<typeof characterObjectSchema>
 export type Attributes = z.infer<typeof attributesSchema>
 export type Advantage = z.infer<typeof advantageSchema>
 export type Modifier = z.infer<typeof modifierSchema>
@@ -148,7 +150,7 @@ export function createEmptyCharacter(now = Date.now()): Character {
     keyAttribute: null,
 
     innateCircle: null,
-    runes: [],
+    knownRunes: [],
     channelingMethodId: null,
     channelingLevel: 1,
 

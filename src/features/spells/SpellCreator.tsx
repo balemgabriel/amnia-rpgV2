@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { RuneCard } from '@/components/RuneCard'
 import { Badge, Button, Callout, Card, Field, TextArea, TextInput } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { circleOrder, runeCircleLabels } from '@/rules/amnia'
@@ -10,7 +11,15 @@ import {
 } from '@/rules/character'
 import { circleColor } from '@/rules/circleColors'
 import { computeDerived } from '@/rules/derive'
-import { runes, type RuneCircleId, type RuneDef } from '@/rules/data'
+import type { RuneCircleId, RuneDef } from '@/rules/data'
+import {
+  defaultLevel,
+  hasUnlockingCondition,
+  isLevelDefined,
+  isLevelLocked,
+  runeById,
+  runeName,
+} from '@/rules/runes'
 import { withAlpha } from '@/rules/lineageColors'
 import {
   AREA_OPTIONS,
@@ -21,9 +30,12 @@ import {
   DURATION_OPTIONS,
   MAGIA_PESSOAL_TRAIT_ID,
   TARGET_OPTIONS,
+  allConditions,
   conditionMode,
   emptySpell,
   formatModifier,
+  lockedRunes,
+  normalizeRune,
   personalMagicOwner,
   spellCost,
   spellCx,
@@ -32,24 +44,13 @@ import {
   type Spell,
   type SpellCondition,
   type SpellOption,
+  type SpellRune,
 } from '@/rules/spell'
-import { ownedMaxLevels, spellContext } from '@/rules/spellContext'
+import { spellContext } from '@/rules/spellContext'
+import { RuneLevelSelector } from './RuneLevelSelector'
 import { getCharacter, saveCharacter } from '@/storage/characters'
 
 const RUNE_CIRCLES: RuneCircleId[] = [...circleOrder, 'miscelanea']
-
-/** Opção de nível exibida em uma carta de runa. */
-interface RuneLevelOption {
-  level: number
-  effect?: string
-}
-
-/** Runa que o personagem possui, já ligada ao catálogo. */
-interface OwnedRune {
-  rune: Character['runes'][number]
-  source?: RuneDef
-  levels: RuneLevelOption[]
-}
 
 export function SpellCreator({
   characterId,
@@ -100,27 +101,21 @@ export function SpellCreator({
     }
   }, [characterId, spellId])
 
-  const owned = useMemo<OwnedRune[]>(() => {
+  /** Só as runas a que o personagem TEM ACESSO podem ser jogadas na magia. */
+  const owned = useMemo<RuneDef[]>(() => {
     if (!character) return []
-    return character.runes.map((rune) => {
-      const source = runes.find((item) => item.id === rune.sourceId)
-      const levels: RuneLevelOption[] = source
-        ? source.levels
-            .filter((item) => item.level <= rune.level)
-            .map((item) => ({ level: item.level, effect: item.effect }))
-        : Array.from({ length: rune.level }, (_, index) => ({ level: index + 1 }))
-      return { rune, source, levels }
-    })
+    return character.knownRunes
+      .map((id) => runeById(id))
+      .filter((rune): rune is RuneDef => rune !== undefined)
   }, [character])
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase()
-    return owned.filter((item) => {
-      if (circleFilter !== 'all' && item.rune.circle !== circleFilter) return false
+    return owned.filter((rune) => {
+      if (circleFilter !== 'all' && rune.circle !== circleFilter) return false
       if (!term) return true
       return (
-        item.rune.name.toLowerCase().includes(term) ||
-        (item.source?.description ?? '').toLowerCase().includes(term)
+        rune.name.toLowerCase().includes(term) || rune.description.toLowerCase().includes(term)
       )
     })
   }, [owned, query, circleFilter])
@@ -145,16 +140,21 @@ export function SpellCreator({
   const context = spellContext(character)
   const cost = spellCost(spell, context)
   const cx = spellCx(spell, context)
-  const maxLevels = ownedMaxLevels(character)
   const derived = computeDerived(character)
   const pm = derived.find((stat) => stat.id === 'pm')?.value
   const limiar = derived.find((stat) => stat.id === 'limiar')?.value
-  const warnings = spellWarnings(spell, context, { pm, limiar, ownedMaxLevels: maxLevels })
+  const warnings = spellWarnings(spell, context, {
+    pm,
+    limiar,
+    knownRunes: character.knownRunes,
+  })
 
   const hasPersonalTrait = context.ancestryTraits.includes(MAGIA_PESSOAL_TRAIT_ID)
   const personalOwner = personalMagicOwner(context, spell.id)
   const personalAllowed = hasPersonalTrait && !personalOwner
-  const canSave = spell.name.trim() !== '' && spell.runes.length > 0
+  const hasLockedRune = lockedRunes(spell).length > 0
+  const canSave = spell.name.trim() !== '' && spell.runes.length > 0 && !hasLockedRune
+  const totalConditions = allConditions(spell).length
 
   function update(partial: Partial<Spell>) {
     setSpell((previous) =>
@@ -162,83 +162,79 @@ export function SpellCreator({
     )
   }
 
-  function toggleRune(item: OwnedRune, level: number) {
+  /** Joga a runa na magia (no menor nível livre) ou a tira dela. */
+  function toggleRune(rune: RuneDef) {
     setSpell((previous) => {
       if (!previous) return previous
-      const existing = previous.runes.find((rune) => rune.sourceId === item.rune.sourceId)
-      const now = Date.now()
+      const exists = previous.runes.some((item) => item.runeId === rune.id)
+      const runes: SpellRune[] = exists
+        ? previous.runes.filter((item) => item.runeId !== rune.id)
+        : [...previous.runes, { runeId: rune.id, level: defaultLevel(rune), conditions: [] }]
+      return { ...previous, runes, updatedAt: Date.now() }
+    })
+  }
 
-      if (existing && existing.level === level) {
-        return {
-          ...previous,
-          runes: previous.runes.filter((rune) => rune.id !== existing.id),
-          conditions: previous.conditions.map((condition) =>
-            condition.targetRuneId === existing.id
-              ? { ...condition, targetRuneId: null }
-              : condition,
-          ),
-          updatedAt: now,
-        }
-      }
-
-      if (existing) {
-        return {
-          ...previous,
-          runes: previous.runes.map((rune) =>
-            rune.id === existing.id ? { ...rune, level } : rune,
-          ),
-          updatedAt: now,
-        }
-      }
-
+  /** Muda o nível (= PM) de uma runa; níveis bloqueados ou inexistentes são recusados. */
+  function setRuneLevel(runeId: string, level: number) {
+    setSpell((previous) => {
+      if (!previous) return previous
       return {
         ...previous,
-        runes: [
-          ...previous.runes,
-          {
-            id: crypto.randomUUID(),
-            sourceId: item.rune.sourceId,
-            name: item.rune.name,
-            circle: item.rune.circle,
-            level,
-          },
-        ],
-        updatedAt: now,
+        runes: previous.runes.map((item) => {
+          if (item.runeId !== runeId) return item
+          if (!isLevelDefined(runeById(runeId), level)) return item
+          if (isLevelLocked(level, item.conditions)) return item
+          return { ...item, level }
+        }),
+        updatedAt: Date.now(),
       }
     })
   }
 
-  function addCondition(weight: ConditionWeight) {
+  /** Aplica `change` às condições de UMA runa; recua o nível se a trava deixou de valer. */
+  function changeRuneConditions(
+    runeId: string,
+    change: (conditions: SpellCondition[]) => SpellCondition[],
+  ) {
+    setSpell((previous) => {
+      if (!previous) return previous
+      return {
+        ...previous,
+        runes: previous.runes.map((item) =>
+          item.runeId === runeId ? normalizeRune({ ...item, conditions: change(item.conditions) }) : item,
+        ),
+        updatedAt: Date.now(),
+      }
+    })
+  }
+
+  function addCondition(runeId: string, weight: ConditionWeight) {
     if (!spell) return
-    const count = spell.conditions.filter((condition) => condition.weight === weight).length
+    // Os limites do material valem para a magia inteira, somando todas as runas.
+    const count = allConditions(spell).filter((condition) => condition.weight === weight).length
     if (count >= CONDITION_LIMITS[weight]) return
     const condition: SpellCondition = {
       id: crypto.randomUUID(),
       weight,
-      description: '',
+      text: '',
       mode:
         weight === 'severa' || weight === 'extrema'
           ? 'levels'
           : weight === 'absoluta'
             ? 'cx'
             : undefined,
-      targetRuneId: null,
     }
-    update({ conditions: [...spell.conditions, condition] })
+    changeRuneConditions(runeId, (conditions) => [...conditions, condition])
   }
 
-  function updateCondition(id: string, partial: Partial<SpellCondition>) {
-    if (!spell) return
-    update({
-      conditions: spell.conditions.map((condition) =>
-        condition.id === id ? { ...condition, ...partial } : condition,
-      ),
-    })
+  function updateCondition(runeId: string, id: string, partial: Partial<SpellCondition>) {
+    changeRuneConditions(runeId, (conditions) =>
+      conditions.map((condition) => (condition.id === id ? { ...condition, ...partial } : condition)),
+    )
   }
 
-  function removeCondition(id: string) {
-    if (!spell) return
-    update({ conditions: spell.conditions.filter((condition) => condition.id !== id) })
+  function removeCondition(runeId: string, id: string) {
+    changeRuneConditions(runeId, (conditions) => conditions.filter((condition) => condition.id !== id))
   }
 
   async function save() {
@@ -342,14 +338,15 @@ export function SpellCreator({
                 </Badge>
               </div>
               <p className="mb-3 text-sm text-ink-soft">
-                Só aparecem as runas que este personagem conhece. Clique em um nível para
-                adicionar; clique de novo para remover.
+                Só aparecem as runas a que este personagem tem acesso. Jogue uma runa na magia e
+                escolha o <strong className="text-ink">nível</strong>: ele é quanto PM você paga por
+                aquele efeito, e a linha destacada na carta mostra o que você está pagando.
               </p>
 
               {owned.length === 0 ? (
                 <Callout tone="warn">
-                  Este personagem ainda não conhece nenhuma runa. Volte à ficha para registrar
-                  as runas antes de criar magias.
+                  Este personagem ainda não tem acesso a nenhuma runa. Escolha as runas conhecidas
+                  na criação da ficha antes de montar magias.
                 </Callout>
               ) : (
                 <>
@@ -369,7 +366,7 @@ export function SpellCreator({
                     {RUNE_CIRCLES.map((id) => {
                       const tone = circleColor(id)
                       const active = circleFilter === id
-                      const count = owned.filter((item) => item.rune.circle === id).length
+                      const count = owned.filter((rune) => rune.circle === id).length
                       return (
                         <button
                           key={id}
@@ -412,83 +409,53 @@ export function SpellCreator({
                   {filtered.length === 0 ? (
                     <Callout>Nenhuma runa encontrada com esse filtro.</Callout>
                   ) : (
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {filtered.map((item) => {
-                        const tone = circleColor(item.rune.circle)
-                        const selected = spell.runes.find(
-                          (rune) => rune.sourceId === item.rune.sourceId,
-                        )
-                        const selectedEffect = selected
-                          ? item.levels.find((level) => level.level === selected.level)?.effect
-                          : undefined
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {filtered.map((rune) => {
+                        const selected = spell.runes.find((item) => item.runeId === rune.id)
+                        const tone = circleColor(rune.circle)
                         return (
-                          <div
-                            key={item.rune.id}
-                            className={cn(
-                              'rounded-lg border border-l-4 p-3 transition',
-                              selected ? 'bg-ink/[0.035]' : 'border-ink/12',
-                            )}
-                            style={{
-                              borderColor: selected
-                                ? (tone ?? undefined)
-                                : withAlpha(tone ?? '#5c5044', 0.22),
-                              borderLeftColor: tone ?? undefined,
-                            }}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold">{item.rune.name}</p>
-                                <p className="text-[11px] uppercase tracking-wide text-ink-soft">
-                                  {runeCircleLabels[item.rune.circle]}
-                                </p>
-                              </div>
-                              <Badge>máx. {item.rune.level}</Badge>
-                            </div>
-
-                            {item.source?.description ? (
-                              <p className="mt-1 line-clamp-2 text-xs leading-snug text-ink-soft">
-                                {item.source.description}
-                              </p>
-                            ) : null}
-
-                            <div className="mt-2 flex flex-wrap items-center gap-1">
-                              <span className="mr-1 text-[10px] font-semibold uppercase tracking-wide text-ink-soft">
-                                Nível
-                              </span>
-                              {item.levels.map((option) => {
-                                const active = selected?.level === option.level
-                                return (
-                                  <button
-                                    key={option.level}
-                                    type="button"
-                                    title={option.effect}
-                                    onClick={() => toggleRune(item, option.level)}
-                                    className={cn(
-                                      'size-6 rounded border text-xs tabular-nums transition',
-                                      active
-                                        ? 'text-parchment'
-                                        : 'text-ink-soft hover:text-ink',
-                                    )}
-                                    style={{
-                                      borderColor: tone ?? undefined,
-                                      backgroundColor: active ? (tone ?? undefined) : undefined,
-                                    }}
-                                  >
-                                    {option.level}
-                                  </button>
-                                )
-                              })}
-                            </div>
-
-                            {selected ? (
-                              <div className="mt-2 rounded-md bg-ink/[0.04] px-2 py-1.5 text-xs leading-relaxed">
-                                <span className="mr-1 text-[10px] font-semibold uppercase tracking-wide text-ink-soft">
-                                  Nível {selected.level}
-                                </span>
-                                {selectedEffect ?? item.source?.description ?? 'Sem efeito cadastrado.'}
-                              </div>
-                            ) : null}
-                          </div>
+                          <RuneCard
+                            key={rune.id}
+                            rune={rune}
+                            active={Boolean(selected)}
+                            highlightLevel={selected?.level ?? null}
+                            badge={selected ? <Badge tone="ok">Na magia</Badge> : null}
+                            footer={
+                              selected ? (
+                                <div className="space-y-2">
+                                  <RuneLevelSelector
+                                    rune={rune}
+                                    spellRune={selected}
+                                    tone={tone}
+                                    onChange={(level) => setRuneLevel(rune.id, level)}
+                                  />
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs text-ink-soft">
+                                      Custo desta runa:{' '}
+                                      <strong className="tabular-nums text-ink">
+                                        {selected.level} PM
+                                      </strong>
+                                    </span>
+                                    <Button
+                                      variant="quiet"
+                                      className="px-2 py-1 text-xs"
+                                      onClick={() => toggleRune(rune)}
+                                    >
+                                      Tirar da magia
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  className="w-full text-xs"
+                                  onClick={() => toggleRune(rune)}
+                                >
+                                  Jogar na magia
+                                </Button>
+                              )
+                            }
+                          />
                         )
                       })}
                     </div>
@@ -500,137 +467,148 @@ export function SpellCreator({
             <Card>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="font-display text-xl tracking-wide">Condições</h2>
-                <Badge>{spell.conditions.length} registradas</Badge>
+                <Badge>{totalConditions} registradas</Badge>
               </div>
               <p className="mb-3 text-sm text-ink-soft">
-                Condições restringem a magia em troca de níveis de runa ou desconto. Os limites
-                do material são aplicados automaticamente.
+                Cada condição pertence a uma runa específica. Para usar o nível 6 ou 7 de uma
+                runa, é ela que precisa ter uma condição Severa, Extrema ou Absoluta; condições
+                de outras runas da magia não destravam. Os limites do material valem para a magia
+                inteira.
               </p>
 
-              <div className="mb-4 flex flex-wrap gap-1.5">
-                {CONDITION_WEIGHTS.map((weight) => {
-                  const count = spell.conditions.filter(
-                    (condition) => condition.weight === weight,
-                  ).length
-                  const full = count >= CONDITION_LIMITS[weight]
-                  return (
-                    <Button
-                      key={weight}
-                      variant="ghost"
-                      className="text-xs"
-                      disabled={full}
-                      onClick={() => addCondition(weight)}
-                    >
-                      + {CONDITION_LABELS[weight]} ({count}/{CONDITION_LIMITS[weight]})
-                    </Button>
-                  )
-                })}
-              </div>
-
-              {spell.conditions.length === 0 ? (
-                <p className="text-sm text-ink-soft">Nenhuma condição.</p>
+              {spell.runes.length === 0 ? (
+                <p className="text-sm text-ink-soft">
+                  Jogue ao menos uma runa na magia para adicionar condições a ela.
+                </p>
               ) : (
-                <ul className="space-y-2">
-                  {spell.conditions.map((condition) => {
-                    const mode = conditionMode(condition)
+                <div className="space-y-5">
+                  {spell.runes.map((spellRune) => {
+                    const def = runeById(spellRune.runeId)
+                    const tone = circleColor(def?.circle)
+                    const unlocked = hasUnlockingCondition(spellRune.conditions)
                     return (
-                      <li
-                        key={condition.id}
-                        className="rounded-lg border border-ink/10 bg-ink/[0.02] p-3"
+                      <section
+                        key={spellRune.runeId}
+                        className="rounded-lg border border-l-4 border-ink/10 p-3"
+                        style={{ borderLeftColor: tone ?? undefined }}
+                        aria-label={`Condições de ${runeName(spellRune.runeId)}`}
                       >
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <Badge
-                              tone={
-                                condition.weight === 'severa' || condition.weight === 'extrema'
-                                  ? 'warn'
-                                  : condition.weight === 'absoluta'
-                                    ? 'accent'
-                                    : 'neutral'
-                              }
-                            >
-                              {CONDITION_LABELS[condition.weight]}
-                            </Badge>
-                            <span className="text-xs text-ink-soft">
-                              {CONDITION_SUMMARIES[condition.weight]}
+                        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                          <p className="text-sm font-semibold">
+                            {runeName(spellRune.runeId)}{' '}
+                            <span className="text-xs font-normal text-ink-soft">
+                              · nível {spellRune.level}
                             </span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeCondition(condition.id)}
-                            className="text-xs text-ink-soft transition hover:text-accent"
-                          >
-                            remover
-                          </button>
+                          </p>
+                          <Badge tone={unlocked ? 'ok' : 'neutral'}>
+                            {unlocked ? 'níveis 6–7 liberados' : 'níveis 6–7 bloqueados'}
+                          </Badge>
                         </div>
 
-                        <div className="mt-2 space-y-2">
-                          <TextInput
-                            value={condition.description}
-                            onChange={(event) =>
-                              updateCondition(condition.id, {
-                                description: event.target.value,
-                              })
-                            }
-                            placeholder="Descreva a condição (ex.: deve estar em Fúria)."
-                          />
-
-                          <div className="flex flex-wrap gap-2">
-                            {(condition.weight === 'severa' ||
-                              condition.weight === 'extrema' ||
-                              condition.weight === 'absoluta') && (
-                              <label className="text-xs text-ink-soft">
-                                <span className="mb-1 block font-semibold uppercase tracking-wide">
-                                  Efeito
-                                </span>
-                                <select
-                                  value={mode ?? 'levels'}
-                                  onChange={(event) =>
-                                    updateCondition(condition.id, {
-                                      mode: event.target.value as 'levels' | 'pm' | 'cx',
-                                    })
-                                  }
-                                  className="h-[34px] rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
-                                >
-                                  {condition.weight === 'absoluta' ? (
-                                    <option value="cx">−2 Cx</option>
-                                  ) : (
-                                    <option value="levels">+ níveis de runa</option>
-                                  )}
-                                  <option value="pm">desconto em PM</option>
-                                </select>
-                              </label>
-                            )}
-
-                            {mode === 'levels' && spell.runes.length > 1 ? (
-                              <label className="text-xs text-ink-soft">
-                                <span className="mb-1 block font-semibold uppercase tracking-wide">
-                                  Runa afetada
-                                </span>
-                                <select
-                                  value={condition.targetRuneId ?? ''}
-                                  onChange={(event) =>
-                                    updateCondition(condition.id, {
-                                      targetRuneId: event.target.value || null,
-                                    })
-                                  }
-                                  className="h-[34px] rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
-                                >
-                                  <option value="">Bônus geral</option>
-                                  {spell.runes.map((rune) => (
-                                    <option key={rune.id} value={rune.id}>
-                                      {rune.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                            ) : null}
-                          </div>
+                        <div className="mb-3 flex flex-wrap gap-1.5">
+                          {CONDITION_WEIGHTS.map((weight) => {
+                            const count = allConditions(spell).filter(
+                              (condition) => condition.weight === weight,
+                            ).length
+                            const full = count >= CONDITION_LIMITS[weight]
+                            return (
+                              <Button
+                                key={weight}
+                                variant="ghost"
+                                className="text-xs"
+                                disabled={full}
+                                onClick={() => addCondition(spellRune.runeId, weight)}
+                              >
+                                + {CONDITION_LABELS[weight]} ({count}/{CONDITION_LIMITS[weight]})
+                              </Button>
+                            )
+                          })}
                         </div>
-                      </li>
+
+                        {spellRune.conditions.length === 0 ? (
+                          <p className="text-sm text-ink-soft">Nenhuma condição nesta runa.</p>
+                        ) : (
+                          <ul className="space-y-2">
+                            {spellRune.conditions.map((condition) => {
+                              const mode = conditionMode(condition)
+                              return (
+                                <li
+                                  key={condition.id}
+                                  className="rounded-lg border border-ink/10 bg-ink/[0.02] p-3"
+                                >
+                                  <div className="flex flex-wrap items-center justify-between gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <Badge
+                                        tone={
+                                          condition.weight === 'severa' ||
+                                          condition.weight === 'extrema'
+                                            ? 'warn'
+                                            : condition.weight === 'absoluta'
+                                              ? 'accent'
+                                              : 'neutral'
+                                        }
+                                      >
+                                        {CONDITION_LABELS[condition.weight]}
+                                      </Badge>
+                                      <span className="text-xs text-ink-soft">
+                                        {CONDITION_SUMMARIES[condition.weight]}
+                                      </span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeCondition(spellRune.runeId, condition.id)}
+                                      className="text-xs text-ink-soft transition hover:text-accent"
+                                    >
+                                      remover
+                                    </button>
+                                  </div>
+
+                                  <div className="mt-2 space-y-2">
+                                    <TextInput
+                                      value={condition.text}
+                                      onChange={(event) =>
+                                        updateCondition(spellRune.runeId, condition.id, {
+                                          text: event.target.value,
+                                        })
+                                      }
+                                      placeholder="Descreva a condição (ex.: deve estar em Fúria)."
+                                    />
+
+                                    {condition.weight === 'severa' ||
+                                    condition.weight === 'extrema' ||
+                                    condition.weight === 'absoluta' ? (
+                                      <label className="block text-xs text-ink-soft">
+                                        <span className="mb-1 block font-semibold uppercase tracking-wide">
+                                          Efeito
+                                        </span>
+                                        <select
+                                          value={mode ?? 'levels'}
+                                          onChange={(event) =>
+                                            updateCondition(spellRune.runeId, condition.id, {
+                                              mode: event.target.value as 'levels' | 'pm' | 'cx',
+                                            })
+                                          }
+                                          className="h-[34px] rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
+                                        >
+                                          {condition.weight === 'absoluta' ? (
+                                            <option value="cx">−2 Cx</option>
+                                          ) : (
+                                            <option value="levels">+ níveis de runa</option>
+                                          )}
+                                          <option value="pm">desconto em PM</option>
+                                        </select>
+                                      </label>
+                                    ) : null}
+                                  </div>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        )}
+                      </section>
                     )
                   })}
-                </ul>
+                </div>
               )}
             </Card>
 
@@ -797,7 +775,9 @@ export function SpellCreator({
               </Button>
               {!canSave ? (
                 <p className="mt-2 text-center text-xs text-ink-soft">
-                  Dê um nome e escolha ao menos uma runa.
+                  {hasLockedRune
+                    ? 'Há runa em nível 6 ou 7 sem condição Severa, Extrema ou Absoluta.'
+                    : 'Dê um nome e escolha ao menos uma runa.'}
                 </p>
               ) : null}
             </Card>

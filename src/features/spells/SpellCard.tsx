@@ -1,12 +1,14 @@
 import { Badge } from '@/components/ui'
 import { circleColor } from '@/rules/circleColors'
 import { withAlpha } from '@/rules/lineageColors'
+import { runeName } from '@/rules/runes'
 import {
   CONDITION_LABELS,
   DURATION_OPTIONS,
   TARGET_OPTIONS,
   AREA_OPTIONS,
   conditionImpactLabel,
+  allConditions,
   effectiveRuneLevel,
   formatModifier,
   optionLabel,
@@ -114,10 +116,11 @@ export function SpellCard({
             ? 'nenhuma'
             : spell.runes
                 .map((rune) => {
-                  const effective = effectiveRuneLevel(spell, rune)
+                  const effective = effectiveRuneLevel(rune)
+                  const name = runeName(rune.runeId)
                   return effective === rune.level
-                    ? `${rune.name} ${rune.level}`
-                    : `${rune.name} ${rune.level} (→ ${effective})`
+                    ? `${name} ${rune.level}`
+                    : `${name} ${rune.level} (→ ${effective})`
                 })
                 .join(' · ')}
         </p>
@@ -140,17 +143,23 @@ export function SpellCard({
           </p>
         ) : null}
 
-        {spell.conditions.length > 0 ? (
+        {allConditions(spell).length > 0 ? (
           <ul className="space-y-1">
-            {spell.conditions.map((condition) => (
-              <li key={condition.id} className="text-xs leading-snug text-ink-soft">
-                <span className="font-semibold text-ink">
-                  {CONDITION_LABELS[condition.weight]}
-                </span>{' '}
-                <span className="text-ink-soft/80">({conditionImpactLabel(condition)})</span>
-                {condition.description.trim() ? ` — ${condition.description.trim()}` : null}
-              </li>
-            ))}
+            {spell.runes.flatMap((rune) =>
+              rune.conditions.map((condition) => (
+                <li
+                  key={`${rune.runeId}-${condition.id}`}
+                  className="text-xs leading-snug text-ink-soft"
+                >
+                  <span className="font-semibold text-ink">
+                    {CONDITION_LABELS[condition.weight]}
+                  </span>{' '}
+                  <span className="text-ink-soft/80">({conditionImpactLabel(condition)})</span>
+                  {condition.text.trim() ? ` — ${condition.text.trim()}` : null}
+                  <span className="text-ink-soft/80"> · {runeName(rune.runeId)}</span>
+                </li>
+              )),
+            )}
           </ul>
         ) : null}
 

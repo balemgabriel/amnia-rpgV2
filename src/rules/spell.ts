@@ -8,9 +8,21 @@ import {
 } from './amnia'
 import type { AttributeId, CircleId, CircleRelation } from './types'
 import type { RuneCircleId } from './data/types'
+import {
+  clampLevelToUnlocked,
+  hasUnlockingCondition,
+  isLevelLocked,
+  runeById,
+  runeCircleOf,
+  runeName,
+} from './runes'
 
 /**
  * Regras do criador de magias.
+ *
+ * Cada runa da magia carrega o seu nível (= PM pago por aquele efeito) e as
+ * suas próprias condições. Níveis 6 e 7 só existem se a PRÓPRIA runa tiver uma
+ * condição Severa, Extrema ou Absoluta.
  *
  * O custo de uma magia é a soma dos níveis das runas usadas, mais o
  * modificador de cada Esfera presente (uma vez por Esfera, não por runa),
@@ -124,26 +136,22 @@ export function formatModifier(value: number): string {
 // Schema
 // ---------------------------------------------------------------------------
 
-const runeCircleEnum = z.enum([...circleOrder, 'miscelanea'])
-
-export const spellRuneSchema = z.object({
-  id: z.string(),
-  /** Id da runa no catálogo (runes.json). */
-  sourceId: z.string().optional(),
-  name: z.string(),
-  circle: runeCircleEnum,
-  /** Nível-base escolhido; níveis extras de condições não entram no custo. */
-  level: z.number().int().min(1).max(7),
-})
-
 export const spellConditionSchema = z.object({
   id: z.string(),
   weight: z.enum([...CONDITION_WEIGHTS]),
-  description: z.string(),
+  /** Texto da condição, como o jogador a descreveu. */
+  text: z.string(),
   /** 'levels' = níveis extras; 'pm' = desconto em PM; 'cx' = −2 Cx (Absoluta). */
   mode: z.enum(['levels', 'pm', 'cx']).optional(),
-  /** Runa que recebe os níveis extras; vazio = bônus geral da magia. */
-  targetRuneId: z.string().nullable().optional(),
+})
+
+export const spellRuneSchema = z.object({
+  /** Id da runa no catálogo (runes.json). Deve estar em `knownRunes` da ficha. */
+  runeId: z.string(),
+  /** Nível escolhido = PM pago por este efeito; níveis extras de condições não entram no custo. */
+  level: z.number().int().min(1).max(7),
+  /** Condições vinculadas A ESTA runa (não à magia inteira). */
+  conditions: z.array(spellConditionSchema),
 })
 
 export const spellSchema = z.object({
@@ -152,7 +160,6 @@ export const spellSchema = z.object({
   effect: z.string(),
 
   runes: z.array(spellRuneSchema),
-  conditions: z.array(spellConditionSchema),
 
   targets: z.enum([...spellTargets]),
   duration: z.enum([...spellDurations]),
@@ -189,7 +196,6 @@ export function emptySpell(now = Date.now()): Spell {
     name: '',
     effect: '',
     runes: [],
-    conditions: [],
     targets: 'single',
     duration: 'instant',
     area: 'none',
@@ -208,7 +214,7 @@ export function emptySpell(now = Date.now()): Spell {
 
 /** Esferas distintas usadas pela magia, na ordem do hexágono + Miscelânea. */
 export function spellCircles(spell: Spell): RuneCircleId[] {
-  const used = new Set(spell.runes.map((rune) => rune.circle))
+  const used = new Set(spell.runes.map((rune) => runeCircleOf(rune.runeId)))
   const ordered: RuneCircleId[] = [...circleOrder, 'miscelanea']
   return ordered.filter((id) => used.has(id))
 }
@@ -229,7 +235,7 @@ export interface SpellCircleInfo {
  */
 export function spellCircleInfo(spell: Spell, context: SpellContext): SpellCircleInfo[] {
   return spellCircles(spell).map((id) => {
-    const count = spell.runes.filter((rune) => rune.circle === id).length
+    const count = spell.runes.filter((rune) => runeCircleOf(rune.runeId) === id).length
 
     if (id === 'miscelanea' || !context.innateCircle) {
       return {
@@ -277,35 +283,34 @@ export function conditionBonusLevels(condition: SpellCondition): number {
   return 0
 }
 
-/**
- * Bônus de nível que uma runa recebe das condições.
- * Numa magia de runa única, condições sem alvo específico também contam.
- */
-export function bonusLevelsForRune(spell: Spell, runeId: string): number {
-  const targeted = spell.conditions
-    .filter((condition) => condition.targetRuneId === runeId)
-    .reduce((sum, condition) => sum + conditionBonusLevels(condition), 0)
-
-  if (spell.runes.length === 1) {
-    const general = spell.conditions
-      .filter((condition) => !condition.targetRuneId)
-      .reduce((sum, condition) => sum + conditionBonusLevels(condition), 0)
-    return targeted + general
-  }
-
-  return targeted
+/** Todas as condições da magia (soma das condições de cada runa). */
+export function allConditions(spell: Spell): SpellCondition[] {
+  return spell.runes.flatMap((rune) => rune.conditions)
 }
 
-/** Bônus de nível "geral" que não foi atribuído a uma runa específica. */
-export function generalBonusLevels(spell: Spell): number {
-  if (spell.runes.length === 1) return 0
-  return spell.conditions
-    .filter((condition) => !condition.targetRuneId)
-    .reduce((sum, condition) => sum + conditionBonusLevels(condition), 0)
+/** Bônus de nível que uma runa recebe das SUAS condições. */
+export function bonusLevelsForRune(rune: SpellRune): number {
+  return rune.conditions.reduce((sum, condition) => sum + conditionBonusLevels(condition), 0)
 }
 
-export function effectiveRuneLevel(spell: Spell, rune: SpellRune): number {
-  return Math.min(7, rune.level + bonusLevelsForRune(spell, rune.id))
+export function effectiveRuneLevel(rune: SpellRune): number {
+  return Math.min(7, rune.level + bonusLevelsForRune(rune))
+}
+
+/** O nível escolhido desta runa está bloqueado (6–7 sem condição pesada nela)? */
+export function isRuneLevelLocked(rune: SpellRune, level: number = rune.level): boolean {
+  return isLevelLocked(level, rune.conditions)
+}
+
+/** Runas da magia cujo nível escolhido viola a trava de 6–7. */
+export function lockedRunes(spell: Spell): SpellRune[] {
+  return spell.runes.filter((rune) => isRuneLevelLocked(rune))
+}
+
+/** Se a condição pesada saiu, recua o nível para o maior livre. */
+export function normalizeRune(rune: SpellRune): SpellRune {
+  const level = clampLevelToUnlocked(rune.level, rune.conditions, runeById(rune.runeId))
+  return level === rune.level ? rune : { ...rune, level }
 }
 
 export function conditionImpactLabel(condition: SpellCondition): string {
@@ -350,7 +355,7 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
   for (const rune of spell.runes) {
     runeBase += rune.level
     lines.push({
-      label: `${rune.name} (nível ${rune.level})`,
+      label: `${runeName(rune.runeId)} (nível ${rune.level})`,
       value: rune.level,
       kind: 'rune',
     })
@@ -396,7 +401,8 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
 
   let discounts = 0
 
-  const leveCount = spell.conditions.filter((condition) => condition.weight === 'leve').length
+  const conditions = allConditions(spell)
+  const leveCount = conditions.filter((condition) => condition.weight === 'leve').length
   if (leveCount > 0) {
     const value = -leveCount
     discounts += value
@@ -407,7 +413,7 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
     })
   }
 
-  for (const condition of spell.conditions) {
+  for (const condition of conditions) {
     if (conditionMode(condition) !== 'pm') continue
     const value =
       condition.weight === 'severa'
@@ -421,7 +427,7 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
     discounts += value
     lines.push({
       label: `${CONDITION_LABELS[condition.weight]}: ${
-        condition.description.trim() || 'condição'
+        condition.text.trim() || 'condição'
       }`,
       value,
       kind: 'discount',
@@ -482,7 +488,7 @@ export function spellCx(spell: Spell, context: SpellContext): SpellCxResult {
   ]
 
   let conditionMod = 0
-  for (const condition of spell.conditions) {
+  for (const condition of allConditions(spell)) {
     if (condition.weight === 'severa') {
       conditionMod += 1
       lines.push({ label: 'Condição severa', value: 1 })
@@ -557,8 +563,8 @@ export interface SpellWarningOptions {
   pm?: number
   /** Limiar Arcano do personagem. */
   limiar?: number
-  /** Maior nível conhecido por runa (chave: sourceId ?? name). */
-  ownedMaxLevels?: Record<string, number>
+  /** Runas a que o personagem tem acesso (ids do catálogo). */
+  knownRunes?: readonly string[]
 }
 
 export function spellWarnings(
@@ -569,9 +575,6 @@ export function spellWarnings(
   const warnings: SpellWarning[] = []
   const cost = spellCost(spell, context)
   const cx = spellCx(spell, context)
-  const hasAbsoluta = spell.conditions.some(
-    (condition) => condition.weight === 'absoluta',
-  )
   const hasPersonalTrait = characterHasTrait(context, MAGIA_PESSOAL_TRAIT_ID)
   const personalOwner = personalMagicOwner(context, spell.id)
 
@@ -622,31 +625,34 @@ export function spellWarnings(
   }
 
   for (const rune of spell.runes) {
-    const key = rune.sourceId ?? rune.name
-    const ownedMax = options.ownedMaxLevels?.[key]
+    const name = runeName(rune.runeId)
 
-    if (ownedMax !== undefined && rune.level > ownedMax) {
+    if (options.knownRunes && !options.knownRunes.includes(rune.runeId)) {
       warnings.push({
         tone: 'warn',
-        message: `${rune.name} está no nível ${rune.level}, mas você só conhece até o nível ${ownedMax}.`,
+        message: `${name} não está entre as runas que este personagem conhece.`,
       })
     }
 
-    const effective = effectiveRuneLevel(spell, rune)
-    if (
-      effective >= 6 &&
-      !hasAbsoluta &&
-      (ownedMax === undefined || ownedMax < 6)
-    ) {
+    if (isRuneLevelLocked(rune)) {
+      warnings.push({
+        tone: 'warn',
+        message: `${name} está no nível ${rune.level}, mas os níveis 6 e 7 exigem uma condição Severa, Extrema ou Absoluta vinculada a esta runa.`,
+      })
+      continue
+    }
+
+    const effective = effectiveRuneLevel(rune)
+    if (effective >= 6 && !hasUnlockingCondition(rune.conditions)) {
       warnings.push({
         tone: 'info',
-        message: `${rune.name} chega ao nível lendário ${effective} sem uma condição Absoluta.`,
+        message: `${name} chega ao nível ${effective} apenas por bônus de condição; para escolher 6 ou 7 direto, a runa precisa de uma condição Severa, Extrema ou Absoluta.`,
       })
     }
   }
 
   for (const weight of CONDITION_WEIGHTS) {
-    const count = spell.conditions.filter(
+    const count = allConditions(spell).filter(
       (condition) => condition.weight === weight,
     ).length
     if (count > CONDITION_LIMITS[weight]) {

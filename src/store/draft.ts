@@ -3,10 +3,12 @@ import { skillDistributions } from '@/rules/amnia'
 import {
   createEmptyCharacter,
   rulesVersion,
+  runeAllowance,
   SHEET_VERSION,
   type Advantage,
   type Character,
 } from '@/rules/character'
+import { toggleKnownRune } from '@/rules/runes'
 import type { AttributeId } from '@/rules/types'
 import { saveCharacter } from '@/storage/characters'
 
@@ -46,8 +48,8 @@ interface DraftState {
   removeAdvantage: (id: string) => void
   setAdvantagePoints: (id: string, points: number) => void
 
-  addRune: (rune: { name: string; circle: Character['runes'][number]['circle']; level: number; sourceId?: string }) => void
-  removeRune: (id: string) => void
+  /** Alterna o ACESSO a uma runa (sem nível), respeitando o limite 3 + INT. */
+  toggleKnownRune: (runeId: string) => void
 
   save: () => Promise<string>
 }
@@ -198,32 +200,16 @@ export const useDraft = create<DraftState>()((set, get) => ({
       dirty: true,
     })),
 
-  addRune: (rune) =>
-    set((state) => ({
-      character: {
-        ...state.character,
-        runes: [
-          ...state.character.runes,
-          {
-            id: crypto.randomUUID(),
-            sourceId: rune.sourceId,
-            name: rune.name,
-            circle: rune.circle ?? 'reforco',
-            level: rune.level,
-          },
-        ],
-      },
-      dirty: true,
-    })),
-
-  removeRune: (id) =>
-    set((state) => ({
-      character: {
-        ...state.character,
-        runes: state.character.runes.filter((item) => item.id !== id),
-      },
-      dirty: true,
-    })),
+  toggleKnownRune: (runeId) =>
+    set((state) => {
+      const allowance = runeAllowance(state.character.attributes.inteligencia)
+      const next = toggleKnownRune(state.character.knownRunes, runeId, allowance)
+      if (next === state.character.knownRunes) return state
+      return {
+        character: { ...state.character, knownRunes: next, updatedAt: Date.now() },
+        dirty: true,
+      }
+    }),
 
   save: async () => {
     const { character } = get()
