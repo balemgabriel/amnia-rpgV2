@@ -84,9 +84,19 @@
  * branco e evitamos quebrar blocos pequenos no meio.
  */
 @media print {
+  /*
+   * A ficha é exportada pelo layout próprio (features/sheet/export.css), que
+   * ocupa a folha inteira. Por isso a margem da página é 0 e as demais telas
+   * impressas ganham o respiro de 12 mm no #root.
+   */
   @page {
     size: A4;
-    margin: 12mm;
+    margin: 0;
+  }
+
+  body > #root {
+    padding: 12mm;
+    box-sizing: border-box;
   }
 
   html,

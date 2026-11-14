@@ -1,0 +1,508 @@
+/*
+ * Layout de exportação da ficha (PDF e PNG).
+ *
+ * É independente do Tailwind e da tela: tudo em `em` relativo ao corpo da
+ * página, que escala com --fit. O ExportSheet mede o conteúdo e reduz --fit
+ * quando uma página não cabe, para o PDF nunca passar de 3 páginas A4.
+ */
+.xs-root {
+  position: fixed;
+  left: -100000px;
+  top: 0;
+  pointer-events: none;
+}
+
+.xs-doc {
+  width: 210mm;
+  color: #201a14;
+}
+
+.xs-page {
+  --fit: 1;
+  position: relative;
+  box-sizing: border-box;
+  width: 210mm;
+  height: 296mm;
+  padding: 7mm 8mm 11mm;
+  overflow: hidden;
+  background: #f3ece0;
+  font-family: var(--font-body, 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif);
+  font-weight: 500;
+  font-size: calc(7.8pt * var(--fit));
+  line-height: 1.28;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.xs-doc[data-mode='png'] .xs-page + .xs-page {
+  border-top: 1px solid rgba(32, 26, 20, 0.25);
+}
+
+.xs-inner {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+.xs-foot {
+  position: absolute;
+  left: 8mm;
+  right: 8mm;
+  bottom: 4.5mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 5.8pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5c5044;
+}
+
+/* ---- blocos ------------------------------------------------------------ */
+.xs-box {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.55em 0.7em 0.65em;
+  border: 0.6pt solid rgba(32, 26, 20, 0.2);
+  border-radius: 0.55em;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.xs-h {
+  margin: 0 0 0.4em;
+  font-family: var(--font-display, 'Vinque', Georgia, serif);
+  font-weight: 400;
+  font-size: 1.22em;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+}
+
+.xs-label {
+  margin: 0 0 0.25em;
+  font-size: 0.74em;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #5c5044;
+}
+
+.xs-muted {
+  color: #5c5044;
+}
+
+.xs-p {
+  margin: 0;
+}
+
+.xs-p + .xs-p {
+  margin-top: 0.4em;
+}
+
+.xs-row {
+  display: grid;
+  gap: 0.6em;
+  align-items: stretch;
+}
+
+.xs-wrap {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* ---- página 1 ---------------------------------------------------------- */
+.xs-identity {
+  grid-template-columns: 1.55fr 1fr 1.1fr;
+}
+
+.xs-identity.has-portrait {
+  grid-template-columns: 17mm 1.55fr 1fr 1.1fr;
+}
+
+.xs-portrait {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 17mm;
+  border: 0.6pt solid rgba(32, 26, 20, 0.25);
+  border-radius: 0.55em;
+  object-fit: cover;
+}
+
+.xs-name {
+  margin: 0;
+  font-family: var(--font-display, 'Vinque', Georgia, serif);
+  font-weight: 400;
+  font-size: 2.2em;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+}
+
+.xs-name + .xs-p {
+  margin-top: 0.3em;
+}
+
+.xs-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  max-width: 100%;
+  padding: 0.12em 0.65em;
+  border: 0.8pt solid currentColor;
+  border-radius: 999px;
+  font-size: 0.95em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.xs-pill::before {
+  content: '';
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.xs-trio {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.xs-attrs {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.xs-tile {
+  position: relative;
+  box-sizing: border-box;
+  padding: 0.45em 0.4em 0.5em;
+  text-align: center;
+  border: 0.6pt solid rgba(32, 26, 20, 0.2);
+  border-radius: 0.55em;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.xs-tile .xs-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.3em;
+  font-family: var(--font-display, 'Vinque', Georgia, serif);
+  font-size: 2.1em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.xs-tile .xs-formula {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.7em;
+  color: #5c5044;
+}
+
+.xs-key {
+  position: absolute;
+  top: 0.25em;
+  right: 0.4em;
+  color: #b08d57;
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.xs-derived {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.xs-derived .xs-value {
+  font-size: 1.7em;
+}
+
+.xs-derived .xs-label {
+  min-height: 1.9em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.xs-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.4em;
+  border-radius: 999px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.34em;
+  font-weight: 700;
+  line-height: 1.5;
+  background: rgba(21, 128, 61, 0.15);
+  color: #166534;
+}
+
+.xs-chip.is-neg {
+  background: rgba(123, 45, 38, 0.15);
+  color: #7b2d26;
+}
+
+.xs-line .xs-chip,
+.xs-sk .xs-chip {
+  font-size: 0.82em;
+}
+
+.xs-dots {
+  display: inline-flex;
+  gap: 0.18em;
+  flex: none;
+}
+
+.xs-dots i {
+  display: block;
+  width: 0.58em;
+  height: 0.58em;
+  border: 0.7pt solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.xs-dots i.on {
+  background: currentColor;
+}
+
+.xs-skills-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 1.3em;
+}
+
+.xs-sk-group {
+  margin: 0 0 0.3em;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.xs-sk-group::before {
+  content: '';
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.xs-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xs-sk {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  padding: 0.08em 0 0.08em 0.5em;
+  border-left: 1.2pt solid;
+}
+
+.xs-sk.is-zero .xs-sk-name {
+  color: #5c5044;
+  opacity: 0.8;
+}
+
+.xs-sk-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em;
+  min-width: 0;
+}
+
+.xs-five {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1.15fr 0.85fr 1.1fr;
+  gap: 0.6em;
+  align-items: start;
+}
+
+.xs-item {
+  margin: 0 0 0.45em;
+  padding: 0;
+}
+
+.xs-item:last-child {
+  margin-bottom: 0;
+}
+
+.xs-item b {
+  font-weight: 700;
+}
+
+.xs-ability {
+  padding: 0.4em 0.5em;
+  border: 0.8pt solid;
+  border-radius: 0.45em;
+}
+
+.xs-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  align-items: baseline;
+}
+
+.xs-line + .xs-line {
+  margin-top: 0.2em;
+}
+
+.xs-tag {
+  font-size: 0.82em;
+  color: #5c5044;
+  white-space: nowrap;
+}
+
+/* ---- página 2 ---------------------------------------------------------- */
+.xs-p2-top {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 0.6em;
+  align-items: stretch;
+}
+
+.xs-hex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.xs-hex svg {
+  display: block;
+  width: 100%;
+  max-width: 62mm;
+  height: auto;
+}
+
+.xs-conv {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.xs-conv li + li {
+  margin-top: 0.2em;
+}
+
+.xs-history {
+  margin-top: 0.55em;
+  padding-top: 0.5em;
+  border-top: 0.6pt solid rgba(32, 26, 20, 0.15);
+}
+
+.xs-three {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 0.6em;
+  align-items: start;
+}
+
+.xs-rune {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  margin: 0 0.3em 0.3em 0;
+  padding: 0.1em 0.6em;
+  border: 0.7pt solid;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.xs-rune small {
+  font-size: 0.74em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5c5044;
+}
+
+.xs-spell-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5em;
+  align-items: start;
+}
+
+.xs-spell-grid[data-cols='3'] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.xs-spell {
+  box-sizing: border-box;
+  padding: 0.5em 0.6em;
+  border: 0.6pt solid rgba(32, 26, 20, 0.2);
+  border-radius: 0.5em;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.xs-spell h4 {
+  margin: 0;
+  font-family: var(--font-display, 'Vinque', Georgia, serif);
+  font-weight: 400;
+  font-size: 1.15em;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+}
+
+.xs-spell-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.xs-badge {
+  flex: none;
+  padding: 0.05em 0.5em;
+  border-radius: 999px;
+  background: rgba(176, 141, 87, 0.25);
+  font-size: 0.82em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.xs-spell p {
+  margin: 0.25em 0 0;
+}
+
+.xs-spell .xs-effect {
+  padding-top: 0.3em;
+  border-top: 0.6pt solid rgba(32, 26, 20, 0.15);
+  white-space: pre-line;
+}
+
+.xs-small {
+  font-size: 0.9em;
+}
+
+/* ---- impressão --------------------------------------------------------- */
+@media print {
+  body > *:not(.xs-root) {
+    display: none !important;
+  }
+
+  .xs-root {
+    position: static;
+    left: auto;
+    top: auto;
+  }
+
+  .xs-page {
+    background: #fff;
+    break-inside: avoid;
+    break-after: page;
+  }
+
+  .xs-page:last-child {
+    break-after: auto;
+  }
+}

@@ -44,6 +44,7 @@ import {
 import { SpellCard } from '@/features/spells/SpellCard'
 import { CharacterPortrait } from './CharacterPortrait'
 import { EquipmentSection } from './EquipmentSection'
+import { ExportSheet, type ExportMode } from './ExportSheet'
 import { getCharacter, saveCharacter } from '@/storage/characters'
 
 const GROUP_ORDER = ['fisica', 'social', 'mental'] as const
@@ -71,11 +72,13 @@ export function SheetView({
 }) {
   const [character, setCharacter] = useState<Character | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [exporting, setExporting] = useState(false)
+  /** Exportação em andamento: o layout A4 (ExportSheet) é montado só enquanto exporta. */
+  const [exportMode, setExportMode] = useState<ExportMode | null>(null)
+  const exporting = exportMode !== null
   const [xpItemId, setXpItemId] = useState('pericia')
   const [xpLevel, setXpLevel] = useState(1)
   const [xpLabel, setXpLabel] = useState('')
-  const sheetRef = useRef<HTMLElement>(null)
+  const exportDocRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let active = true
@@ -101,30 +104,43 @@ export function SheetView({
     }
   }, [id])
 
-  async function exportPng() {
-    if (!sheetRef.current || exporting) return
-    setExporting(true)
-    try {
-      const dataUrl = await toPng(sheetRef.current, {
-        pixelRatio: 2,
-        backgroundColor: '#f3ece0',
-        cacheBust: true,
-      })
-      const link = document.createElement('a')
-      const slug = (character?.name ?? 'ficha')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-zA-Z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-        .toLowerCase()
-      link.download = `${slug || 'ficha'}-amnia.png`
-      link.href = dataUrl
-      link.click()
-    } catch {
-      window.alert('Não foi possível gerar a imagem da ficha.')
-    } finally {
-      setExporting(false)
+  /** PDF abre a impressão do navegador no layout A4; PNG baixa uma imagem longa. */
+  function startExport(mode: ExportMode) {
+    if (exportMode) return
+    setExportMode(mode)
+  }
+
+  /** O ExportSheet já mediu e paginou as páginas: agora imprime ou captura. */
+  async function handleExportReady() {
+    if (exportMode === 'png') {
+      try {
+        if (!exportDocRef.current) throw new Error('sem documento')
+        const dataUrl = await toPng(exportDocRef.current, {
+          pixelRatio: 2,
+          backgroundColor: '#f3ece0',
+          cacheBust: true,
+        })
+        const link = document.createElement('a')
+        const slug = (character?.name ?? 'ficha')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          .toLowerCase()
+        link.download = `${slug || 'ficha'}-amnia.png`
+        link.href = dataUrl
+        link.click()
+      } catch {
+        window.alert('Não foi possível gerar a imagem da ficha.')
+      } finally {
+        setExportMode(null)
+      }
+      return
     }
+
+    // PDF: a página some e só o layout A4 é impresso (ver export.css).
+    window.addEventListener('afterprint', () => setExportMode(null), { once: true })
+    window.print()
   }
 
   async function persist(updated: Character) {
@@ -243,34 +259,36 @@ export function SheetView({
           <div className="flex items-center gap-1.5">
             <Button
               variant="ghost"
-              onClick={() => window.print()}
+              onClick={() => startExport('pdf')}
+              disabled={exporting}
               className="text-xs"
-              title="Abrir a caixa de impressão do navegador."
+              title="Abrir a caixa de impressão do navegador (A4, até 3 páginas)."
             >
               Imprimir
             </Button>
             <Button
               variant="ghost"
-              onClick={() => window.print()}
+              onClick={() => startExport('pdf')}
+              disabled={exporting}
               className="text-xs"
-              title="Abrir a impressão e escolher “Salvar como PDF”."
+              title="Abrir a impressão e escolher “Salvar como PDF” (A4, até 3 páginas)."
             >
-              PDF
+              {exportMode === 'pdf' ? 'Preparando…' : 'PDF'}
             </Button>
             <Button
               variant="ghost"
-              onClick={exportPng}
+              onClick={() => startExport('png')}
               disabled={exporting}
               className="text-xs"
-              title="Baixar a ficha como imagem PNG."
+              title="Baixar a ficha como uma imagem PNG longa."
             >
-              {exporting ? 'Gerando…' : 'PNG'}
+              {exportMode === 'png' ? 'Gerando…' : 'PNG'}
             </Button>
           </div>
         </div>
       </header>
 
-      <main ref={sheetRef} className="mx-auto max-w-4xl space-y-6 px-6 py-8">
+      <main className="mx-auto max-w-4xl space-y-6 px-6 py-8">
         <section className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h1 className="font-display text-4xl leading-tight tracking-wide">
@@ -798,6 +816,16 @@ export function SheetView({
 
         <EquipmentSection character={character} onChange={persist} />
       </main>
+
+      {exportMode ? (
+        <ExportSheet
+          key={exportMode}
+          character={character}
+          mode={exportMode}
+          docRef={exportDocRef}
+          onReady={() => void handleExportReady()}
+        />
+      ) : null}
     </div>
   )
 }
