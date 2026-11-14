@@ -609,25 +609,32 @@ export const creationBudget: CreationBudget = {
 }
 
 export const xpCosts: XpCostDef[] = [
-  { id: 'atributo', name: 'Atributo', cost: '5 × Nível Atual' },
-  { id: 'pericia', name: 'Perícia', cost: '4 × Nível Atual' },
-  { id: 'especializacao', name: 'Especialização', cost: '3' },
-  { id: 'talento-classe', name: 'Talento de Classe', cost: '6' },
-  { id: 'vantagem', name: 'Vantagem & Desvantagem', cost: '3 × Nível' },
-  { id: 'runa-inata', name: 'Runa Inata', cost: '6' },
-  { id: 'runa-adjacente', name: 'Runa Adjacente', cost: '7' },
-  { id: 'runa-paralela', name: 'Runa Paralela', cost: '8' },
-  { id: 'runa-oposta', name: 'Runa Oposta', cost: '9' },
-  { id: 'tecnica-intermediaria', name: 'Técnica Intermediária', cost: '5' },
-  { id: 'tecnica-avancada', name: 'Técnica Avançada', cost: '7' },
-  { id: 'canalizacao-1', name: 'Método de Canalização Nível 1', cost: '5' },
-  { id: 'canalizacao-2', name: 'Método de Canalização Nível 2', cost: '8' },
+  { id: 'atributo', name: 'Atributo', cost: '5 × Nível Atual', unitCost: 5, perLevel: true },
+  { id: 'pericia', name: 'Perícia', cost: '4 × Nível Atual', unitCost: 4, perLevel: true },
+  { id: 'especializacao', name: 'Especialização', cost: '3', fixedCost: 3 },
+  { id: 'talento-classe', name: 'Talento de Classe', cost: '6', fixedCost: 6 },
+  { id: 'vantagem', name: 'Vantagem & Desvantagem', cost: '3 × Nível', unitCost: 3, perLevel: true },
+  { id: 'runa-inata', name: 'Runa Inata', cost: '6', fixedCost: 6 },
+  { id: 'runa-adjacente', name: 'Runa Adjacente', cost: '7', fixedCost: 7 },
+  { id: 'runa-paralela', name: 'Runa Paralela', cost: '8', fixedCost: 8 },
+  { id: 'runa-oposta', name: 'Runa Oposta', cost: '9', fixedCost: 9 },
+  { id: 'tecnica-intermediaria', name: 'Técnica Intermediária', cost: '5', fixedCost: 5 },
+  { id: 'tecnica-avancada', name: 'Técnica Avançada', cost: '7', fixedCost: 7 },
+  { id: 'canalizacao-1', name: 'Método de Canalização Nível 1', cost: '5', fixedCost: 5 },
+  { id: 'canalizacao-2', name: 'Método de Canalização Nível 2', cost: '8', fixedCost: 8 },
   {
     id: 'ponto-extra',
     name: '1 ponto extra de PV / PM / Ímpeto (máx. 3)',
     cost: '4',
+    fixedCost: 4,
   },
-  { id: 'ficha-conhecimento', name: 'Ficha de Conhecimento ou Cultura', cost: '3 por Nível' },
+  {
+    id: 'ficha-conhecimento',
+    name: 'Ficha de Conhecimento ou Cultura',
+    cost: '3 por Nível',
+    unitCost: 3,
+    perLevel: true,
+  },
 ]
 
 export const impulses: ImpulseDef[] = [

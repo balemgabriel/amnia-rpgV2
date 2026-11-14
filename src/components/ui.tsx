@@ -29,16 +29,22 @@ export function Button({
 }
 
 export function Card({
+  id,
   className,
   style,
   children,
 }: {
+  id?: string
   className?: string
   style?: CSSProperties
   children: ReactNode
 }) {
   return (
-    <div className={cn('rounded-xl border border-ink/10 bg-white/45 p-5', className)} style={style}>
+    <div
+      id={id}
+      className={cn('rounded-xl border border-ink/10 bg-white/45 p-5', className)}
+      style={style}
+    >
       {children}
     </div>
   )

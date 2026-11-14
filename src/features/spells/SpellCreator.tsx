@@ -613,7 +613,7 @@ export function SpellCreator({
             </Card>
 
             <Card>
-              <h2 className="mb-3 font-display text-xl tracking-wide">Alcance e Alvos</h2>
+              <h2 className="mb-3 font-display text-xl tracking-wide">Modificações Extras</h2>
               <div className="space-y-4">
                 <OptionPicker
                   label="Alvos"

@@ -99,6 +99,12 @@ export interface XpCostDef {
   name: string
   cost: string
   note?: string
+  /** Custo numérico fixo (quando não cresce com o nível). */
+  fixedCost?: number
+  /** Custo por nível atual/quantidade. */
+  unitCost?: number
+  /** O custo depende do nível atual/quantidade informada. */
+  perLevel?: boolean
 }
 
 export interface CreationBudget {

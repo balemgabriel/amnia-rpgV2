@@ -1,14 +1,25 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toPng } from 'html-to-image'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
 import { DotRating } from '@/components/DotRating'
 import { RuneCard } from '@/components/RuneCard'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
-import { attributes, circles, impulses, skillGroups, skills } from '@/rules/amnia'
 import {
+  attributes,
+  circles,
+  creationBudget,
+  impulses,
+  skillGroups,
+  skills,
+  xpCosts,
+} from '@/rules/amnia'
+import {
+  advantagePoints,
   characterSchema,
+  creationSpecializations,
   rulesVersion,
+  runeAllowance,
   SHEET_VERSION,
   type Character,
 } from '@/rules/character'
@@ -17,8 +28,18 @@ import { classes, lineages } from '@/rules/data'
 import { runeById } from '@/rules/runes'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
 import { circleColor } from '@/rules/circleColors'
+import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { skillGroupColor } from '@/rules/skillColors'
 import { spellContext } from '@/rules/spellContext'
+import {
+  createXpPurchase,
+  remainingXp,
+  totalXpSpent,
+  xpCostItem,
+  xpItemCost,
+  xpItemNeedsLevel,
+  XP_POOL,
+} from '@/rules/xp'
 import { SpellCard } from '@/features/spells/SpellCard'
 import { CharacterPortrait } from './CharacterPortrait'
 import { getCharacter, saveCharacter } from '@/storage/characters'
@@ -49,6 +70,9 @@ export function SheetView({
   const [character, setCharacter] = useState<Character | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [exporting, setExporting] = useState(false)
+  const [xpItemId, setXpItemId] = useState('pericia')
+  const [xpLevel, setXpLevel] = useState(1)
+  const [xpLabel, setXpLabel] = useState('')
   const sheetRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -101,40 +125,54 @@ export function SheetView({
     }
   }
 
-  async function setPortrait(portrait: string) {
-    if (!character) return
-    const now = Date.now()
-    const updated: Character = { ...character, portrait, updatedAt: now }
-    setCharacter(updated)
+  async function persist(updated: Character) {
+    const next: Character = { ...updated, updatedAt: Date.now() }
+    setCharacter(next)
     try {
       await saveCharacter({
-        id: updated.id,
-        name: updated.name,
+        id: next.id,
+        name: next.name,
         rulesVersion,
         sheetVersion: SHEET_VERSION,
-        data: updated,
+        data: next,
       })
     } catch {
-      window.alert('Não foi possível salvar a foto no dispositivo.')
+      window.alert('Não foi possível salvar as mudanças no dispositivo.')
     }
   }
 
-  async function deleteSpell(spellId: string, name: string) {    if (!character) return
+  async function setPortrait(portrait: string) {
+    if (!character) return
+    await persist({ ...character, portrait })
+  }
+
+  async function deleteSpell(spellId: string, name: string) {
+    if (!character) return
     if (!window.confirm(`Excluir a magia "${name.trim() || 'sem nome'}"?`)) return
-    const now = Date.now()
-    const updated: Character = {
+    await persist({
       ...character,
       spells: character.spells.filter((spell) => spell.id !== spellId),
-      updatedAt: now,
-    }
-    await saveCharacter({
-      id: updated.id,
-      name: updated.name,
-      rulesVersion,
-      sheetVersion: SHEET_VERSION,
-      data: updated,
     })
-    setCharacter(updated)
+  }
+
+  async function addXpPurchase() {
+    if (!character) return
+    const purchase = createXpPurchase(xpItemId, xpLevel, xpLabel)
+    if (!purchase) return
+    await persist({
+      ...character,
+      xpPurchases: [...character.xpPurchases, purchase],
+    })
+    setXpLabel('')
+    setXpLevel(1)
+  }
+
+  async function removeXpPurchase(purchaseId: string) {
+    if (!character) return
+    await persist({
+      ...character,
+      xpPurchases: character.xpPurchases.filter((purchase) => purchase.id !== purchaseId),
+    })
   }
 
   if (error) {
@@ -160,10 +198,28 @@ export function SheetView({
   const sublineage = lineage?.lineages.find((item) => item.id === character.sublineageId)
   const classDef = classes.find((item) => item.id === character.classId)
   const ability = classDef?.coreAbilities.find((item) => item.id === character.classAbilityId)
+  const abilityIndex =
+    classDef?.coreAbilities.findIndex((item) => item.id === character.classAbilityId) ?? -1
+  const abilityTone = abilityIndex >= 0 ? coreAbilityTone(abilityIndex) : null
   const talent = classDef?.talents.find((item) => item.id === character.classTalentId)
   const impulse = impulses.find((item) => item.id === character.impulseId)
   const circle = circles.find((item) => item.id === character.innateCircle)
   const magicContext = spellContext(character)
+
+  const xpSpent = totalXpSpent(character.xpPurchases)
+  const xpRemaining = remainingXp(character.xpPurchases)
+  const xpItem = xpCostItem(xpItemId)
+  const xpPreview = xpItemCost(xpItem, xpLevel)
+
+  const runeLimit = runeAllowance(character.attributes.inteligencia)
+  const extraRunes = Math.max(0, character.knownRunes.length - runeLimit)
+  const freeSpecializations = creationSpecializations(character.skills)
+  const extraSpecializations = Math.max(0, character.specializations.length - freeSpecializations)
+  const advantageSummary = advantagePoints(character.advantages)
+  const extraAdvantages = Math.max(
+    0,
+    advantageSummary.total - creationBudget.advantagePoints,
+  )
 
   const lineageLabel = lineage
     ? sublineage
@@ -244,7 +300,28 @@ export function SheetView({
                 {lineage?.wip ? ' · WIP' : ''}
               </span>
             ) : null}
-            {classDef ? <Badge tone="gold">{classDef.name}</Badge> : null}
+            {classDef ? (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
+                style={
+                  classTone(classDef.id)
+                    ? {
+                        borderColor: withAlpha(classTone(classDef.id)!, 0.45),
+                        backgroundColor: withAlpha(classTone(classDef.id)!, 0.1),
+                        color: classTone(classDef.id)!,
+                      }
+                    : undefined
+                }
+              >
+                <span
+                  aria-hidden
+                  className="size-1.5 rounded-full"
+                  style={{ backgroundColor: classTone(classDef.id) ?? 'currentColor' }}
+                />
+                {classDef.name}
+                {classIsWip(classDef.id) ? ' · WIP' : ''}
+              </span>
+            ) : null}
             {circle ? (
               <span
                 className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
@@ -352,6 +429,14 @@ export function SheetView({
             <h2 className="mb-1 font-display text-xl tracking-wide">Runas Conhecidas</h2>
             <p className="mb-3 text-xs text-ink-soft">
               Acesso às runas; o nível de cada uma é escolhido em cada magia.
+              {extraRunes > 0 ? (
+                <>
+                  {' '}
+                  <XpLink>
+                    {extraRunes} além das {runeLimit} gratuitas
+                  </XpLink>
+                </>
+              ) : null}
             </p>
             {character.knownRunes.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhuma runa registrada.</p>
@@ -404,7 +489,7 @@ export function SheetView({
 
         <Card className="print-avoid-break">
           <h2 className="mb-3 font-display text-xl tracking-wide">Perícias</h2>
-          <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+          <div className="grid gap-x-6 gap-y-4 sm:grid-cols-3">
             {GROUP_ORDER.map((group) => {
               const tone = skillGroupColor(group)
               return (
@@ -445,13 +530,64 @@ export function SheetView({
               )
             })}
           </div>
+
+          {character.specializations.length > 0 ? (
+            <div className="mt-4 border-t border-ink/8 pt-3">
+              <p className="mb-2 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+                Especializações
+                {extraSpecializations > 0 ? (
+                  <XpLink>
+                    {extraSpecializations} além das {freeSpecializations} gratuitas
+                  </XpLink>
+                ) : null}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {character.specializations.map((specialization) => {
+                  const skill = skills.find((item) => item.id === specialization.skillId)
+                  const tone = skill ? skillGroupColor(skill.group) : null
+                  return (
+                    <span
+                      key={specialization.id}
+                      className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs"
+                      style={
+                        tone
+                          ? {
+                              borderColor: withAlpha(tone, 0.4),
+                              backgroundColor: withAlpha(tone, 0.08),
+                            }
+                          : undefined
+                      }
+                    >
+                      <span
+                        aria-hidden
+                        className="size-1.5 rounded-full"
+                        style={{ backgroundColor: tone ?? 'currentColor' }}
+                      />
+                      {specialization.name}
+                      {skill ? (
+                        <span className="text-[10px] uppercase tracking-wide text-ink-soft">
+                          {skill.name}
+                        </span>
+                      ) : null}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+          ) : null}
         </Card>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <h2 className="mb-2 font-display text-xl tracking-wide">Habilidade & Talento</h2>
             {ability ? (
-              <p className="text-sm">
+              <p
+                className="rounded-lg border p-3 text-sm"
+                style={{
+                  borderColor: abilityTone ?? undefined,
+                  backgroundColor: abilityTone ? withAlpha(abilityTone, 0.06) : undefined,
+                }}
+              >
                 <strong>{ability.name}.</strong>{' '}
                 <span className="text-ink-soft">{ability.description}</span>
               </p>
@@ -474,6 +610,13 @@ export function SheetView({
 
           <Card>
             <h2 className="mb-2 font-display text-xl tracking-wide">Vantagens</h2>
+            {extraAdvantages > 0 ? (
+              <p className="mb-2 text-xs text-ink-soft">
+                <XpLink>
+                  {extraAdvantages} ponto(s) além dos {creationBudget.advantagePoints} da criação
+                </XpLink>
+              </p>
+            ) : null}
             {character.advantages.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhuma registrada.</p>
             ) : (
@@ -510,7 +653,152 @@ export function SheetView({
             </p>
           ) : null}
         </Card>
+
+        <Card id="experiencia" className="print-avoid-break scroll-mt-24">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <h2 className="font-display text-xl tracking-wide">Experiência</h2>
+              <p className="text-xs text-ink-soft">
+                Pool inicial de {XP_POOL} XP. Registre aqui o que passar do gratuito na criação
+                (atributo, perícia, especialização, runa, talento…).
+              </p>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <Badge tone={xpRemaining < 0 ? 'warn' : 'ok'}>
+                {xpRemaining} XP restante(s)
+              </Badge>
+              <span className="text-xs tabular-nums text-ink-soft">gastos: {xpSpent}</span>
+            </div>
+          </div>
+
+          {character.xpPurchases.length === 0 ? (
+            <p className="text-sm text-ink-soft">Nenhum gasto de XP registrado ainda.</p>
+          ) : (
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-ink/15 text-left text-[10px] uppercase tracking-[0.14em] text-ink-soft">
+                  <th className="py-1.5 font-semibold">Gasto</th>
+                  <th className="py-1.5 font-semibold">Cálculo</th>
+                  <th className="py-1.5 text-right font-semibold">XP</th>
+                  <th className="no-print w-8" />
+                </tr>
+              </thead>
+              <tbody>
+                {character.xpPurchases.map((purchase) => (
+                  <tr key={purchase.id} className="border-b border-ink/8">
+                    <td className="py-1.5">{purchase.label}</td>
+                    <td className="py-1.5 text-xs text-ink-soft">{purchase.detail}</td>
+                    <td className="py-1.5 text-right tabular-nums">{purchase.cost}</td>
+                    <td className="no-print py-1.5 text-right">
+                      <button
+                        type="button"
+                        onClick={() => void removeXpPurchase(purchase.id)}
+                        className="text-xs text-ink-soft transition hover:text-accent"
+                      >
+                        remover
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td
+                    colSpan={2}
+                    className="pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-soft"
+                  >
+                    Total gasto
+                  </td>
+                  <td className="pt-2 text-right font-semibold tabular-nums">{xpSpent}</td>
+                  <td className="no-print" />
+                </tr>
+              </tbody>
+            </table>
+          )}
+
+          <div className="no-print mt-4 rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+              Adicionar gasto
+            </p>
+            <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_5.5rem_minmax(0,1fr)_auto]">
+              <select
+                value={xpItemId}
+                onChange={(event) => {
+                  setXpItemId(event.target.value)
+                  setXpLevel(1)
+                }}
+                aria-label="Item da tabela de experiência"
+                className="h-[34px] w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
+              >
+                {xpCosts.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name} · {item.cost}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                min={1}
+                value={xpLevel}
+                disabled={!xpItemNeedsLevel(xpItem)}
+                onChange={(event) => setXpLevel(Math.max(1, Number(event.target.value) || 1))}
+                aria-label="Nível ou quantidade"
+                title={
+                  xpItemNeedsLevel(xpItem)
+                    ? 'Nível atual / quantidade'
+                    : 'Este item tem custo fixo'
+                }
+                className="h-[34px] w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm tabular-nums disabled:opacity-40"
+              />
+              <input
+                value={xpLabel}
+                onChange={(event) => setXpLabel(event.target.value)}
+                placeholder="Detalhe (ex.: Perícia Furtividade)"
+                className="h-[34px] w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
+              />
+              <Button
+                type="button"
+                onClick={() => void addXpPurchase()}
+                className="h-[34px] px-3 text-xs"
+              >
+                + {xpPreview} XP
+              </Button>
+            </div>
+            <p className="mt-2 text-[11px] leading-snug text-ink-soft">
+              Use a coluna de nível para itens com custo variável; para os de custo fixo, basta
+              adicionar.
+            </p>
+          </div>
+
+          <div className="mt-4 border-t border-ink/8 pt-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+              Tabela de custos
+            </p>
+            <ul className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+              {xpCosts.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-baseline justify-between gap-3 border-b border-ink/8 pb-1"
+                >
+                  <span>{item.name}</span>
+                  <span className="shrink-0 text-xs tabular-nums text-ink-soft">{item.cost}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Card>
       </main>
     </div>
+  )
+}
+
+/** Atalho para a tabela de experiência no fim da ficha. */
+function XpLink({ children }: { children: ReactNode }) {
+  return (
+    <a
+      href="#experiencia"
+      className="no-print inline-flex items-center gap-1 rounded-full border border-gold/50 bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink transition hover:bg-gold/25"
+      title="Ver e registrar na tabela de experiência, no fim da ficha."
+    >
+      <span aria-hidden>+</span> XP · {children}
+    </a>
   )
 }

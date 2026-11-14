@@ -1,7 +1,9 @@
 import { Badge, Callout, Card, SectionTitle } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { impulses } from '@/rules/amnia'
+import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { classes } from '@/rules/data'
+import { withAlpha } from '@/rules/lineageColors'
 import { useDraft } from '@/store/draft'
 
 export function StepClass() {
@@ -26,28 +28,48 @@ export function StepClass() {
         ) : (
           <>
             <div className="flex flex-wrap gap-2">
-              {classes.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() =>
-                    patch({ classId: item.id, classAbilityId: null, classTalentId: null })
-                  }
-                  className={cn(
-                    'rounded-md border px-3 py-1.5 text-sm transition',
-                    character.classId === item.id
-                      ? 'border-accent bg-accent/10 text-ink'
-                      : 'border-ink/15 text-ink-soft hover:border-ink/30 hover:text-ink',
-                  )}
-                >
-                  {item.name}
-                </button>
-              ))}
+              {classes.map((item) => {
+                const tone = classTone(item.id)
+                const active = character.classId === item.id
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() =>
+                      patch({ classId: item.id, classAbilityId: null, classTalentId: null })
+                    }
+                    className={cn(
+                      'rounded-md border px-3 py-1.5 text-sm transition',
+                      active ? 'text-ink' : 'text-ink-soft hover:text-ink',
+                    )}
+                    style={{
+                      borderColor: tone
+                        ? active
+                          ? tone
+                          : withAlpha(tone, 0.3)
+                        : undefined,
+                      backgroundColor: active && tone ? withAlpha(tone, 0.12) : undefined,
+                    }}
+                  >
+                    {item.name}
+                    {classIsWip(item.id) ? (
+                      <span className="ml-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-soft">
+                        WIP
+                      </span>
+                    ) : null}
+                  </button>
+                )
+              })}
             </div>
 
             {selectedClass ? (
               <div className="mt-5 space-y-5">
-                <p className="text-sm leading-relaxed text-ink-soft">{selectedClass.description}</p>
+                <p
+                  className="border-l-2 pl-3 text-sm leading-relaxed text-ink-soft"
+                  style={{ borderLeftColor: classTone(selectedClass.id) ?? undefined }}
+                >
+                  {selectedClass.description}
+                </p>
 
                 {selectedClass.coreAbilities.length > 0 ? (
                   <div>
@@ -55,8 +77,9 @@ export function StepClass() {
                       Habilidade Central — escolha 1
                     </p>
                     <div className="space-y-2">
-                      {selectedClass.coreAbilities.map((ability) => {
+                      {selectedClass.coreAbilities.map((ability, index) => {
                         const active = character.classAbilityId === ability.id
+                        const tone = coreAbilityTone(index)
                         return (
                           <button
                             key={ability.id}
@@ -64,14 +87,23 @@ export function StepClass() {
                             onClick={() => patch({ classAbilityId: ability.id })}
                             className={cn(
                               'w-full rounded-lg border p-3 text-left transition',
-                              active
-                                ? 'border-accent bg-accent/[0.07]'
-                                : 'border-ink/12 hover:border-ink/30',
+                              active ? 'text-ink' : 'hover:border-ink/30',
                             )}
+                            style={{
+                              borderColor: active ? tone : withAlpha(tone, 0.35),
+                              backgroundColor: active ? withAlpha(tone, 0.08) : undefined,
+                            }}
                           >
                             <span className="flex items-center justify-between gap-2">
                               <span className="font-semibold">{ability.name}</span>
-                              {active ? <Badge tone="accent">escolhida</Badge> : null}
+                              {active ? (
+                                <span
+                                  className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-parchment"
+                                  style={{ backgroundColor: tone }}
+                                >
+                                  escolhida
+                                </span>
+                              ) : null}
                             </span>
                             <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
                               {ability.description}

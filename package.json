@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sheets:extract": "node scripts/extract-sheets.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

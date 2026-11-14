@@ -9,6 +9,7 @@ import {
 import type { AttributeId, CircleId, CircleRelation } from './types'
 import type { RuneCircleId } from './data/types'
 import {
+  FREE_LEVEL_MAX,
   clampLevelToUnlocked,
   hasUnlockingCondition,
   isLevelLocked,
@@ -293,8 +294,16 @@ export function bonusLevelsForRune(rune: SpellRune): number {
   return rune.conditions.reduce((sum, condition) => sum + conditionBonusLevels(condition), 0)
 }
 
+/**
+ * Nível que a runa realmente alcança com os bônus das suas condições.
+ *
+ * Sem condição pesada, os bônus param em 5: condições Moderadas acumuladas
+ * nunca passam do teto livre. Com condição Severa/Extrema/Absoluta, o teto
+ * sobe para 7.
+ */
 export function effectiveRuneLevel(rune: SpellRune): number {
-  return Math.min(7, rune.level + bonusLevelsForRune(rune))
+  const ceiling = hasUnlockingCondition(rune.conditions) ? 7 : FREE_LEVEL_MAX
+  return Math.min(ceiling, rune.level + bonusLevelsForRune(rune))
 }
 
 /** O nível escolhido desta runa está bloqueado (6–7 sem condição pesada nela)? */
@@ -516,10 +525,17 @@ export function spellCx(spell: Spell, context: SpellContext): SpellCxResult {
     lines.push({ label: 'Método Rúnico', value: -1 })
   }
 
-  const total =
-    runeCount === 0
-      ? 0
-      : Math.max(1, base + conditionMod + keyAttributeMod + channelingMod)
+  const raw = base + conditionMod + keyAttributeMod + channelingMod
+  let total = 0
+  if (runeCount > 0) {
+    total = Math.min(6, Math.max(1, raw))
+    // Deixa a soma das linhas igual ao total quando o teto/piso entram em ação.
+    if (raw > 6) {
+      lines.push({ label: 'Teto de Complexidade (máx. 6)', value: 6 - raw })
+    } else if (raw < 1) {
+      lines.push({ label: 'Mínimo de Complexidade', value: 1 - raw })
+    }
+  }
 
   return { total, base, conditionMod, keyAttributeMod, channelingMod, lines }
 }
@@ -638,15 +654,6 @@ export function spellWarnings(
       warnings.push({
         tone: 'warn',
         message: `${name} está no nível ${rune.level}, mas os níveis 6 e 7 exigem uma condição Severa, Extrema ou Absoluta vinculada a esta runa.`,
-      })
-      continue
-    }
-
-    const effective = effectiveRuneLevel(rune)
-    if (effective >= 6 && !hasUnlockingCondition(rune.conditions)) {
-      warnings.push({
-        tone: 'info',
-        message: `${name} chega ao nível ${effective} apenas por bônus de condição; para escolher 6 ou 7 direto, a runa precisa de uma condição Severa, Extrema ou Absoluta.`,
       })
     }
   }
