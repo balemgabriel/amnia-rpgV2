@@ -5,6 +5,7 @@ import { DotRating } from '@/components/DotRating'
 import { KnownRunes } from './KnownRunes'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
+import { cn } from '@/lib/cn'
 import {
   attributes,
   circles,
@@ -24,6 +25,7 @@ import {
   type Character,
 } from '@/rules/character'
 import { computeDerived } from '@/rules/derive'
+import { activeBonuses, bonusChips, type BonusChip } from '@/rules/equipment'
 import { classes, lineages } from '@/rules/data'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
 import { circleColor } from '@/rules/circleColors'
@@ -41,6 +43,7 @@ import {
 } from '@/rules/xp'
 import { SpellCard } from '@/features/spells/SpellCard'
 import { CharacterPortrait } from './CharacterPortrait'
+import { EquipmentSection } from './EquipmentSection'
 import { getCharacter, saveCharacter } from '@/storage/characters'
 
 const GROUP_ORDER = ['fisica', 'social', 'mental'] as const
@@ -192,6 +195,8 @@ export function SheetView({
   }
 
   const derived = computeDerived(character)
+  // Bônus de itens equipados: aparecem ao lado do valor e somem ao desequipar.
+  const equipped = activeBonuses(character.inventory)
   const byId = Object.fromEntries(derived.map((stat) => [stat.id, stat]))
   const lineage = lineages.find((item) => item.id === character.ancestryId)
   const sublineage = lineage?.lineages.find((item) => item.id === character.sublineageId)
@@ -372,8 +377,9 @@ export function SheetView({
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
                 {attribute.short}
               </p>
-              <p className="font-display text-2xl leading-tight tabular-nums">
+              <p className="flex items-baseline justify-center gap-1.5 font-display text-2xl leading-tight tabular-nums">
                 {character.attributes[attribute.id]}
+                <BonusChips chips={bonusChips(equipped.attributes[attribute.id], { plain: true })} />
               </p>
               <div className="mt-1 flex justify-center">
                 <DotRating
@@ -399,7 +405,10 @@ export function SheetView({
                 <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
                   {stat.name}
                 </p>
-                <p className="font-display text-3xl leading-tight tabular-nums">{stat.value}</p>
+                <p className="flex items-baseline gap-1.5 font-display text-3xl leading-tight tabular-nums">
+                  {stat.value}
+                  <BonusChips chips={bonusChips(equipped.derived[statId], { plain: true })} />
+                </p>
                 <p className="font-mono text-[10px] text-ink-soft">{stat.formula}</p>
               </div>
             )
@@ -512,8 +521,11 @@ export function SheetView({
                           className="flex items-center justify-between gap-2 border-l-2 py-0.5 pl-2 text-sm"
                           style={{ borderLeftColor: withAlpha(tone, 0.5) }}
                         >
-                          <span className={character.skills[skill.id] ? undefined : 'text-ink-soft'}>
-                            {skill.name}
+                          <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+                            <span className={character.skills[skill.id] ? undefined : 'text-ink-soft'}>
+                              {skill.name}
+                            </span>
+                            <BonusChips chips={bonusChips(equipped.skills[skill.id])} />
                           </span>
                           <DotRating
                             label={skill.name}
@@ -783,8 +795,31 @@ export function SheetView({
             </ul>
           </div>
         </Card>
+
+        <EquipmentSection character={character} onChange={persist} />
       </main>
     </div>
+  )
+}
+
+/** Bônus (ou penalidades) de itens equipados, ao lado do valor que eles alteram. */
+function BonusChips({ chips }: { chips: BonusChip[] }) {
+  return (
+    <>
+      {chips.map((chip) => (
+        <span
+          key={chip.text}
+          title={chip.title}
+          aria-label={`Item equipado: ${chip.text}`}
+          className={cn(
+            'inline-flex items-center rounded-full px-1.5 py-px font-sans text-[10px] font-semibold leading-tight tabular-nums',
+            chip.negative ? 'bg-accent/12 text-accent' : 'bg-emerald-700/12 text-emerald-800',
+          )}
+        >
+          {chip.text}
+        </span>
+      ))}
+    </>
   )
 }
 

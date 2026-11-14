@@ -1,5 +1,6 @@
 import { derivedStats } from './amnia'
 import type { Character } from './character'
+import { equipmentModifiers } from './equipment'
 import { compile, type FormulaScope } from './formula'
 
 /**
@@ -47,10 +48,14 @@ function evaluate(formula: string, scope: FormulaScope): number {
 /** Calcula todos os stats derivados da ficha. */
 export function computeDerived(character: Character): DerivedValue[] {
   const scope = buildScope(character)
+  // Itens equipados somam como modificadores (PM, Limiar, Deslocamento…); desequipar remove.
+  const equipped = equipmentModifiers(character.inventory ?? [])
 
   return derivedStats.map((stat) => {
     const base = evaluate(stat.formula, scope)
-    const sources = character.modifiers.filter((modifier) => modifier.statId === stat.id)
+    const sources = [...character.modifiers, ...equipped].filter(
+      (modifier) => modifier.statId === stat.id,
+    )
     const modifiers = sources.reduce((sum, modifier) => sum + modifier.value, 0)
 
     return {

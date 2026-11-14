@@ -1,0 +1,2471 @@
+{
+  "currency": "Zg",
+  "craftDc": "DC Base = 2 + (valor em Zg ÷ 50, arredondado para baixo); Teste prolongado de Int + Ofícios.",
+  "rdMaxDefault": 3,
+  "ammoRule": {
+    "costZg": 5,
+    "units": 3
+  },
+  "qualities": [
+    {
+      "id": "comum",
+      "name": "Comum",
+      "level": 0,
+      "extraCost": 0,
+      "slots": 0,
+      "description": "Preço base. 0 Slots de Modificação."
+    },
+    {
+      "id": "boa",
+      "name": "Boa Qualidade +1",
+      "level": 1,
+      "extraCost": 25,
+      "slots": 1,
+      "description": "+25 Zg. +1d6 na perícia relacionada OU +1 de Dano. 1 Slot de Modificação."
+    },
+    {
+      "id": "obra-prima",
+      "name": "Obra-Prima +2",
+      "level": 2,
+      "extraCost": 75,
+      "slots": 2,
+      "description": "+75 Zg (total). +2d6 na perícia OU +2 de Dano. 2 Slots de Modificação."
+    },
+    {
+      "id": "lendaria",
+      "name": "Lendária +3",
+      "level": 3,
+      "extraCost": 250,
+      "slots": 3,
+      "description": "+250 Zg (total). +3d6 na perícia OU +3 de Dano. 3 Slots de Modificação."
+    }
+  ],
+  "modifiers": {
+    "arma": {
+      "label": "Modificação de Arma",
+      "cost": 20,
+      "mods": [
+        {
+          "id": "perfurante",
+          "name": "Perfurante",
+          "description": "Ignora RD de um alvo."
+        },
+        {
+          "id": "balanceada",
+          "name": "Balanceada",
+          "description": "+1 dado de Defesa.",
+          "effects": [
+            {
+              "target": {
+                "kind": "test",
+                "label": "Defesa"
+              },
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "id": "marcial",
+          "name": "Marcial",
+          "description": "+1 SAVE DC para ataques dessa arma.",
+          "effects": [
+            {
+              "target": {
+                "kind": "test",
+                "label": "SAVE DC dos ataques com a arma"
+              },
+              "amount": 1,
+              "unit": "flat"
+            }
+          ]
+        },
+        {
+          "id": "serrada",
+          "name": "Serrada",
+          "description": "Acertar um ataque com uma Margem de +3 causa sangramento caso o alvo falhe num SAVE DC."
+        },
+        {
+          "id": "leve",
+          "name": "Leve",
+          "description": "+1 dado para reações com essa arma.",
+          "effects": [
+            {
+              "target": {
+                "kind": "test",
+                "label": "Reações com a arma"
+              },
+              "amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    "armadura": {
+      "label": "Modificação de Armadura",
+      "cost": 18,
+      "mods": [
+        {
+          "id": "ajustada",
+          "name": "Ajustada",
+          "description": "Reduz em -1 dado a desvantagem a Destreza e Atletismo da Armadura.",
+          "offsets": [
+            {
+              "kind": "attribute",
+              "id": "destreza"
+            },
+            {
+              "kind": "skill",
+              "id": "atletismo"
+            }
+          ]
+        },
+        {
+          "id": "revestimento",
+          "name": "Revestimento",
+          "description": "+1 RD contra um tipo de dano não-físico.",
+          "effects": [
+            {
+              "target": {
+                "kind": "rd",
+                "type": "tipo"
+              },
+              "amount": 1,
+              "choice": "revestimento"
+            }
+          ]
+        },
+        {
+          "id": "espinhada",
+          "name": "Espinhada",
+          "description": "Causa dano equivalente a RD durante ações de agarrar e investidas diretas."
+        },
+        {
+          "id": "pesada",
+          "name": "Pesada",
+          "description": "+1 RD Físico mas Diminui -1 testes de DES e Atletismo.",
+          "effects": [
+            {
+              "target": {
+                "kind": "rd",
+                "type": "fisico"
+              },
+              "amount": 1
+            },
+            {
+              "target": {
+                "kind": "attribute",
+                "id": "destreza"
+              },
+              "amount": -1,
+              "scales": false
+            },
+            {
+              "target": {
+                "kind": "skill",
+                "ids": [
+                  "atletismo"
+                ]
+              },
+              "amount": -1,
+              "scales": false
+            }
+          ]
+        },
+        {
+          "id": "bolsos-extras",
+          "name": "Bolsos Extras",
+          "description": "Bolsos extras que carregam itens pequenos que podem ser usados com uma ação menor."
+        }
+      ]
+    },
+    "equipamento": {
+      "label": "Modificação de Equipamento",
+      "cost": 15,
+      "mods": [
+        {
+          "id": "confiavel",
+          "name": "Confiável",
+          "description": "Permite re-rolar 1 dado falho da perícia."
+        },
+        {
+          "id": "lubrificado",
+          "name": "Lubrificado",
+          "description": "A primeira rolagem de uma cena com esse item recebe +1 dado."
+        },
+        {
+          "id": "engenhado",
+          "name": "Engenhado",
+          "description": "Caso seja usado em um teste de ofícios recebe 1 sucesso automático."
+        },
+        {
+          "id": "especializado",
+          "name": "Especializado",
+          "description": "Caso seja algo no qual você é especializado recebe +1 dado na rolagem."
+        },
+        {
+          "id": "amigavel",
+          "name": "Amigável",
+          "description": "Quando usa esse item para ajudar um aliado recebe +1 dado."
+        }
+      ]
+    }
+  },
+  "enchantCosts": {
+    "arma": 125,
+    "armadura": 125,
+    "equipamento": 100,
+    "acessorio": 85
+  },
+  "enchantments": [
+    {
+      "id": "afiamento",
+      "name": "Afiamento",
+      "description": "Concede 1 Sucesso Automático ao atacar com esse item."
+    },
+    {
+      "id": "leveza",
+      "name": "Leveza",
+      "description": "Permite realizar um ataque com -2 dados usando uma ação menor."
+    },
+    {
+      "id": "impactante",
+      "name": "Impactante",
+      "description": "Ao acertar por uma margem de +4, deixa o alvo Prejudicado."
+    },
+    {
+      "id": "durabilidade-aumentada",
+      "name": "Durabilidade Aumentada",
+      "description": "O item recebe a Runa de Resistência equivalente à Qualidade do Item."
+    },
+    {
+      "id": "claridade-de-visao",
+      "name": "Claridade de Visão",
+      "description": "A Ação de Mirar concede +1 dado extra."
+    },
+    {
+      "id": "resistencia-a-elementos",
+      "name": "Resistência a Elementos",
+      "description": "Reduz o dano de 2 elementos pela metade."
+    },
+    {
+      "id": "equilibrio-perfeito",
+      "name": "Equilíbrio Perfeito",
+      "description": "-1 dado adicional para o inimigo ao usar a Ação de Desvio."
+    },
+    {
+      "id": "eco-sutil",
+      "name": "Eco Sutil",
+      "description": "Aumenta sua percepção em +2.",
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "percepcao"
+            ]
+          },
+          "amount": 2,
+          "unit": "flat",
+          "scales": false
+        }
+      ]
+    },
+    {
+      "id": "espinhado",
+      "name": "Espinhado",
+      "description": "Ao negar completamente um dano por meio de RD, causa o dano negado de volta ao atacante."
+    },
+    {
+      "id": "gravura-arcana",
+      "name": "Gravura Arcana",
+      "description": "Aumenta seu Limiar em 2 + Qualidade do Item.",
+      "effects": [
+        {
+          "target": {
+            "kind": "derived",
+            "id": "limiar"
+          },
+          "amount": 2,
+          "scales": true
+        }
+      ]
+    },
+    {
+      "id": "lamina-do-veu",
+      "name": "Lâmina do Véu",
+      "description": "Causa +1 de dano por condição sob um alvo."
+    },
+    {
+      "id": "veneno-corrosivo",
+      "name": "Veneno Corrosivo",
+      "description": "Cada ataque que acerta o inimigo diminui seu dado de defesa em -2."
+    },
+    {
+      "id": "leveza-sobrenatural",
+      "name": "Leveza Sobrenatural",
+      "description": "Diminui a desvantagem a Destreza de armadura em -1."
+    },
+    {
+      "id": "elemento-natural",
+      "name": "Elemento Natural",
+      "description": "Sua arma ganha uma runa elemental equivalente à Qualidade."
+    },
+    {
+      "id": "gargalhada",
+      "name": "Gargalhada",
+      "description": "Acertar um ataque de Margem +4 faz com que seu inimigo caia na risada por 1 turno ao falhar num SAVE DC de Carisma + Vontade."
+    },
+    {
+      "id": "runa-mortal",
+      "name": "Runa Mortal",
+      "description": "Ao passar em um teste de ataque por 5 ou mais pode ativar uma magia única sua sem usar PA."
+    },
+    {
+      "id": "medo",
+      "name": "Medo",
+      "description": "Acertar um ataque por Margem +4 causa a condição de Medo no inimigo ao falhar no SAVE DC."
+    },
+    {
+      "id": "absorcao-de-vitalidade",
+      "name": "Absorção de Vitalidade",
+      "description": "Cada vez que acerta um ataque de margem +2 recupera 1 de vida."
+    },
+    {
+      "id": "roubo-de-mana",
+      "name": "Roubo de Mana",
+      "description": "Cada ataque ao inimigo resfria 1 de seu Limiar e aumenta +1 para a carga arcana no inimigo."
+    },
+    {
+      "id": "aura-de-sombra",
+      "name": "Aura de Sombra",
+      "description": "Caso não esteja sendo visto, ativa a runa de Ocultar Nível 5. Usos diários equivalentes à qualidade do Item."
+    },
+    {
+      "id": "luz-purificadora",
+      "name": "Luz Purificadora",
+      "description": "Adiciona sua Vontade para um teste de resistência."
+    },
+    {
+      "id": "eco-de-outrora",
+      "name": "Eco de Outrora",
+      "description": "Seu equipamento se lembra de combates e situações passadas, recebendo um bônus de +1 equivalente ao que foi lembrado, como a força de um inimigo, velocidade de um animal etc."
+    }
+  ],
+  "items": [
+    {
+      "id": "adaga",
+      "name": "Adaga",
+      "category": "arma-corpo",
+      "price": 10,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "lanca",
+      "name": "Lança",
+      "category": "arma-corpo",
+      "price": 13,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "machadinha",
+      "name": "Machadinha",
+      "category": "arma-corpo",
+      "price": 13,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "martelo",
+      "name": "Martelo",
+      "category": "arma-corpo",
+      "price": 15,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "chicote",
+      "name": "Chicote",
+      "category": "arma-corpo",
+      "price": 15,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "garras",
+      "name": "Garras",
+      "category": "arma-corpo",
+      "price": 15,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "briga",
+      "equippable": true
+    },
+    {
+      "id": "espada-curta",
+      "name": "Espada Curta",
+      "category": "arma-corpo",
+      "price": 18,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "machado",
+      "name": "Machado",
+      "category": "arma-corpo",
+      "price": 20,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "espada-longa",
+      "name": "Espada Longa",
+      "category": "arma-corpo",
+      "price": 25,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "alabarda",
+      "name": "Alabarda",
+      "category": "arma-corpo",
+      "price": 25,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "sabre",
+      "name": "Sabre",
+      "category": "arma-corpo",
+      "price": 25,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "equippable": true
+    },
+    {
+      "id": "adaga-de-aparagem",
+      "name": "Adaga de Aparagem",
+      "category": "arma-corpo",
+      "price": 25,
+      "description": "Contém Mod Balanceada",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "builtinMods": [
+        "arma:balanceada"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "lanca-de-obsidiana-lirizatl",
+      "name": "Lança de Obsidiana Lirizatl",
+      "category": "arma-corpo",
+      "price": 25,
+      "description": "Contém Mod Serrada",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "builtinMods": [
+        "arma:serrada"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "rapieira-corviana",
+      "name": "Rapieira Corviana",
+      "category": "arma-corpo",
+      "price": 35,
+      "description": "Contém Mod Perfurante",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "builtinMods": [
+        "arma:perfurante"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "machado-de-guerra-hjal",
+      "name": "Machado de Guerra Hjal",
+      "category": "arma-corpo",
+      "price": 38,
+      "description": "Contém Mod Perfurante",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "armas-brancas",
+      "builtinMods": [
+        "arma:perfurante"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "estilingue",
+      "name": "Estilingue",
+      "category": "arma-distancia",
+      "price": 8,
+      "description": "Causa -1 de dano.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "zarabatana",
+      "name": "Zarabatana",
+      "category": "arma-distancia",
+      "price": 8,
+      "description": "causa -1 de dano.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "arco-curto",
+      "name": "Arco Curto",
+      "category": "arma-distancia",
+      "price": 12,
+      "description": "causa -1 de dano.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "besta-de-uma-mao",
+      "name": "Besta de uma Mão",
+      "category": "arma-distancia",
+      "price": 14,
+      "description": "Causa -1 de dano.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "arco-longo",
+      "name": "Arco Longo",
+      "category": "arma-distancia",
+      "price": 16,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "besta",
+      "name": "Besta",
+      "category": "arma-distancia",
+      "price": 16,
+      "description": "",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "arco-de-cavalaria",
+      "name": "Arco de Cavalaria",
+      "category": "arma-distancia",
+      "price": 20,
+      "description": "+1 dado ao atacar em cima de uma montaria.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "zarabatana-lirizatl",
+      "name": "Zarabatana Lirizatl",
+      "category": "arma-distancia",
+      "price": 25,
+      "description": "Causa -1 de dano mas todo tiro é Envenenado.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "arco-elfico",
+      "name": "Arco Élfico",
+      "category": "arma-distancia",
+      "price": 25,
+      "description": "Contém Mod Marcial.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "builtinMods": [
+        "arma:marcial"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "pistola-pederneira",
+      "name": "Pistola Pederneira",
+      "category": "arma-distancia",
+      "price": 25,
+      "description": "Necessita de Pólvora.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "besta-corviana-de-uma-mao",
+      "name": "Besta Corviana de Uma Mão",
+      "category": "arma-distancia",
+      "price": 25,
+      "description": "Contém Mod Leve",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "builtinMods": [
+        "arma:leve"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "mosquete",
+      "name": "Mosquete",
+      "category": "arma-distancia",
+      "price": 35,
+      "description": "Necessita de Pólvora, Contém Mod Perfurante.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "builtinMods": [
+        "arma:perfurante"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "bafo-de-dragao",
+      "name": "Bafo de Dragão",
+      "category": "arma-distancia",
+      "price": 38,
+      "description": "Necessita de Pólvora, Toda Munição é flamejante.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "besta-de-repeticao",
+      "name": "Besta de Repetição",
+      "category": "arma-distancia",
+      "price": 38,
+      "description": "Ignora a primeira desvantagem de ataque repetido.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "equippable": true
+    },
+    {
+      "id": "balista-de-gigante",
+      "name": "Balista de Gigante",
+      "category": "arma-distancia",
+      "price": 40,
+      "description": "Contém Mod Perfurante, Diminui seu deslocamento em 1, A Ação de Mirar aumenta o dano em +1.",
+      "qualityable": true,
+      "modKinds": [
+        "arma"
+      ],
+      "weaponSkill": "precisao",
+      "builtinMods": [
+        "arma:perfurante"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "municao-lacerante",
+      "name": "Munição Lacerante",
+      "category": "municao",
+      "price": 10,
+      "description": "Ao acertar força um SAVE DC que causa sangramento em falha.",
+      "stackable": true
+    },
+    {
+      "id": "municao-envenenada",
+      "name": "Munição Envenenada",
+      "category": "municao",
+      "price": 10,
+      "description": "Ao acertar força um SAVE DC que causa envenenamento em falha.",
+      "stackable": true
+    },
+    {
+      "id": "municao-incendiaria",
+      "name": "Munição Incendiaria",
+      "category": "municao",
+      "price": 10,
+      "description": "Ao acertar força um SAVE DC que deixa o alvo queimando em falha",
+      "stackable": true
+    },
+    {
+      "id": "municao-de-prata",
+      "name": "Munição de Prata",
+      "category": "municao",
+      "price": 15,
+      "description": "Causa +1 de dano contra Criaturas da Noite.",
+      "stackable": true
+    },
+    {
+      "id": "municao-explosiva",
+      "name": "Munição Explosiva",
+      "category": "municao",
+      "price": 20,
+      "description": "Causa dano em uma área de 1 metro.",
+      "stackable": true
+    },
+    {
+      "id": "municao-de-arcanita",
+      "name": "Munição de Arcanita",
+      "category": "municao",
+      "price": 25,
+      "description": "Ao acertar um alvo força um SAVE DC, e aumenta o limiar do alvo igual a margem de falha do save.",
+      "stackable": true
+    },
+    {
+      "id": "traje-de-escuro",
+      "name": "Traje de Escuro",
+      "category": "armadura",
+      "price": 15,
+      "description": "+1d6 em testes de Furtividade. (RD Máxima 0).",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "rdMax": 0,
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "gibao-de-aventureiro",
+      "name": "Gibão de Aventureiro",
+      "category": "armadura",
+      "price": 20,
+      "description": "+1d6 em testes de Atletismo ou Sobrevivência (escolha na criação). (RD Máx 0).",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "rdMax": 0,
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo",
+              "sobrevivencia"
+            ]
+          },
+          "amount": 1,
+          "choice": "pericia"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "traje-de-nobre",
+      "name": "Traje de Nobre",
+      "category": "armadura",
+      "price": 30,
+      "description": "+1d6 em testes de Etiqueta (RD Máx 0).",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "rdMax": 0,
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "etiqueta"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "couro-batido-reforcado",
+      "name": "Couro Batido Reforçado",
+      "category": "armadura",
+      "price": 30,
+      "description": "RDF 1. -1d6 em Furtividade.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "fisico"
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": -1,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cota-de-malha",
+      "name": "Cota de Malha",
+      "category": "armadura",
+      "price": 40,
+      "description": "RDF 1 (vs. Dano Físico). +1d6 em Intimidação, -1d6 em Furtividade.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "fisico"
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "intimidacao"
+            ]
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": -1,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "colete-de-couro-negro-corviano",
+      "name": "Colete de Couro Negro Corviano",
+      "category": "armadura",
+      "price": 65,
+      "description": "RDF1, Adiciona +1d6 em Testes de Furtividade.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "fisico"
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cota-de-malha-elfica",
+      "name": "Cota de Malha Elfica",
+      "category": "armadura",
+      "price": 70,
+      "description": "RD 1, Contém o Mod Ajustada",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "builtinMods": [
+        "armadura:ajustada"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "geral"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "armadura-de-placas",
+      "name": "Armadura de Placas",
+      "category": "armadura",
+      "price": 75,
+      "description": "RDF 2 .-2d6 em Testes de Destreza, Atletismo, Furtividade.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "fisico"
+          },
+          "amount": 2
+        },
+        {
+          "target": {
+            "kind": "attribute",
+            "id": "destreza"
+          },
+          "amount": -2,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo"
+            ]
+          },
+          "amount": -2,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": -2,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "armadura-de-escamas-tratadas",
+      "name": "Armadura de Escamas Tratadas",
+      "category": "armadura",
+      "price": 80,
+      "description": "RDF 2 Resistência a Fogo (recebe metade do dano de fogo). -2d6 em Testes de Destreza, Atletismo, Furtividade.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "fisico"
+          },
+          "amount": 2
+        },
+        {
+          "target": {
+            "kind": "attribute",
+            "id": "destreza"
+          },
+          "amount": -2,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo"
+            ]
+          },
+          "amount": -2,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": -2,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "armadura-de-ferro-negro",
+      "name": "Armadura de Ferro Negro",
+      "category": "armadura",
+      "price": 85,
+      "description": "RDF 2 . Ignora 1 ponto de dano de qualquer fonte. -2d6 em Testes de Destreza, Atletismo, Furtividade.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "fisico"
+          },
+          "amount": 2
+        },
+        {
+          "target": {
+            "kind": "attribute",
+            "id": "destreza"
+          },
+          "amount": -2,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo"
+            ]
+          },
+          "amount": -2,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "furtividade"
+            ]
+          },
+          "amount": -2,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "manto-de-chumbo-runico",
+      "name": "Manto de Chumbo Rúnico",
+      "category": "armadura",
+      "price": 90,
+      "description": "RDM 1 , Resfria o Limiar equivalente ao Dano Negado pela RD.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "magico"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "armadura-de-placas-cerimoniais-redianas",
+      "name": "Armadura de Placas Cerimoniais Redianas",
+      "category": "armadura",
+      "price": 90,
+      "description": "RD1, Quando usa todos seus PA em um turno recupera 1 Ímpeto.",
+      "qualityable": true,
+      "modKinds": [
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "geral"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "capuz-de-viajante",
+      "name": "Capuz de Viajante",
+      "category": "equipamento",
+      "price": 10,
+      "description": "+1d6 em testes de Sobrevivência contra clima severo.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "sobrevivencia"
+            ]
+          },
+          "amount": 1,
+          "condition": "contra clima severo"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "escudo-de-madeira",
+      "name": "Escudo de Madeira",
+      "category": "equipamento",
+      "price": 15,
+      "description": "+1d6 em testes de Defesa.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Defesa"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "botas-de-escalada-com-ganchos",
+      "name": "Botas de Escalada (com ganchos)",
+      "category": "equipamento",
+      "price": 20,
+      "description": "+1 Sucesso Automático em testes de Atletismo para escalar, ignora penalidade de terreno rochoso ou escorregadio.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo"
+            ]
+          },
+          "amount": 1,
+          "unit": "sucesso",
+          "condition": "para escalar"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "escudo-de-aparagem",
+      "name": "Escudo de Aparagem",
+      "category": "equipamento",
+      "price": 25,
+      "description": "+1RD ao usar a Ação de Aparar.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "geral"
+          },
+          "amount": 1,
+          "condition": "ao usar a Ação de Aparar"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cinto-de-bolsos-ocultos",
+      "name": "Cinto de Bolsos Ocultos",
+      "category": "equipamento",
+      "price": 25,
+      "description": "+1d6 em testes de Ladroagem para ocultar objetos pequenos no corpo.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "ladroagem"
+            ]
+          },
+          "amount": 1,
+          "condition": "para ocultar objetos pequenos no corpo"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "chapeu-do-escoteiro",
+      "name": "Chápeu do Escoteiro",
+      "category": "equipamento",
+      "price": 25,
+      "description": "+1d6 em testes de Percepção para notar emboscadas ou detalhes ocultos.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "percepcao"
+            ]
+          },
+          "amount": 1,
+          "condition": "para notar emboscadas ou detalhes ocultos"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "manoplas-de-agarrar",
+      "name": "Manoplas de Agarrar",
+      "category": "equipamento",
+      "price": 30,
+      "description": "+1d6 em testes de Luta Agarrada e Atletismo (escalar).",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Luta Agarrada"
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo"
+            ]
+          },
+          "amount": 1,
+          "condition": "para escalar"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "varinha-simples",
+      "name": "Varinha Simples",
+      "category": "equipamento",
+      "price": 30,
+      "description": "Ao usar supressão, reduz seu Limiar em 1 Ponto adicional. (Máx de 1).",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "escudo-espinhado",
+      "name": "Escudo Espinhado",
+      "category": "equipamento",
+      "price": 35,
+      "description": "+1d6 em testes de Defesa Contém Mod Espinhada.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "builtinMods": [
+        "armadura:espinhada"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Defesa"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "paves-escudo-de-torre",
+      "name": "Pavês (Escudo de Torre)",
+      "category": "equipamento",
+      "price": 45,
+      "description": "+2d6 em testes de Defesa e concede RD 1 contra ataques à distância vindos da frente. Penalidade: -1 de Deslocamento.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Defesa"
+          },
+          "amount": 2
+        },
+        {
+          "target": {
+            "kind": "rd",
+            "type": "geral"
+          },
+          "amount": 1,
+          "condition": "contra ataques à distância vindos da frente"
+        },
+        {
+          "target": {
+            "kind": "derived",
+            "id": "deslocamentoGrid"
+          },
+          "amount": -1,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "derived",
+            "id": "deslocamentoMetros"
+          },
+          "amount": -1.5,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cajado-de-carvalho-arcano",
+      "name": "Cajado de Carvalho Arcano",
+      "category": "equipamento",
+      "price": 50,
+      "description": "Enquanto empunhado, seu Limiar Arcano máximo aumenta temporariamente em +2.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "derived",
+            "id": "limiar"
+          },
+          "amount": 2
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "manopla-de-guerra",
+      "name": "Manopla de Guerra",
+      "category": "equipamento",
+      "price": 40,
+      "description": "Aumenta em +1 o dano Desarmado.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Dano Desarmado"
+          },
+          "amount": 1,
+          "unit": "flat"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "manopla-pesada",
+      "name": "Manopla Pesada",
+      "category": "equipamento",
+      "price": 65,
+      "description": "Aumenta em +1 o Dano Desarmado, Pode Receber Modificadores de Armadura.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento",
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Dano Desarmado"
+          },
+          "amount": 1,
+          "unit": "flat"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "elmo-de-guerra",
+      "name": "Elmo de Guerra",
+      "category": "equipamento",
+      "price": 65,
+      "description": "Adiciona +1d6 em Testes de Liderança e Intimidação. Pode receber Modificadores de Armadura.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento",
+        "armadura"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "lideranca"
+            ]
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "intimidacao"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "varinha-elfica",
+      "name": "Varinha Élfica",
+      "category": "equipamento",
+      "price": 75,
+      "description": "Ao usar supressão, reduz seu Limiar em 1 Ponto adicional.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "escudo-canhao-gorvnon",
+      "name": "Escudo Canhão Gorvnon",
+      "category": "equipamento",
+      "price": 80,
+      "description": "Necessita de Pólvora, Pode Atirar Chumbo em um cone a sua frente. +2d6 em testes de Defesa e concede RD 1 contra ataques à distância vindos da frente. Penalidade: -1 de Deslocamento.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Defesa"
+          },
+          "amount": 2
+        },
+        {
+          "target": {
+            "kind": "rd",
+            "type": "geral"
+          },
+          "amount": 1,
+          "condition": "contra ataques à distância vindos da frente"
+        },
+        {
+          "target": {
+            "kind": "derived",
+            "id": "deslocamentoGrid"
+          },
+          "amount": -1,
+          "scales": false
+        },
+        {
+          "target": {
+            "kind": "derived",
+            "id": "deslocamentoMetros"
+          },
+          "amount": -1.5,
+          "scales": false
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cajado-da-lua",
+      "name": "Cajado da Lua",
+      "category": "equipamento",
+      "price": 90,
+      "description": "Enquanto Empunhado aumenta seu Limiar em +4 e Reduz a Complexidade de suas magias em-1.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "derived",
+            "id": "limiar"
+          },
+          "amount": 4
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "tiara-de-cristal-rara",
+      "name": "Tiara de Cristal (Rara)",
+      "category": "equipamento",
+      "price": 100,
+      "description": "Concede +1 PM (Ponto de Mana) ao seu máximo total enquanto equipada.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "derived",
+            "id": "pm"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "orbe-de-vidro-negro",
+      "name": "Orbe de Vidro Negro",
+      "category": "equipamento",
+      "price": 130,
+      "description": "Aumenta o Nível de 1 Runa em +1 por 1PA.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "amuleto-de-mente-focada",
+      "name": "Amuleto de Mente Focada",
+      "category": "acessorio",
+      "price": 40,
+      "description": "+1d6 em Saves de Vontade contra medo, pânico ou encantamento.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Saves de Vontade (medo, pânico, encantamento)"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "pingente-de-prata-runica",
+      "name": "Pingente de Prata Rúnica",
+      "category": "acessorio",
+      "price": 30,
+      "description": "Uma vez por cena pode conceder 1 Dado extra para resistir a um efeito.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "anel-de-prata-com-pedra-elemental",
+      "name": "Anel de Prata com Pedra Elemental",
+      "category": "acessorio",
+      "price": 60,
+      "description": "Concede +1 Nível a uma Runa elemental, não acessa níveis lendários.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "pulseira-de-contas-de-osso",
+      "name": "Pulseira de Contas de Osso",
+      "category": "acessorio",
+      "price": 50,
+      "description": "Concede +1 Dado para Magias de Canalização Ritual.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Magias de Canalização Ritual"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "amuleto-de-protecao-simples",
+      "name": "Amuleto de Proteção Simples",
+      "category": "acessorio",
+      "price": 55,
+      "description": "Concede +1RD a um tipo de dano.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "rd",
+            "type": "tipo"
+          },
+          "amount": 1,
+          "choice": "tipo"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "colar-de-pedras-coloridas",
+      "name": "Colar de Pedras Coloridas",
+      "category": "acessorio",
+      "price": 45,
+      "description": "Adiciona +1 Dd6 para testes de Persuasão e Empatia Animal",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "persuasao"
+            ]
+          },
+          "amount": 1
+        },
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "empatia-animal"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "pingente-de-olho-de-gato",
+      "name": "Pingente de Olho de Gato",
+      "category": "acessorio",
+      "price": 20,
+      "description": "Reduz dano de queda pela metade.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "corrente-supressora",
+      "name": "Corrente Supressora",
+      "category": "acessorio",
+      "price": 60,
+      "description": "Uma corrente que força o usuario envolto nela em supressão constante caso falhe um SAVE DC de Vontade + Fortitude DIF3.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cinto-com-fivelas",
+      "name": "Cinto com Fivelas",
+      "category": "acessorio",
+      "price": 35,
+      "description": "Consegue guardas armas de arremesso, adiciona +1 dano para armas de arremesso.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Dano de armas de arremesso"
+          },
+          "amount": 1,
+          "unit": "flat"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "brincos-de-prata",
+      "name": "Brincos de Prata",
+      "category": "acessorio",
+      "price": 40,
+      "description": "Adiciona +1 em uma Pericia.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "*"
+            ]
+          },
+          "amount": 1,
+          "unit": "flat",
+          "choice": "pericia"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "cordao-com-medalhao-lirizatl",
+      "name": "Cordão com Medalhão Lirizatl",
+      "category": "acessorio",
+      "price": 70,
+      "description": "Adiciona +1 em testes de Carisma.",
+      "qualityable": true,
+      "modKinds": [
+        "equipamento"
+      ],
+      "effects": [
+        {
+          "target": {
+            "kind": "attribute",
+            "id": "carisma"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "pocao-de-cura-basica",
+      "name": "Poção de Cura Básica",
+      "category": "pocao",
+      "price": 10,
+      "description": "Recupera 3 PV.",
+      "stackable": true
+    },
+    {
+      "id": "pocao-de-cura-superior",
+      "name": "Poção de Cura Superior",
+      "category": "pocao",
+      "price": 25,
+      "description": "Recupera 5 PV.",
+      "stackable": true
+    },
+    {
+      "id": "pocao-de-cura-maior",
+      "name": "Poção de Cura Maior",
+      "category": "pocao",
+      "price": 50,
+      "description": "Recupera 10 PV.",
+      "stackable": true
+    },
+    {
+      "id": "elixir-de-mana",
+      "name": "Elixir de Mana",
+      "category": "pocao",
+      "price": 20,
+      "description": "Concede +2 PM temporários por 1 rodada.",
+      "stackable": true
+    },
+    {
+      "id": "elixir-de-mana-superior",
+      "name": "Elixir de Mana Superior",
+      "category": "pocao",
+      "price": 45,
+      "description": "+2 PM temporários por 1 cena.",
+      "stackable": true
+    },
+    {
+      "id": "tonico-de-impeto",
+      "name": "Tônico de Ímpeto",
+      "category": "pocao",
+      "price": 30,
+      "description": "Recupera 2 ponto de Ímpeto (SP) imediatamente.",
+      "stackable": true
+    },
+    {
+      "id": "pocao-dedo-de-gigante",
+      "name": "Poção Dedo de Gigante",
+      "category": "pocao",
+      "price": 50,
+      "description": "Por 1 cena, aumenta 1 categoria de tamanho, +1d6 em Força/Atletismo, +1 Dano base corpo a corpo, -2 Deslocamento.",
+      "stackable": true
+    },
+    {
+      "id": "pocao-de-reducao",
+      "name": "Poção de Redução",
+      "category": "pocao",
+      "price": 40,
+      "description": "Por 1 cena, diminui 1 categoria de tamanho, +2d6 em Furtividade, -1d6 em testes de Força.",
+      "stackable": true
+    },
+    {
+      "id": "elixir-de-invisibilidade",
+      "name": "Elixir de Invisibilidade",
+      "category": "pocao",
+      "price": 80,
+      "description": "O usuário fica invisível por 1 minuto/ 3 Turnos ou até atacar.",
+      "stackable": true
+    },
+    {
+      "id": "pocao-de-velocidade",
+      "name": "Poção de Velocidade",
+      "category": "pocao",
+      "price": 60,
+      "description": "Por 1 cena, concede +1d6 em testes de Destreza e +1 espaço de Deslocamento.",
+      "stackable": true
+    },
+    {
+      "id": "tonico-de-resistencia",
+      "name": "Tônico de Resistência",
+      "category": "pocao",
+      "price": 35,
+      "description": "Por 1 cena, concede +1 RD contra dano físico.",
+      "stackable": true
+    },
+    {
+      "id": "elixir-de-protecao-magica",
+      "name": "Elixir de Proteção Mágica",
+      "category": "pocao",
+      "price": 40,
+      "description": "Por 1 cena, concede +1d6 em Saves de Vontade contra magia.",
+      "stackable": true
+    },
+    {
+      "id": "pocao-de-forca-do-touro",
+      "name": "Poção de Força do Touro",
+      "category": "pocao",
+      "price": 45,
+      "description": "Por 1 cena, concede +2d6 em testes de Força e +2 de Dano base corpo a corpo.",
+      "stackable": true
+    },
+    {
+      "id": "elixir-de-visao-noturna",
+      "name": "Elixir de Visão Noturna",
+      "category": "pocao",
+      "price": 30,
+      "description": "Por 1 hora, permite enxergar em escuridão total como se fosse luz fraca.",
+      "stackable": true
+    },
+    {
+      "id": "antidoto-universal",
+      "name": "Antídoto Universal",
+      "category": "pocao",
+      "price": 25,
+      "description": "Neutraliza venenos naturais ou fracos e remove a condição Envenenado.",
+      "stackable": true
+    },
+    {
+      "id": "kit-de-sobrevivencia",
+      "name": "Kit de Sobrevivência",
+      "category": "misc",
+      "price": 10,
+      "description": "Mochila, cantil, corda, 2 tochas, isqueiro, ração para 3 dias.",
+      "stackable": true
+    },
+    {
+      "id": "kit-de-ladrao",
+      "name": "Kit de Ladrão",
+      "category": "misc",
+      "price": 35,
+      "description": "Kit de Sobrevivência + gazuas, lima, corda de seda, óleo. (+1d6 em Ladroagem).",
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "ladroagem"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "kit-de-curandeiro",
+      "name": "Kit de Curandeiro",
+      "category": "misc",
+      "price": 40,
+      "description": "Kit de Sobrevivência + ataduras, talas, 2 Poções de Cura Básicas. (+1d6 em Medicina).",
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "medicina"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "kit-arcano",
+      "name": "Kit Arcano",
+      "category": "misc",
+      "price": 50,
+      "description": "Kit de Sobrevivência + foco mágico, pergaminhos em branco, tinta rúnica. (+1d6 em Arcanismo).",
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "arcanismo"
+            ]
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "racao-de-viagem-1-semana",
+      "name": "Ração de Viagem (1 semana)",
+      "category": "misc",
+      "price": 7,
+      "description": "Pão duro, carne seca, queijo. Sustento básico.",
+      "stackable": true
+    },
+    {
+      "id": "corda-de-canhamo-10m",
+      "name": "Corda de Cânhamo (10m)",
+      "category": "misc",
+      "price": 2,
+      "description": "Suporta até 150kg.",
+      "stackable": true
+    },
+    {
+      "id": "corda-de-seda-10m",
+      "name": "Corda de Seda (10m)",
+      "category": "misc",
+      "price": 15,
+      "description": "Suporta até 100kg, silenciosa e leve.",
+      "stackable": true
+    },
+    {
+      "id": "tocha",
+      "name": "Tocha",
+      "category": "misc",
+      "price": 1,
+      "description": "Ilumina 6 espaços por 1 hora.",
+      "stackable": true
+    },
+    {
+      "id": "lanterna-e-oleo-1-hora",
+      "name": "Lanterna e Óleo (1 hora)",
+      "category": "misc",
+      "price": 5,
+      "description": "Ilumina 12 espaços em cone.",
+      "stackable": true
+    },
+    {
+      "id": "kit-de-escalada",
+      "name": "Kit de Escalada",
+      "category": "misc",
+      "price": 25,
+      "description": "Ganchos, corda reforçada, pitons. +1d6 em Atletismo para escalar.",
+      "effects": [
+        {
+          "target": {
+            "kind": "skill",
+            "ids": [
+              "atletismo"
+            ]
+          },
+          "amount": 1,
+          "condition": "para escalar"
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "kit-de-disfarce",
+      "name": "Kit de Disfarce",
+      "category": "misc",
+      "price": 30,
+      "description": "Maquiagem, perucas, roupas genéricas. +1d6 em testes de Disfarce/Lábia.",
+      "effects": [
+        {
+          "target": {
+            "kind": "test",
+            "label": "Disfarce / Lábia"
+          },
+          "amount": 1
+        }
+      ],
+      "equippable": true
+    },
+    {
+      "id": "kit-de-veneno-basico",
+      "name": "Kit de Veneno (Básico)",
+      "category": "misc",
+      "price": 20,
+      "description": "3 doses de veneno fraco (DC 2 para notar, 2 de dano se falhar no Save).",
+      "stackable": true
+    },
+    {
+      "id": "algemas-de-ferro",
+      "name": "Algemas de Ferro",
+      "category": "misc",
+      "price": 5,
+      "description": "Imobiliza as mãos do alvo. Teste de Ladroagem DC 3 para escapar.",
+      "stackable": true
+    },
+    {
+      "id": "mapa-em-branco",
+      "name": "Mapa em Branco",
+      "category": "misc",
+      "price": 3,
+      "description": "Pode ser preenchido com informações geográficas.",
+      "stackable": true
+    },
+    {
+      "id": "tenda-de-campanha-4-pessoas",
+      "name": "Tenda de Campanha (4 pessoas)",
+      "category": "misc",
+      "price": 40,
+      "description": "Proteção contra clima severo e descanso confortável.",
+      "stackable": true
+    },
+    {
+      "id": "escudeiro-carregador",
+      "name": "Escudeiro / Carregador",
+      "category": "aliado",
+      "price": 2,
+      "perDay": true,
+      "description": "Carrega 50kg extra, prepara acampamentos.",
+      "stats": "PV: 4 | Pilha: 2d6 | Dano: +0"
+    },
+    {
+      "id": "batedor-local",
+      "name": "Batedor Local",
+      "category": "aliado",
+      "price": 5,
+      "perDay": true,
+      "description": "Conhece a região, armadilhas naturais.",
+      "stats": "PV: 6 | Pilha: 4d6 em Sobrevivência/Percepção"
+    },
+    {
+      "id": "mercenario-guarda-costas-rook",
+      "name": "Mercenário Guarda-Costas (Rook)",
+      "category": "aliado",
+      "price": 10,
+      "perDay": true,
+      "description": "Soldado de infantaria básico.",
+      "stats": "PV: 8 | Pilha: 4d6 | Dano: +1"
+    },
+    {
+      "id": "arqueiro-mercenario",
+      "name": "Arqueiro Mercenário",
+      "category": "aliado",
+      "price": 12,
+      "perDay": true,
+      "description": "Especialista em combate à distância.",
+      "stats": "PV: 8 | Pilha: 5d6 em Arco | Dano: +2"
+    },
+    {
+      "id": "duelista-especialista-elite",
+      "name": "Duelista Especialista (Elite)",
+      "category": "aliado",
+      "price": 25,
+      "perDay": true,
+      "description": "Espadachim experiente.",
+      "stats": "PV: 12 | Pilha: 6d6 | Dano: +2"
+    },
+    {
+      "id": "mago-de-batalha-contratado",
+      "name": "Mago de Batalha Contratado",
+      "category": "aliado",
+      "price": 30,
+      "perDay": true,
+      "description": "Conjura magias de nível 1-2.",
+      "stats": "PV: 8 | Pilha: 5d6 em Magia | Dano: +2"
+    },
+    {
+      "id": "curandeiro-medico",
+      "name": "Curandeiro / Médico",
+      "category": "aliado",
+      "price": 15,
+      "perDay": true,
+      "description": "Realiza testes de Medicina, estabiliza feridos, cura fora de combate.",
+      "stats": "PV: 6 | Pilha: 4d6 em Medicina"
+    },
+    {
+      "id": "aristocrata-nobre",
+      "name": "Aristocrata / Nobre",
+      "category": "aliado",
+      "price": 20,
+      "perDay": true,
+      "description": "Fornece acesso a eventos sociais, créditos e informações da alta sociedade.",
+      "stats": "PV: 4 | Pilha: 3d6 em Influência/Diplomacia"
+    },
+    {
+      "id": "mercador-comerciante",
+      "name": "Mercador / Comerciante",
+      "category": "aliado",
+      "price": 10,
+      "perDay": true,
+      "description": "Consegue descontos em compras, vende itens roubados, conhece o mercado negro.",
+      "stats": "PV: 5 | Pilha: 3d6 em Lábia/Negociação"
+    },
+    {
+      "id": "cientista-alquimista",
+      "name": "Cientista / Alquimista",
+      "category": "aliado",
+      "price": 18,
+      "perDay": true,
+      "description": "Identifica substâncias, cria poções simples, analisa artefatos.",
+      "stats": "PV: 5 | Pilha: 4d6 em Arcanismo/Investigação"
+    },
+    {
+      "id": "bardo-entretenedor",
+      "name": "Bardo / Entretenedor",
+      "category": "aliado",
+      "price": 8,
+      "perDay": true,
+      "description": "Coleta rumores, melhora o moral do grupo, +1d6 em testes de Performance.",
+      "stats": "PV: 5 | Pilha: 3d6 em Performance/Lábia"
+    },
+    {
+      "id": "ladrao-informante",
+      "name": "Ladrão / Informante",
+      "category": "aliado",
+      "price": 12,
+      "perDay": true,
+      "description": "Consegue informações ilegais, abre fechaduras, conhece rotas de fuga.",
+      "stats": "PV: 6 | Pilha: 4d6 em Ladroagem/Furtividade"
+    },
+    {
+      "id": "sacerdote-clerigo",
+      "name": "Sacerdote / Clérigo",
+      "category": "aliado",
+      "price": 15,
+      "perDay": true,
+      "description": "Concede bênçãos, realiza rituais, +1d6 em Saves de Vontade para o grupo.",
+      "stats": "PV: 6 | Pilha: 3d6 em Religião/Introspecção"
+    },
+    {
+      "id": "engenheiro-construtor",
+      "name": "Engenheiro / Construtor",
+      "category": "aliado",
+      "price": 20,
+      "perDay": true,
+      "description": "Avalia estruturas, cria armadilhas, repara equipamentos.",
+      "stats": "PV: 5 | Pilha: 4d6 em Engenharia/Ofícios"
+    },
+    {
+      "id": "guia-de-caravana",
+      "name": "Guia de Caravana",
+      "category": "aliado",
+      "price": 8,
+      "perDay": true,
+      "description": "Conhece rotas seguras, negocia com tribos locais, +1d6 em Sobrevivência para o grupo.",
+      "stats": "PV: 7 | Pilha: 4d6 em Sobrevivência/Influência"
+    },
+    {
+      "id": "gato-ou-corvo-de-estimacao",
+      "name": "Gato ou Corvo de Estimação",
+      "category": "companheiro",
+      "price": 5,
+      "description": "Companheiro. Concede +1d6 em Percepção passiva (avisos de perigo).",
+      "stats": "PV: 3"
+    },
+    {
+      "id": "cao-de-caca-pequeno",
+      "name": "Cão de Caça Pequeno",
+      "category": "companheiro",
+      "price": 15,
+      "description": "+1d6 em testes de Rastreamento e Sobrevivência.",
+      "stats": "PV: 4 | Pilha de Ataque: 3d6 | Dano: +1"
+    },
+    {
+      "id": "mula-ou-cavalo-de-carga",
+      "name": "Mula ou Cavalo de Carga",
+      "category": "companheiro",
+      "price": 40,
+      "description": "Carrega até 150kg. Deslocamento: 8 espaços.",
+      "stats": "PV: 6"
+    },
+    {
+      "id": "cao-de-guerra-mastim",
+      "name": "Cão de Guerra (Mastim)",
+      "category": "companheiro",
+      "price": 30,
+      "description": "+1d6 em Intimidação. Pode atacar.",
+      "stats": "PV: 8 | Pilha de Ataque: 4d6 | Dano: +1"
+    },
+    {
+      "id": "cavalo-de-montaria-comum",
+      "name": "Cavalo de Montaria (Comum)",
+      "category": "companheiro",
+      "price": 80,
+      "description": "Deslocamento: 12 espaços.",
+      "stats": "PV: 10"
+    },
+    {
+      "id": "cavalo-de-guerra-treinado",
+      "name": "Cavalo de Guerra (Treinado)",
+      "category": "companheiro",
+      "price": 150,
+      "description": "Não entra em pânico em combate. Pode realizar a manobra Investida junto com o cavaleiro.",
+      "stats": "PV: 12"
+    },
+    {
+      "id": "libelula-gigante",
+      "name": "Libélula Gigante",
+      "category": "companheiro",
+      "price": 90,
+      "description": "Deslocamento 16 (Voo baixo). +2d6 em Furtividade em áreas com vegetação densa ou pântanos.",
+      "stats": "PV: 8 | Pilha de Ataque: 3d6 | Dano: +1"
+    },
+    {
+      "id": "salamandra-de-magma",
+      "name": "Salamandra de Magma",
+      "category": "companheiro",
+      "price": 130,
+      "description": "Deslocamento 10. Imune a dano de fogo e deixa um rastro de calor (causa 1 de dano de fogo a quem passar por onde ela andou no turno anterior).",
+      "stats": "PV: 8 | Pilha de Ataque: 4d6 | Dano: +1 Fogo"
+    },
+    {
+      "id": "lobo-das-estepes",
+      "name": "Lobo das Estepes",
+      "category": "companheiro",
+      "price": 100,
+      "description": "Deslocamento 12. Concede Visão no Escuro (até 12m) ao cavaleiro. +1d6 em Furtividade durante a noite.",
+      "stats": "PV: 8 | Pilha de Ataque: 4d6 | Dano: +1"
+    },
+    {
+      "id": "besouro-rinoceronte-gigante",
+      "name": "Besouro-Rinoceronte Gigante",
+      "category": "companheiro",
+      "price": 120,
+      "description": "Deslocamento 8. +1d6 em testes de Força/Atletismo para empurrar obstáculos ou aríetes.",
+      "stats": "PV: 12 | Pilha de Ataque: 5d6 | Dano: +2"
+    },
+    {
+      "id": "serpente-constritora-gigante",
+      "name": "Serpente Constritora Gigante",
+      "category": "companheiro",
+      "price": 110,
+      "description": "Deslocamento 10 (inclui escalada). +1d6 em Furtividade em selvas. Pode usar a ação Agarrar como reação contra quem passar adjacente. .",
+      "stats": "PV: 10 | Pilha de Ataque: 5d6 | Dano: +1"
+    },
+    {
+      "id": "urso-pardo-de-guerra",
+      "name": "Urso Pardo de Guerra",
+      "category": "companheiro",
+      "price": 150,
+      "description": "Deslocamento 10. +1d6 em Intimidação. Pode realizar a manobra Derrubar com Vantagem (+1d6 no teste).",
+      "stats": "PV: 12 | Pilha de Ataque: 6d6 | Dano: +2"
+    },
+    {
+      "id": "lagarto-monitor-gigante",
+      "name": "Lagarto Monitor Gigante",
+      "category": "companheiro",
+      "price": 110,
+      "description": "Deslocamento 10. Possui velocidade de escalada igual ao deslocamento terrestre. Pode se mover em paredes e tetos.",
+      "stats": "PV: 10 | Pilha de Ataque: 4d6 | Dano: +1"
+    },
+    {
+      "id": "escorpiao-colossal",
+      "name": "Escorpião Colossal",
+      "category": "companheiro",
+      "price": 140,
+      "description": "Deslocamento 10. Possui RD 1 natural. Ataques com a cauda aplicam a condição Envenenado (Save DC 3 ou 2 de dano/turno).",
+      "stats": "PV: 14 | Pilha de Ataque: 6d6 | Dano: 2"
+    },
+    {
+      "id": "javali-de-guerra-das-estepes",
+      "name": "Jávali de Guerra das Estepes",
+      "category": "companheiro",
+      "price": 130,
+      "description": "Deslocamento 10. +1d6 em testes de Atletismo para Investidas. Ignora penalidades de Terreno Difícil.",
+      "stats": "PV: 14 | Pilha de Ataque: 6d6 | Dano: +2"
+    },
+    {
+      "id": "tigre-de-montaria-camelo",
+      "name": "Tigre de Montaria / Camelo",
+      "category": "companheiro",
+      "price": 120,
+      "description": "Deslocamento: 12 espaços. Camelo: Resistência a terreno árido. Tigre: +1d6 em Furtividade na selva.",
+      "stats": "PV: 10 | Pilha de Ataque: 5d6 | Dano: +2"
+    },
+    {
+      "id": "mamute-de-carga",
+      "name": "Mamute de Carga",
+      "category": "companheiro",
+      "price": 300,
+      "description": "Carrega até 500kg ou puxa uma pequena carroça. Deslocamento: 10 espaços.",
+      "stats": "PV: 16"
+    },
+    {
+      "id": "toupeira-gigante-treinada",
+      "name": "Toupeira Gigante (Treinada)",
+      "category": "companheiro",
+      "price": 250,
+      "description": "Pode cavar túneis de escape (1 espaço por turno). Deslocamento: 8 espaços (terra).",
+      "stats": "PV: 14"
+    },
+    {
+      "id": "grifo-ou-wyvern-domestico",
+      "name": "Grifo ou Wyvern Doméstico",
+      "category": "companheiro",
+      "price": 500,
+      "priceFrom": true,
+      "description": "Deslocamento: 12 espaços (terrestre) / 18 espaços (voo). Requer perícia de Adestramento exótica.",
+      "stats": "PV: 18 | Pilha de Ataque: 7d6 | Dano: +3"
+    },
+    {
+      "id": "alhajar-oasis-ambulante",
+      "name": "Alhajar (Oásis Ambulante)",
+      "category": "companheiro",
+      "price": 1000,
+      "priceFrom": true,
+      "description": "Deslocamento 8. Uma besta colossal semelhante a uma tartaruga ou elefante com floração nas costas. Fornece água pura e frutas frescas para até 10 pessoas por dia. Concede +1d6 em testes de Sobrevivência para todo o grupo enquanto viajarem com ele.",
+      "stats": "PV: 20 | Pilha de Ataque: 8d6 | Dano: +3 | RD 2"
+    }
+  ]
+}

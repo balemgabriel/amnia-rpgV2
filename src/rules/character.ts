@@ -9,13 +9,14 @@ import {
   circleOrder,
   skills,
 } from './amnia'
+import { inventoryItemSchema } from './inventory'
 import { migrateCharacterData } from './migrate'
 import { spellSchema } from './spell'
 import { xpPurchaseSchema } from './xp'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 4
+export const SHEET_VERSION = 5
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)
@@ -104,6 +105,8 @@ const characterObjectSchema = z.object({
 
   /** Gastos de XP além da pool inicial de 15 (tabela de experiência). */
   xpPurchases: z.array(xpPurchaseSchema).default([]),
+  /** Inventário (loja de equipamentos, opcional). Moeda: Zg, o mesmo saldo de `zigs`. */
+  inventory: z.array(inventoryItemSchema).default([]),
 
   // Etapa 8 — Detalhes finais
   zigs: z.number().int().min(0),
@@ -172,6 +175,7 @@ export function createEmptyCharacter(now = Date.now()): Character {
     advantages: [],
 
     xpPurchases: [],
+    inventory: [],
 
     zigs: 30,
     notes: '',
