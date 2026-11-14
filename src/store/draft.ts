@@ -20,6 +20,7 @@ export const WIZARD_STEPS = [
   { id: 'pericias', title: 'Perícias' },
   { id: 'vantagens', title: 'Vantagens' },
   { id: 'derivados', title: 'Derivados' },
+  { id: 'equipamentos', title: 'Equipamentos' },
   { id: 'final', title: 'Finalizar' },
 ] as const
 

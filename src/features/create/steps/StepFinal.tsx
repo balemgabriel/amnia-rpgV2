@@ -27,7 +27,7 @@ export function StepFinal({ onSaved }: { onSaved: (id: string) => void }) {
   return (
     <div className="space-y-6">
       <SectionTitle hint="Os últimos detalhes — e a ficha está pronta.">
-        8 · Detalhes Finais
+        9 · Detalhes Finais
       </SectionTitle>
 
       <Card className="space-y-4">
