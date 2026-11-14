@@ -22,6 +22,8 @@ interface RuneCardProps {
   onToggle?: () => void
   /** Só vale com `onToggle`: impede a ação (ex.: limite de runas atingido). */
   disabled?: boolean
+  /** Motivo do bloqueio, exibido abaixo do requisito (ex.: "Arcanismo 4 (atual 1)"). */
+  blockedReason?: string
   /** Selo no canto superior (ex.: "Conhecida"). */
   badge?: ReactNode
   /** Área livre abaixo da escada (ex.: seletor de nível na tela de magias). */
@@ -41,6 +43,7 @@ export function RuneCard({
   highlightLevel = null,
   onToggle,
   disabled = false,
+  blockedReason,
   badge,
   footer,
   className,
@@ -77,7 +80,20 @@ export function RuneCard({
       </div>
 
       {rune.requirement ? (
-        <p className="mt-1 text-[11px] font-semibold text-amber-800">{rune.requirement}</p>
+        <p
+          className={cn(
+            'mt-1 text-[11px] font-semibold',
+            blocked ? 'text-red-800' : 'text-amber-800',
+          )}
+        >
+          {rune.requirement}
+        </p>
+      ) : null}
+
+      {blocked && blockedReason ? (
+        <p className="mt-0.5 text-[11px] font-semibold text-red-800">
+          Requisito não atendido — {blockedReason}
+        </p>
       ) : null}
 
       <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">{rune.description}</p>

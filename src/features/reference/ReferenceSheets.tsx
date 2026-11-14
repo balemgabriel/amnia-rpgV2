@@ -1,4 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
+import { Modal } from '@/components/Modal'
 import { Card } from '@/components/ui'
 import { classTone } from '@/rules/classColors'
 import { withAlpha } from '@/rules/lineageColors'
@@ -35,20 +36,6 @@ function classIdOf(className: string): string {
 export function ReferenceSheets() {
   const [openId, setOpenId] = useState<string | null>(null)
   const open = sheets.find((sheet) => sheet.id === openId) ?? null
-
-  useEffect(() => {
-    if (!openId) return
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') setOpenId(null)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = previous
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [openId])
 
   return (
     <section aria-labelledby="fichas-campanha">
@@ -104,46 +91,39 @@ export function ReferenceSheets() {
         })}
       </ul>
 
-      {open ? (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/40 p-4 backdrop-blur-sm sm:p-8"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Ficha de ${open.name}`}
-          onClick={() => setOpenId(null)}
-        >
-          <div
-            className="my-4 w-full max-w-3xl"
-            onClick={(event) => event.stopPropagation()}
+      <Modal
+        open={Boolean(open)}
+        onClose={() => setOpenId(null)}
+        label={open ? `Ficha de ${open.name}` : 'Ficha'}
+      >
+        {open ? (
+          <Card
+            className="bg-parchment shadow-xl"
+            style={{ backgroundColor: '#f3ece0' }}
           >
-            <Card
-              className="bg-parchment shadow-xl"
-              style={{ backgroundColor: '#f3ece0' }}
-            >
-              <div className="mb-4 flex items-start justify-between gap-4 border-b border-ink/10 pb-3">
-                <div>
-                  <h2 className="font-display text-2xl leading-tight">{open.name}</h2>
-                  <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-soft">
-                    {open.className ? <span>{open.className}</span> : null}
-                    {open.className && open.ancestry ? <span aria-hidden>·</span> : null}
-                    {open.ancestry ? <span>{open.ancestry}</span> : null}
-                    {open.concept ? <span aria-hidden>·</span> : null}
-                    {open.concept ? <span>{open.concept}</span> : null}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setOpenId(null)}
-                  className="rounded-md border border-ink/20 px-2.5 py-1 text-xs text-ink-soft transition hover:text-ink"
-                >
-                  fechar
-                </button>
+            <div className="mb-4 flex items-start justify-between gap-4 border-b border-ink/10 pb-3">
+              <div>
+                <h2 className="font-display text-2xl leading-tight">{open.name}</h2>
+                <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-soft">
+                  {open.className ? <span>{open.className}</span> : null}
+                  {open.className && open.ancestry ? <span aria-hidden>·</span> : null}
+                  {open.ancestry ? <span>{open.ancestry}</span> : null}
+                  {open.concept ? <span aria-hidden>·</span> : null}
+                  {open.concept ? <span>{open.concept}</span> : null}
+                </p>
               </div>
-              <SheetMarkdown markdown={open.markdown} />
-            </Card>
-          </div>
-        </div>
-      ) : null}
+              <button
+                type="button"
+                onClick={() => setOpenId(null)}
+                className="rounded-md border border-ink/20 px-2.5 py-1 text-xs text-ink-soft transition hover:text-ink"
+              >
+                fechar
+              </button>
+            </div>
+            <SheetMarkdown markdown={open.markdown} />
+          </Card>
+        ) : null}
+      </Modal>
     </section>
   )
 }

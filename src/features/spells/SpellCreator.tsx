@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Modal } from '@/components/Modal'
 import { RuneCard } from '@/components/RuneCard'
 import { Badge, Button, Callout, Card, Field, TextArea, TextInput } from '@/components/ui'
 import { cn } from '@/lib/cn'
@@ -67,6 +68,7 @@ export function SpellCreator({
   const [saving, setSaving] = useState(false)
   const [query, setQuery] = useState('')
   const [circleFilter, setCircleFilter] = useState<RuneCircleId | 'all'>('all')
+  const [openRuneId, setOpenRuneId] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
@@ -155,6 +157,10 @@ export function SpellCreator({
   const hasLockedRune = lockedRunes(spell).length > 0
   const canSave = spell.name.trim() !== '' && spell.runes.length > 0 && !hasLockedRune
   const totalConditions = allConditions(spell).length
+  const openRune = openRuneId ? owned.find((rune) => rune.id === openRuneId) : undefined
+  const openSelected = openRune
+    ? spell.runes.find((item) => item.runeId === openRune.id)
+    : undefined
 
   function update(partial: Partial<Spell>) {
     setSpell((previous) =>
@@ -338,9 +344,10 @@ export function SpellCreator({
                 </Badge>
               </div>
               <p className="mb-3 text-sm text-ink-soft">
-                Só aparecem as runas a que este personagem tem acesso. Jogue uma runa na magia e
-                escolha o <strong className="text-ink">nível</strong>: ele é quanto PM você paga por
-                aquele efeito, e a linha destacada na carta mostra o que você está pagando.
+                Só aparecem as runas a que este personagem tem acesso. Clique numa runa para abrir a
+                carta completa, escolher o <strong className="text-ink">nível</strong> (quanto PM
+                você paga por aquele efeito) e jogá-la na magia. A linha destacada mostra o que está
+                sendo pago.
               </p>
 
               {owned.length === 0 ? (
@@ -409,53 +416,45 @@ export function SpellCreator({
                   {filtered.length === 0 ? (
                     <Callout>Nenhuma runa encontrada com esse filtro.</Callout>
                   ) : (
-                    <div className="grid gap-3 md:grid-cols-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {filtered.map((rune) => {
                         const selected = spell.runes.find((item) => item.runeId === rune.id)
-                        const tone = circleColor(rune.circle)
+                        const tone = circleColor(rune.circle) ?? '#5c5044'
                         return (
-                          <RuneCard
+                          <button
                             key={rune.id}
-                            rune={rune}
-                            active={Boolean(selected)}
-                            highlightLevel={selected?.level ?? null}
-                            badge={selected ? <Badge tone="ok">Na magia</Badge> : null}
-                            footer={
-                              selected ? (
-                                <div className="space-y-2">
-                                  <RuneLevelSelector
-                                    rune={rune}
-                                    spellRune={selected}
-                                    tone={tone}
-                                    onChange={(level) => setRuneLevel(rune.id, level)}
-                                  />
-                                  <div className="flex items-center justify-between gap-2">
-                                    <span className="text-xs text-ink-soft">
-                                      Custo desta runa:{' '}
-                                      <strong className="tabular-nums text-ink">
-                                        {selected.level} PM
-                                      </strong>
-                                    </span>
-                                    <Button
-                                      variant="quiet"
-                                      className="px-2 py-1 text-xs"
-                                      onClick={() => toggleRune(rune)}
-                                    >
-                                      Tirar da magia
-                                    </Button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <Button
-                                  variant="ghost"
-                                  className="w-full text-xs"
-                                  onClick={() => toggleRune(rune)}
-                                >
-                                  Jogar na magia
-                                </Button>
-                              )
-                            }
-                          />
+                            type="button"
+                            onClick={() => setOpenRuneId(rune.id)}
+                            aria-haspopup="dialog"
+                            aria-label={`Abrir a runa ${rune.name}`}
+                            title={`Abrir ${rune.name}`}
+                            className={cn(
+                              'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition',
+                              selected ? 'text-ink' : 'text-ink-soft hover:text-ink',
+                            )}
+                            style={{
+                              borderColor: selected ? tone : withAlpha(tone, 0.35),
+                              backgroundColor: selected ? withAlpha(tone, 0.12) : undefined,
+                            }}
+                          >
+                            <span
+                              aria-hidden
+                              className="size-1.5 rounded-full"
+                              style={{ backgroundColor: tone }}
+                            />
+                            <span className="font-medium">{rune.name}</span>
+                            <span className="text-[9px] uppercase tracking-wide text-ink-soft">
+                              {runeCircleLabels[rune.circle]}
+                            </span>
+                            {selected ? (
+                              <span
+                                className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums"
+                                style={{ backgroundColor: withAlpha(tone, 0.18) }}
+                              >
+                                Nv {selected.level}
+                              </span>
+                            ) : null}
+                          </button>
                         )
                       })}
                     </div>
@@ -463,6 +462,76 @@ export function SpellCreator({
                 </>
               )}
             </Card>
+
+            <Modal
+              open={Boolean(openRune)}
+              onClose={() => setOpenRuneId(null)}
+              label={openRune ? `Runa ${openRune.name}` : 'Runa'}
+              className="max-w-xl"
+            >
+              {openRune ? (
+                <div
+                  className="rounded-xl border border-ink/10 bg-parchment shadow-xl"
+                  style={{ backgroundColor: '#f3ece0' }}
+                >
+                  <div className="flex items-center justify-between gap-2 border-b border-ink/10 px-3 py-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+                      {runeCircleLabels[openRune.circle]}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setOpenRuneId(null)}
+                      className="rounded-md border border-ink/20 px-2.5 py-1 text-xs text-ink-soft transition hover:text-ink"
+                    >
+                      fechar
+                    </button>
+                  </div>
+                  <div className="p-4">
+                    <RuneCard
+                      rune={openRune}
+                      active={Boolean(openSelected)}
+                      highlightLevel={openSelected?.level ?? null}
+                      badge={openSelected ? <Badge tone="ok">Na magia</Badge> : null}
+                      footer={
+                        openSelected ? (
+                          <div className="space-y-2">
+                            <RuneLevelSelector
+                              rune={openRune}
+                              spellRune={openSelected}
+                              tone={circleColor(openRune.circle)}
+                              onChange={(level) => setRuneLevel(openRune.id, level)}
+                            />
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs text-ink-soft">
+                                Custo desta runa:{' '}
+                                <strong className="tabular-nums text-ink">
+                                  {openSelected.level} PM
+                                </strong>
+                              </span>
+                              <Button
+                                variant="quiet"
+                                className="px-2 py-1 text-xs"
+                                onClick={() => toggleRune(openRune)}
+                              >
+                                Tirar da magia
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            className="w-full text-xs"
+                            onClick={() => toggleRune(openRune)}
+                          >
+                            Jogar na magia
+                          </Button>
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </Modal>
 
             <Card>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">

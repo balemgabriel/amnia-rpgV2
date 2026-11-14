@@ -52,6 +52,33 @@
 }
 
 /*
+ * Mão de runas (criação, seção 3): fileira horizontal com sobreposição.
+ * A barra de rolagem fica fina e discreta para não pesar no pergaminho.
+ */
+.rune-hand {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(92, 80, 68, 0.35) transparent;
+  overscroll-behavior-x: contain;
+}
+
+.rune-hand::-webkit-scrollbar {
+  height: 8px;
+}
+
+.rune-hand::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rune-hand::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(92, 80, 68, 0.28);
+}
+
+.rune-hand::-webkit-scrollbar-thumb:hover {
+  background: rgba(92, 80, 68, 0.45);
+}
+
+/*
  * Impressão / PDF da ficha.
  * A ficha é feita para caber em A4: removemos a navegação, deixamos o papel
  * branco e evitamos quebrar blocos pequenos no meio.

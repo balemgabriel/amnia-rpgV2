@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toPng } from 'html-to-image'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
 import { DotRating } from '@/components/DotRating'
-import { RuneCard } from '@/components/RuneCard'
+import { KnownRunes } from './KnownRunes'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
 import {
@@ -25,7 +25,6 @@ import {
 } from '@/rules/character'
 import { computeDerived } from '@/rules/derive'
 import { classes, lineages } from '@/rules/data'
-import { runeById } from '@/rules/runes'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
 import { circleColor } from '@/rules/circleColors'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
@@ -441,13 +440,12 @@ export function SheetView({
             {character.knownRunes.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhuma runa registrada.</p>
             ) : (
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {character.knownRunes.map((runeId) => {
-                  const def = runeById(runeId)
-                  if (!def) return null
-                  return <RuneCard key={runeId} rune={def} className="print-avoid-break" />
-                })}
-              </div>
+              <>
+                <KnownRunes runeIds={character.knownRunes} />
+                <p className="mt-2 text-[11px] text-ink-soft">
+                  Clique numa runa para ver os níveis de 1 a 7.
+                </p>
+              </>
             )}
           </Card>
         </div>

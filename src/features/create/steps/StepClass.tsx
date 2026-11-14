@@ -4,6 +4,7 @@ import { impulses } from '@/rules/amnia'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { classes } from '@/rules/data'
 import { withAlpha } from '@/rules/lineageColors'
+import { checkRequirement } from '@/rules/requirements'
 import { useDraft } from '@/store/draft'
 
 export function StepClass() {
@@ -123,22 +124,32 @@ export function StepClass() {
                     <div className="max-h-80 space-y-2 overflow-y-auto pr-1">
                       {selectedClass.talents.map((talent) => {
                         const active = character.classTalentId === talent.id
+                        const requirement = checkRequirement(talent.requirement, character)
+                        const blocked = requirement.status === 'unmet'
                         return (
                           <button
                             key={talent.id}
                             type="button"
                             onClick={() => patch({ classTalentId: talent.id })}
+                            disabled={blocked && !active}
+                            title={blocked ? requirement.detail : undefined}
                             className={cn(
                               'w-full rounded-lg border p-3 text-left transition',
                               active
                                 ? 'border-gold bg-gold/[0.12]'
                                 : 'border-ink/12 hover:border-ink/30',
+                              blocked && 'cursor-not-allowed opacity-55 hover:border-ink/12',
                             )}
                           >
                             <span className="flex items-baseline justify-between gap-2">
                               <span className="font-semibold">{talent.name}</span>
                               {talent.requirement ? (
-                                <span className="shrink-0 text-[11px] text-ink-soft">
+                                <span
+                                  className={cn(
+                                    'shrink-0 text-[11px]',
+                                    blocked ? 'font-semibold text-red-800' : 'text-ink-soft',
+                                  )}
+                                >
                                   {talent.requirement}
                                 </span>
                               ) : null}
@@ -146,6 +157,11 @@ export function StepClass() {
                             <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
                               {talent.description}
                             </span>
+                            {blocked ? (
+                              <span className="mt-1 block text-[11px] font-semibold text-red-800">
+                                Requisito não atendido — {requirement.detail}
+                              </span>
+                            ) : null}
                           </button>
                         )
                       })}

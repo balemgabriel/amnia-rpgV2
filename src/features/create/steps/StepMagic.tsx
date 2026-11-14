@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
-import { RuneCard } from '@/components/RuneCard'
 import { Badge, Callout, Card, SectionTitle } from '@/components/ui'
 import { cn } from '@/lib/cn'
+import { RuneHand } from './RuneHand'
 import {
   channelingMethods,
   circleOrder,
@@ -16,6 +16,7 @@ import { circleColor } from '@/rules/circleColors'
 import { runeAllowance } from '@/rules/character'
 import { withAlpha } from '@/rules/lineageColors'
 import { runes, type RuneCircleId } from '@/rules/data'
+import { checkRequirement, type RequirementCheck } from '@/rules/requirements'
 import { useDraft } from '@/store/draft'
 
 const RUNE_CIRCLES: RuneCircleId[] = [...circleOrder, 'miscelanea']
@@ -48,6 +49,20 @@ export function StepMagic() {
         : runes.filter((rune) => rune.circle === filter)
     return [...list].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
   }, [filter, known])
+
+  /** Requisito de cada carta do catálogo atual (bloqueia só o que é verificável). */
+  const requirementChecks = useMemo(() => {
+    const checks: Record<string, RequirementCheck> = {}
+    for (const rune of catalog) {
+      checks[rune.id] = checkRequirement(rune.requirement, character)
+    }
+    return checks
+  }, [catalog, character])
+
+  const blockedCount = catalog.filter(
+    (rune) =>
+      !known.includes(rune.id) && requirementChecks[rune.id]?.status === 'unmet',
+  ).length
 
   const relation =
     filter !== 'known' && filter !== 'miscelanea' && character.innateCircle
@@ -246,26 +261,25 @@ export function StepMagic() {
             : null}
         </p>
 
+        {blockedCount > 0 ? (
+          <p className="mb-3 text-xs font-semibold text-red-800">
+            {blockedCount} runa{blockedCount === 1 ? '' : 's'} desta lista exige
+            {blockedCount === 1 ? '' : 'm'} um requisito que a ficha ainda não cumpre.
+          </p>
+        ) : null}
+
         {catalog.length === 0 ? (
           <Callout>
             {filter === 'known' ? 'Nenhuma runa marcada ainda.' : 'Nenhuma runa nesta Esfera.'}
           </Callout>
         ) : (
-          <div className="grid gap-3 md:grid-cols-2">
-            {catalog.map((rune) => {
-              const isKnown = known.includes(rune.id)
-              return (
-                <RuneCard
-                  key={rune.id}
-                  rune={rune}
-                  active={isKnown}
-                  disabled={!isKnown && remaining <= 0}
-                  onToggle={() => toggleKnownRune(rune.id)}
-                  badge={isKnown ? <Badge tone="ok">Conhecida</Badge> : null}
-                />
-              )
-            })}
-          </div>
+          <RuneHand
+            runes={catalog}
+            known={known}
+            remaining={remaining}
+            requirementChecks={requirementChecks}
+            onToggle={toggleKnownRune}
+          />
         )}
       </Card>
     </div>
