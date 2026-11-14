@@ -6,6 +6,7 @@ import { StepAttributes } from './steps/StepAttributes'
 import { StepClass } from './steps/StepClass'
 import { StepConcept } from './steps/StepConcept'
 import { StepDerived } from './steps/StepDerived'
+import { StepEquipment } from './steps/StepEquipment'
 import { StepFinal } from './steps/StepFinal'
 import { StepMagic } from './steps/StepMagic'
 import { StepSkills } from './steps/StepSkills'
@@ -18,6 +19,7 @@ const STEP_COMPONENTS = [
   StepSkills,
   StepAdvantages,
   StepDerived,
+  StepEquipment,
 ] as const
 
 export function CreateWizard({
