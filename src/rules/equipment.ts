@@ -355,7 +355,10 @@ export function validateConfig(item: ItemDef, cfg: ItemConfig): string[] {
     const name = found?.def.name ?? key
     // Para esta checagem o próprio mod já está na lista; só os motivos de bloqueio fixos contam.
     const fixed = modAvailability(item, { ...cfg, mods: cfg.mods.filter((other) => other !== key) }, key)
-    if (!fixed.ok && !fixed.reason.startsWith('Sem slots')) errors.push(`${name}: ${fixed.reason}`)
+    // Narrowing explícito (funciona com tsconfig do projeto e standalone).
+    if (fixed.ok === false) {
+      if (!fixed.reason.startsWith('Sem slots')) errors.push(`${name}: ${fixed.reason}`)
+    }
   }
   if (cfg.mods.length > slotsAllowed(cfg)) {
     errors.push(
