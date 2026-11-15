@@ -11,8 +11,8 @@ import {
   type Character,
 } from '@/rules/character'
 import { circleColor } from '@/rules/circleColors'
+import { runes as allRunes, type RuneCircleId, type RuneDef } from '@/rules/data'
 import { computeDerived } from '@/rules/derive'
-import type { RuneCircleId, RuneDef } from '@/rules/data'
 import {
   defaultLevel,
   hasUnlockingCondition,
@@ -40,6 +40,7 @@ import {
   personalMagicOwner,
   spellCost,
   spellCx,
+  spellSchema,
   spellWarnings,
   type ConditionWeight,
   type Spell,
@@ -47,9 +48,10 @@ import {
   type SpellOption,
   type SpellRune,
 } from '@/rules/spell'
-import { spellContext } from '@/rules/spellContext'
+import { spellContext, workshopSpellContext } from '@/rules/spellContext'
 import { RuneLevelSelector } from './RuneLevelSelector'
 import { getCharacter, saveCharacter } from '@/storage/characters'
+import { getLibrarySpell, saveLibrarySpell } from '@/storage/spellLibrary'
 
 const RUNE_CIRCLES: RuneCircleId[] = [...circleOrder, 'miscelanea']
 
@@ -58,7 +60,8 @@ export function SpellCreator({
   spellId,
   onDone,
 }: {
-  characterId: string
+  /** Sem personagem, o criador funciona como Oficina de Magias. */
+  characterId?: string
   spellId?: string
   onDone: () => void
 }) {
@@ -70,8 +73,37 @@ export function SpellCreator({
   const [circleFilter, setCircleFilter] = useState<RuneCircleId | 'all'>('all')
   const [openRuneId, setOpenRuneId] = useState<string | null>(null)
 
+  const workshop = characterId === undefined
+
   useEffect(() => {
     let active = true
+
+    if (!characterId) {
+      // Oficina: a magia vem da biblioteca, não de uma ficha.
+      if (!spellId) {
+        setSpell(emptySpell())
+        return () => {
+          active = false
+        }
+      }
+      getLibrarySpell(spellId)
+        .then((record) => {
+          if (!active) return
+          const parsed = record ? spellSchema.safeParse(record.data) : null
+          if (!parsed || !parsed.success) {
+            setError('Magia não encontrada na oficina.')
+            return
+          }
+          setSpell(parsed.data)
+        })
+        .catch(() => {
+          if (active) setError('Não foi possível carregar a magia da oficina.')
+        })
+      return () => {
+        active = false
+      }
+    }
+
     getCharacter(characterId)
       .then((record) => {
         if (!active) return
@@ -103,13 +135,16 @@ export function SpellCreator({
     }
   }, [characterId, spellId])
 
-  /** Só as runas a que o personagem TEM ACESSO podem ser jogadas na magia. */
+  /**
+   * Runas disponíveis: na ficha, só as que o personagem conhece; na oficina,
+   * o catálogo inteiro (a validação acontece ao adicionar a uma ficha).
+   */
   const owned = useMemo<RuneDef[]>(() => {
-    if (!character) return []
+    if (!character) return workshop ? allRunes : []
     return character.knownRunes
       .map((id) => runeById(id))
       .filter((rune): rune is RuneDef => rune !== undefined)
-  }, [character])
+  }, [character, workshop])
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase()
@@ -135,25 +170,25 @@ export function SpellCreator({
     )
   }
 
-  if (!character || !spell) {
+  if (!spell || (!workshop && !character)) {
     return <p className="px-6 py-16 text-sm text-ink-soft">Carregando magia…</p>
   }
 
-  const context = spellContext(character)
+  const context = character ? spellContext(character) : workshopSpellContext()
   const cost = spellCost(spell, context)
   const cx = spellCx(spell, context)
-  const derived = computeDerived(character)
+  const derived = character ? computeDerived(character) : []
   const pm = derived.find((stat) => stat.id === 'pm')?.value
   const limiar = derived.find((stat) => stat.id === 'limiar')?.value
-  const warnings = spellWarnings(spell, context, {
-    pm,
-    limiar,
-    knownRunes: character.knownRunes,
-  })
+  const warnings = spellWarnings(
+    spell,
+    context,
+    character ? { pm, limiar, knownRunes: character.knownRunes } : {},
+  )
 
   const hasPersonalTrait = context.ancestryTraits.includes(MAGIA_PESSOAL_TRAIT_ID)
   const personalOwner = personalMagicOwner(context, spell.id)
-  const personalAllowed = hasPersonalTrait && !personalOwner
+  const personalAllowed = workshop || (hasPersonalTrait && !personalOwner)
   const hasLockedRune = lockedRunes(spell).length > 0
   const canSave = spell.name.trim() !== '' && spell.runes.length > 0 && !hasLockedRune
   const totalConditions = allConditions(spell).length
@@ -244,12 +279,20 @@ export function SpellCreator({
   }
 
   async function save() {
-    if (!character || !spell || !canSave) return
+    if (!spell || !canSave) return
     setSaving(true)
     setError(null)
     try {
       const now = Date.now()
       const saved: Spell = { ...spell, name: spell.name.trim(), updatedAt: now }
+
+      if (workshop) {
+        await saveLibrarySpell(saved)
+        onDone()
+        return
+      }
+
+      if (!character) return
       const exists = character.spells.some((item) => item.id === saved.id)
       const spells = exists
         ? character.spells.map((item) => (item.id === saved.id ? saved : item))
@@ -275,18 +318,18 @@ export function SpellCreator({
       <header className="no-print sticky top-0 z-10 border-b border-ink/10 bg-parchment/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
           <Button variant="quiet" onClick={onDone} className="px-2">
-            ← {character.name || 'Ficha'}
+            ← {workshop ? 'Oficina' : character?.name || 'Ficha'}
           </Button>
           <div className="text-center">
             <p className="font-display text-lg leading-tight tracking-wide">
               {spellId ? 'Editar magia' : 'Nova magia'}
             </p>
             <p className="text-[11px] uppercase tracking-[0.16em] text-ink-soft">
-              Criador de magias
+              {workshop ? 'Oficina de Magias' : 'Criador de magias'}
             </p>
           </div>
           <Button onClick={save} disabled={saving || !canSave}>
-            {saving ? 'Salvando…' : 'Salvar magia'}
+            {saving ? 'Salvando…' : workshop ? 'Salvar na oficina' : 'Salvar magia'}
           </Button>
         </div>
       </header>
@@ -295,6 +338,16 @@ export function SpellCreator({
         {error ? (
           <div className="mb-4">
             <Callout tone="warn">{error}</Callout>
+          </div>
+        ) : null}
+
+        {workshop ? (
+          <div className="mb-4">
+            <Callout>
+              Esta magia fica guardada na <strong className="text-ink">Oficina</strong> e pode ser
+              adicionada a qualquer personagem depois. O custo abaixo é a base: Círculo Inato,
+              atributo chave e canalização entram quando ela é usada numa ficha.
+            </Callout>
           </div>
         ) : null}
 
@@ -344,10 +397,11 @@ export function SpellCreator({
                 </Badge>
               </div>
               <p className="mb-3 text-sm text-ink-soft">
-                Só aparecem as runas a que este personagem tem acesso. Clique numa runa para abrir a
-                carta completa, escolher o <strong className="text-ink">nível</strong> (quanto PM
-                você paga por aquele efeito) e jogá-la na magia. A linha destacada mostra o que está
-                sendo pago.
+                {workshop
+                  ? 'Todas as runas do catálogo estão disponíveis. Clique numa runa para abrir a carta completa, escolher o '
+                  : 'Só aparecem as runas a que este personagem tem acesso. Clique numa runa para abrir a carta completa, escolher o '}
+                <strong className="text-ink">nível</strong> (quanto PM você paga por aquele efeito) e
+                jogá-la na magia. A linha destacada mostra o que está sendo pago.
               </p>
 
               {owned.length === 0 ? (
@@ -811,13 +865,15 @@ export function SpellCreator({
                     <strong>Magia Pessoal</strong>{' '}
                     <span className="text-ink-soft">(−3 PM)</span>
                     <span className="mt-0.5 block text-xs text-ink-soft">
-                      {hasPersonalTrait
-                        ? personalOwner
-                          ? `Já usada por “${
-                              personalOwner.name.trim() || 'magia sem nome'
-                            }”.`
-                          : 'Traço Snegatnom: uma magia por personagem.'
-                        : 'Traço exclusivo da linhagem Snegatnom (Elfos).'}
+                      {workshop
+                        ? 'Na oficina a marcação é livre; a ficha avisa se o personagem não tiver o traço.'
+                        : hasPersonalTrait
+                          ? personalOwner
+                            ? `Já usada por “${
+                                personalOwner.name.trim() || 'magia sem nome'
+                              }”.`
+                            : 'Traço Snegatnom: uma magia por personagem.'
+                          : 'Traço exclusivo da linhagem Snegatnom (Elfos).'}
                     </span>
                   </span>
                 </label>
@@ -840,7 +896,13 @@ export function SpellCreator({
               ) : null}
 
               <Button className="mt-4 w-full" onClick={save} disabled={saving || !canSave}>
-                {saving ? 'Salvando…' : spellId ? 'Salvar alterações' : 'Adicionar à ficha'}
+                {saving
+                  ? 'Salvando…'
+                  : spellId
+                    ? 'Salvar alterações'
+                    : workshop
+                      ? 'Guardar na oficina'
+                      : 'Adicionar à ficha'}
               </Button>
               {!canSave ? (
                 <p className="mt-2 text-center text-xs text-ink-soft">

@@ -112,7 +112,9 @@ export function StepSkills() {
             key={group}
             className="border-l-4"
             style={{
-              borderColor: withAlpha(tone, 0.35),
+              borderTopColor: withAlpha(tone, 0.35),
+              borderRightColor: withAlpha(tone, 0.35),
+              borderBottomColor: withAlpha(tone, 0.35),
               borderLeftColor: tone,
             }}
           >

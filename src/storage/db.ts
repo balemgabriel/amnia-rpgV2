@@ -19,12 +19,33 @@ export interface CharacterRecord {
   updatedAt: number
 }
 
+/**
+ * Magia guardada na Oficina de Magias.
+ *
+ * O `data` segue o mesmo princípio da ficha: o banco guarda o blob e a camada
+ * de domínio valida com Zod ao ler. `name` e `updatedAt` existem só para
+ * ordenar e listar sem abrir cada magia.
+ */
+export interface LibrarySpellRecord {
+  id: string
+  name: string
+  data: unknown
+  createdAt: number
+  updatedAt: number
+}
+
 const db = new Dexie('amnia-v2') as Dexie & {
   characters: EntityTable<CharacterRecord, 'id'>
+  spells: EntityTable<LibrarySpellRecord, 'id'>
 }
 
 db.version(1).stores({
   characters: 'id, name, updatedAt',
+})
+
+// v2: biblioteca da Oficina de Magias (não mexe nas fichas existentes).
+db.version(2).stores({
+  spells: 'id, name, updatedAt',
 })
 
 export { db }

@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
+import { cn } from '@/lib/cn'
 import { attributes } from '@/rules/amnia'
 import { characterSchema, type Character } from '@/rules/character'
 import { computeDerived } from '@/rules/derive'
 import { deleteCharacter, listCharacters } from '@/storage/characters'
 import type { CharacterRecord } from '@/storage/db'
-import { ReferenceSheets } from '@/features/reference/ReferenceSheets'
 
 export function CharacterList({
   onNew,
+  onReady,
+  onWorkshop,
   onOpen,
 }: {
   onNew: () => void
+  onReady: () => void
+  onWorkshop: () => void
   onOpen: (id: string) => void
 }) {
   const [records, setRecords] = useState<CharacterRecord[]>([])
@@ -46,14 +50,44 @@ export function CharacterList({
               Fichas de personagem
             </p>
           </div>
-          <Button onClick={onNew}>Nova ficha</Button>
         </div>
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <ReferenceSheets />
+        <section aria-labelledby="comecar" className="mb-12">
+          <div className="mb-4">
+            <h2 id="comecar" className="font-display text-xl tracking-wide">
+              Começar
+            </h2>
+            <p className="mt-1 text-xs text-ink-soft">Escolha por onde quer ir.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <HomeOption
+              eyebrow="Passo a passo"
+              title="Criar Nova Ficha"
+              description="Monte um personagem do zero, com atributos, perícias, classe e magias calculados automaticamente."
+              action="Começar criação"
+              onClick={onNew}
+              primary
+            />
+            <HomeOption
+              eyebrow="Referência"
+              title="Fichas Prontas"
+              description="Veja os personagens já jogados da campanha, com a ficha completa do material."
+              action="Ver fichas"
+              onClick={onReady}
+            />
+            <HomeOption
+              eyebrow="Biblioteca"
+              title="Oficina de Magias"
+              description="Crie magias, guarde neste dispositivo e adicione a qualquer personagem depois."
+              action="Abrir oficina"
+              onClick={onWorkshop}
+            />
+          </div>
+        </section>
 
-        <section className="mt-12" aria-labelledby="suas-fichas">
+        <section aria-labelledby="suas-fichas">
           <div className="mb-4">
             <h2 id="suas-fichas" className="font-display text-xl tracking-wide">
               Suas fichas
@@ -156,4 +190,57 @@ export function CharacterList({
 function parseCharacter(record: CharacterRecord): Character | null {
   const parsed = characterSchema.safeParse(record.data)
   return parsed.success ? parsed.data : null
+}
+
+/**
+ * Um dos três caminhos da página inicial. É um cartão inteiro clicável, com
+ * uma chamada de ação no rodapé para deixar claro o que acontece ao entrar.
+ */
+function HomeOption({
+  eyebrow,
+  title,
+  description,
+  action,
+  onClick,
+  primary = false,
+}: {
+  eyebrow: string
+  title: string
+  description: string
+  action: string
+  onClick: () => void
+  primary?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'group flex h-full w-full flex-col rounded-xl border bg-white/45 p-5 text-left transition',
+        'hover:-translate-y-0.5 hover:bg-white/75 hover:shadow-sm',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-parchment',
+        primary ? 'border-accent/35' : 'border-ink/10 hover:border-ink/25',
+      )}
+    >
+      <span
+        className={cn(
+          'block text-[10px] font-semibold uppercase tracking-[0.16em]',
+          primary ? 'text-accent' : 'text-ink-soft',
+        )}
+      >
+        {eyebrow}
+      </span>
+      <span className="mt-2 block font-display text-xl leading-tight tracking-wide">{title}</span>
+      <span className="mt-2 block flex-1 text-sm leading-relaxed text-ink-soft">{description}</span>
+      <span
+        className={cn(
+          'mt-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide transition group-hover:gap-2.5',
+          primary ? 'text-accent' : 'text-ink-soft group-hover:text-ink',
+        )}
+      >
+        {action}
+        <span aria-hidden>→</span>
+      </span>
+    </button>
+  )
 }

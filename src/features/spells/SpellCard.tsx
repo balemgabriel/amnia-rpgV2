@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Badge } from '@/components/ui'
 import { circleColor } from '@/rules/circleColors'
 import { withAlpha } from '@/rules/lineageColors'
@@ -28,11 +29,14 @@ export function SpellCard({
   context,
   onEdit,
   onDelete,
+  footer,
 }: {
   spell: Spell
   context: SpellContext
   onEdit?: () => void
   onDelete?: () => void
+  /** Ações extras (ex.: adicionar a um personagem, na Oficina). */
+  footer?: ReactNode
 }) {
   const cost = spellCost(spell, context)
   const cx = spellCx(spell, context)
@@ -175,6 +179,10 @@ export function SpellCard({
           </p>
         ) : null}
       </div>
+
+      {footer ? (
+        <div className="no-print mt-3 border-t border-ink/8 pt-3">{footer}</div>
+      ) : null}
     </article>
   )
 }

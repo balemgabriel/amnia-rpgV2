@@ -154,7 +154,9 @@ export function RuneCard({
     className,
   )
   const style = {
-    borderColor: active ? (tone ?? undefined) : withAlpha(tone ?? '#5c5044', 0.25),
+    borderTopColor: active ? (tone ?? undefined) : withAlpha(tone ?? '#5c5044', 0.25),
+    borderRightColor: active ? (tone ?? undefined) : withAlpha(tone ?? '#5c5044', 0.25),
+    borderBottomColor: active ? (tone ?? undefined) : withAlpha(tone ?? '#5c5044', 0.25),
     borderLeftColor: tone ?? undefined,
   }
 
