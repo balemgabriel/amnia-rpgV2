@@ -158,7 +158,12 @@ export function enchantById(id: string): EnchantDef | undefined {
 }
 
 export function qualityById(id: string): QualityDef {
-  return equipment.qualities.find((quality) => quality.id === id) ?? equipment.qualities[0]
+  // O catálogo sempre traz ao menos uma qualidade (o TS não sabe disso por
+  // causa de `noUncheckedIndexedAccess`).
+  return (
+    equipment.qualities.find((quality) => quality.id === id) ??
+    (equipment.qualities[0] as QualityDef)
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -808,7 +813,7 @@ export function purchaseItem(
 
   const config = item.qualityable ? order.config : emptyConfig()
   const errors = validateConfig(item, config)
-  if (errors.length > 0) return { ok: false, reason: errors[0] }
+  if (errors.length > 0) return { ok: false, reason: errors[0] ?? 'Configuração inválida.' }
 
   const quantity = Math.max(1, Math.floor(order.quantity ?? 1))
   const days = Math.max(1, Math.floor(order.days ?? 1))
@@ -859,7 +864,7 @@ export function upgradeItem(
   if (!entry || !item || !item.qualityable) return { ok: false, reason: 'Este item não pode ser melhorado.' }
 
   const errors = validateConfig(item, config)
-  if (errors.length > 0) return { ok: false, reason: errors[0] }
+  if (errors.length > 0) return { ok: false, reason: errors[0] ?? 'Configuração inválida.' }
 
   if (qualityById(config.quality).level < qualityById(entry.quality).level) {
     return { ok: false, reason: 'Não é possível rebaixar a qualidade.' }

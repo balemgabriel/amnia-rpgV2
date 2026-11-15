@@ -68,7 +68,7 @@ export type ExportMode = 'pdf' | 'png'
 
 /**
  * Layout de exportação da ficha. Nunca aparece na tela: é montado fora dela
- * (e só enquanto exporta) para virar PDF (impressão) ou PNG.
+ * (e só enquanto exporta) para virar PDF (uma imagem por página) ou PNG.
  *
  *  - Página 1: identidade, atributos, derivados, perícias e os cinco blocos.
  *  - Página 2: convicções, hexágono, runas, anotações, canalização e magias.
@@ -689,7 +689,9 @@ async function waitForAssets(root: HTMLElement | null) {
   await document.fonts?.ready
   const images = root ? Array.from(root.querySelectorAll('img')) : []
   await Promise.all(images.map((image) => image.decode().catch(() => undefined)))
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+  // Não usamos requestAnimationFrame: em abas ocultas ele fica pausado e a
+  // exportação nunca começaria. Um macrotask basta para o layout assentar.
+  await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
 /** Altura real do conteúdo: o fim do último bloco, mesmo que passe da página. */

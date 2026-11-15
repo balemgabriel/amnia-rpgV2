@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { toPng } from 'html-to-image'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
 import { DotRating } from '@/components/DotRating'
 import { KnownRunes } from './KnownRunes'
@@ -45,6 +44,7 @@ import { SpellCard } from '@/features/spells/SpellCard'
 import { CharacterPortrait } from './CharacterPortrait'
 import { EquipmentSection } from './EquipmentSection'
 import { ExportSheet, type ExportMode } from './ExportSheet'
+import { captureNodeAsPng, downloadDataUrl, exportSlug } from './capture'
 import { getCharacter, saveCharacter } from '@/storage/characters'
 
 const GROUP_ORDER = ['fisica', 'social', 'mental'] as const
@@ -104,43 +104,54 @@ export function SheetView({
     }
   }, [id])
 
-  /** PDF abre a impressão do navegador no layout A4; PNG baixa uma imagem longa. */
+  /** PDF gera um arquivo A4 direto; PNG baixa uma imagem longa. */
   function startExport(mode: ExportMode) {
     if (exportMode) return
     setExportMode(mode)
   }
 
-  /** O ExportSheet já mediu e paginou as páginas: agora imprime ou captura. */
+  /**
+   * O ExportSheet já mediu e paginou as páginas. Agora capturamos cada página
+   * A4 como imagem e montamos o PDF com jsPDF — sem depender da caixa de
+   * impressão do navegador (que pode variar de margens e de tamanho).
+   */
   async function handleExportReady() {
-    if (exportMode === 'png') {
-      try {
-        if (!exportDocRef.current) throw new Error('sem documento')
-        const dataUrl = await toPng(exportDocRef.current, {
-          pixelRatio: 2,
-          backgroundColor: '#f3ece0',
-          cacheBust: true,
-        })
-        const link = document.createElement('a')
-        const slug = (character?.name ?? 'ficha')
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-zA-Z0-9]+/g, '-')
-          .replace(/^-|-$/g, '')
-          .toLowerCase()
-        link.download = `${slug || 'ficha'}-amnia.png`
-        link.href = dataUrl
-        link.click()
-      } catch {
-        window.alert('Não foi possível gerar a imagem da ficha.')
-      } finally {
-        setExportMode(null)
-      }
+    const doc = exportDocRef.current
+    if (!doc || !character) {
+      setExportMode(null)
       return
     }
 
-    // PDF: a página some e só o layout A4 é impresso (ver export.css).
-    window.addEventListener('afterprint', () => setExportMode(null), { once: true })
-    window.print()
+    const slug = exportSlug(character.name)
+    try {
+      if (exportMode === 'png') {
+        const dataUrl = await captureNodeAsPng(doc)
+        downloadDataUrl(dataUrl, `${slug}-amnia.png`)
+        return
+      }
+
+      const pages = Array.from(doc.querySelectorAll<HTMLElement>('.xs-page'))
+      if (pages.length === 0) throw new Error('Nenhuma página para exportar.')
+
+      // jsPDF só é baixado quando o usuário pede PDF (mantém o app leve).
+      const { jsPDF } = await import('jspdf')
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true })
+      for (const [index, page] of pages.entries()) {
+        const dataUrl = await captureNodeAsPng(page)
+        if (index > 0) pdf.addPage('a4', 'portrait')
+        // A página da ficha tem 296 mm; esticamos 1 mm para preencher o A4 inteiro.
+        pdf.addImage(dataUrl, 'PNG', 0, 0, 210, 297, undefined, 'FAST')
+      }
+      pdf.save(`${slug}-amnia.pdf`)
+    } catch {
+      window.alert(
+        exportMode === 'png'
+          ? 'Não foi possível gerar a imagem da ficha.'
+          : 'Não foi possível gerar o PDF da ficha.',
+      )
+    } finally {
+      setExportMode(null)
+    }
   }
 
   async function persist(updated: Character) {
@@ -262,18 +273,9 @@ export function SheetView({
               onClick={() => startExport('pdf')}
               disabled={exporting}
               className="text-xs"
-              title="Abrir a caixa de impressão do navegador (A4, até 3 páginas)."
+              title="Baixar a ficha em PDF (A4, até 3 páginas)."
             >
-              Imprimir
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => startExport('pdf')}
-              disabled={exporting}
-              className="text-xs"
-              title="Abrir a impressão e escolher “Salvar como PDF” (A4, até 3 páginas)."
-            >
-              {exportMode === 'pdf' ? 'Preparando…' : 'PDF'}
+              {exportMode === 'pdf' ? 'Gerando…' : 'PDF'}
             </Button>
             <Button
               variant="ghost"
