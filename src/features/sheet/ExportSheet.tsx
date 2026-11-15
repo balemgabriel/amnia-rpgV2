@@ -20,7 +20,6 @@ import {
   bonusChips,
   formatZg,
   itemById,
-  qualityById,
   type BonusChip,
 } from '@/rules/equipment'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
@@ -742,7 +741,8 @@ function firstOverflowingSpell(inner: HTMLElement, grid: HTMLElement | null | un
   const innerBottom = inner.getBoundingClientRect().top + inner.clientHeight
   const cards = Array.from(grid.children) as HTMLElement[]
   for (let index = 0; index < cards.length; index += 1) {
-    if (cards[index].getBoundingClientRect().bottom > innerBottom + 0.5) return index
+    const card = cards[index]
+    if (card && card.getBoundingClientRect().bottom > innerBottom + 0.5) return index
   }
   return null
 }
