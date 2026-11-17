@@ -765,6 +765,7 @@ function parseAdvantages(markdown: string): Advantage[] {
         name: def.name,
         kind: def.kind === 'desvantagem' ? 'desvantagem' : 'vantagem',
         points: Math.max(1, parsed.circles || def.points),
+        description: def.description,
       })
     }
   }

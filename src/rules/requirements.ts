@@ -1,6 +1,7 @@
+import { findAntecedentGroup } from './advantages'
 import { attributes, channelingMethods, skills } from './amnia'
 import type { Character } from './character'
-import { classes } from './data'
+import { advantages, classes } from './data'
 import type { AttributeId } from './types'
 
 /**
@@ -383,4 +384,94 @@ export function isRequirementUnmet(
   character: Character,
 ): boolean {
   return checkRequirement(requirement, character).status === 'unmet'
+}
+
+/**
+ * Pontos que a ficha tem em um antecedente (Refúgio, Fama, Aliado…).
+ * Fichas prontas guardam o nível como `fama-3`, então agrupamos pelo nome.
+ */
+function antecedentPoints(character: Character, name: string): number {
+  const target = normalize(name)
+  return character.advantages.reduce((total, advantage) => {
+    const group = findAntecedentGroup(advantage.sourceId ?? advantage.name)
+    const matches =
+      normalize(advantage.name) === target ||
+      (group ? normalize(group.name) === target : false)
+    return matches ? total + advantage.points : total
+  }, 0)
+}
+
+/**
+ * Lê o pré-requisito escrito no começo da descrição de uma vantagem
+ * ("Requer Refúgio ○○, …", "Requer Refúgio Móvel, …", "Requer Fama ○○○+…").
+ *
+ * Retorna `null` quando a vantagem não tem requisito. Como em
+ * `checkRequirement`, apenas `unmet` deve bloquear a compra; `unknown` fica
+ * disponível com o texto visível.
+ */
+export function checkAdvantageRequirement(
+  description: string | null | undefined,
+  character: Character,
+): RequirementCheck | null {
+  const text = (description ?? '').replace(/\*\*/g, '').trim()
+  const match = /^requer\s+(.+)$/i.exec(text)
+  if (!match) return null
+
+  const requirementText = (match[1]?.split(/[,.;]/)[0] ?? '').trim()
+  if (!requirementText) return null
+
+  const dots = (requirementText.match(/○/g) ?? []).length
+  const namePart = requirementText.replace(/[○+\s]+$/g, '').trim()
+  const normalized = normalize(namePart)
+
+  const group = findAntecedentGroup(namePart)
+  if (group) {
+    const current = antecedentPoints(character, group.name)
+    if (dots > 0) {
+      return current >= dots
+        ? {
+            text: requirementText,
+            status: 'met',
+            detail: `${group.name} ${current}/${dots}`,
+          }
+        : {
+            text: requirementText,
+            status: 'unmet',
+            detail: `Requer ${group.name} ${dots} (atual ${current})`,
+          }
+    }
+    return current > 0
+      ? { text: requirementText, status: 'met', detail: `${group.name} ${current}` }
+      : { text: requirementText, status: 'unmet', detail: `Requer ${group.name}` }
+  }
+
+  // Requisito por outra vantagem (ex.: "Requer Refúgio Móvel").
+  const owned = character.advantages.find((advantage) => {
+    if (normalize(advantage.name) === normalized) return true
+    const sourceId = advantage.sourceId
+    if (!sourceId) return false
+    return normalize(sourceId.replace(/-\d+$/, '').replace(/-/g, ' ')) === normalized
+  })
+  if (owned) {
+    return {
+      text: requirementText,
+      status: 'met',
+      detail: `${owned.name} ${owned.points}`,
+    }
+  }
+
+  const known = advantages.some((advantage) => normalize(advantage.name) === normalized)
+  if (known) {
+    return {
+      text: requirementText,
+      status: 'unmet',
+      detail: `Requer ${requirementText}`,
+    }
+  }
+
+  return {
+    text: requirementText,
+    status: 'unknown',
+    detail: `"${requirementText}" não pode ser conferido automaticamente`,
+  }
 }

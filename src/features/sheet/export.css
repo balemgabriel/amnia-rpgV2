@@ -363,6 +363,13 @@
   white-space: nowrap;
 }
 
+.xs-adv-desc {
+  margin: 0.1em 0 0;
+  font-size: 0.8em;
+  line-height: 1.25;
+  color: #5c5044;
+}
+
 /* ---- página 2 ---------------------------------------------------------- */
 .xs-p2-top {
   display: grid;

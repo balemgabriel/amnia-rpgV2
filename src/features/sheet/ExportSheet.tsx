@@ -11,6 +11,7 @@ import {
   skills,
 } from '@/rules/amnia'
 import type { Character } from '@/rules/character'
+import { resolveAdvantageDescription } from '@/rules/advantages'
 import { circleColor } from '@/rules/circleColors'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { classes, lineages } from '@/rules/data'
@@ -358,15 +359,23 @@ export function ExportSheet({
                   <p className="xs-p xs-muted">Nenhuma registrada.</p>
                 ) : (
                   <ul className="xs-list">
-                    {character.advantages.map((item) => (
-                      <li className="xs-line" key={item.id}>
-                        <span>{item.name}</span>
-                        <span className="xs-tag">
-                          {item.kind === 'desvantagem' ? '−' : '+'}
-                          {item.points}
-                        </span>
-                      </li>
-                    ))}
+                    {character.advantages.map((item) => {
+                      const description = resolveAdvantageDescription(item)
+                      return (
+                        <li className="xs-item" key={item.id}>
+                          <div className="xs-line">
+                            <span>{item.name}</span>
+                            <span className="xs-tag">
+                              {item.kind === 'desvantagem' ? '−' : '+'}
+                              {item.points}
+                            </span>
+                          </div>
+                          {description ? (
+                            <p className="xs-adv-desc">{description}</p>
+                          ) : null}
+                        </li>
+                      )
+                    })}
                   </ul>
                 )}
               </section>

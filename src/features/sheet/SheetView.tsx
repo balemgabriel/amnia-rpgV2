@@ -5,6 +5,7 @@ import { KnownRunes } from './KnownRunes'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
 import { cn } from '@/lib/cn'
+import { resolveAdvantageDescription } from '@/rules/advantages'
 import {
   attributes,
   circles,
@@ -653,16 +654,26 @@ export function SheetView({
             {character.advantages.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhuma registrada.</p>
             ) : (
-              <ul className="space-y-1 text-sm">
-                {character.advantages.map((item) => (
-                  <li key={item.id} className="flex items-baseline justify-between gap-2">
-                    <span>{item.name}</span>
-                    <span className="text-xs text-ink-soft">
-                      {item.kind === 'desvantagem' ? '−' : '+'}
-                      {item.points}
-                    </span>
-                  </li>
-                ))}
+              <ul className="space-y-2 text-sm">
+                {character.advantages.map((item) => {
+                  const description = resolveAdvantageDescription(item)
+                  return (
+                    <li key={item.id}>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span>{item.name}</span>
+                        <span className="text-xs text-ink-soft">
+                          {item.kind === 'desvantagem' ? '−' : '+'}
+                          {item.points}
+                        </span>
+                      </div>
+                      {description ? (
+                        <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">
+                          {description}
+                        </p>
+                      ) : null}
+                    </li>
+                  )
+                })}
               </ul>
             )}
           </Card>

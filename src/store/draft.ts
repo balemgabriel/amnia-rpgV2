@@ -47,6 +47,7 @@ interface DraftState {
   addAdvantage: (advantage: Omit<Advantage, 'id'>) => void
   removeAdvantage: (id: string) => void
   setAdvantagePoints: (id: string, points: number) => void
+  updateAdvantage: (id: string, patch: Partial<Omit<Advantage, 'id'>>) => void
 
   /** Alterna o ACESSO a uma runa (sem nível), respeitando o limite 3 + INT. */
   toggleKnownRune: (runeId: string) => void
@@ -195,6 +196,17 @@ export const useDraft = create<DraftState>()((set, get) => ({
         ...state.character,
         advantages: state.character.advantages.map((item) =>
           item.id === id ? { ...item, points: Math.max(1, points) } : item,
+        ),
+      },
+      dirty: true,
+    })),
+
+  updateAdvantage: (id, patch) =>
+    set((state) => ({
+      character: {
+        ...state.character,
+        advantages: state.character.advantages.map((item) =>
+          item.id === id ? { ...item, ...patch } : item,
         ),
       },
       dirty: true,

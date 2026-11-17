@@ -16,7 +16,7 @@ import { xpPurchaseSchema } from './xp'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 5
+export const SHEET_VERSION = 6
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)
@@ -44,6 +44,8 @@ export const advantageSchema = z.object({
   name: z.string(),
   kind: z.enum(['vantagem', 'desvantagem']),
   points: z.number().int().min(1),
+  /** Explicação da vantagem/desvantagem, copiada do catálogo. */
+  description: z.string().default(''),
 })
 
 export const specializationSchema = z.object({
