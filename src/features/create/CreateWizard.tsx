@@ -24,11 +24,14 @@ export function CreateWizard({
   onExit,
   onSaved,
   editing = false,
+  backLabel,
 }: {
   onExit: () => void
   onSaved: (id: string) => void
-  /** Edição de uma ficha pronta: muda só os rótulos da navegação. */
+  /** Edição de uma ficha existente: muda só os rótulos da navegação. */
   editing?: boolean
+  /** Texto do botão de voltar, conforme a página de origem. */
+  backLabel?: string
 }) {
   const step = useDraft((state) => state.step)
   const goTo = useDraft((state) => state.goTo)
@@ -45,7 +48,7 @@ export function CreateWizard({
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-3">
             <Button variant="quiet" onClick={onExit} className="px-2">
-              {editing ? '← Fichas Prontas' : '← Fichas'}
+              {backLabel ?? '← Fichas'}
             </Button>
             <span className="h-5 w-px bg-ink/15" />
             <div>

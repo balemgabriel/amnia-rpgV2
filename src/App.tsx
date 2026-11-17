@@ -11,7 +11,7 @@ import { useDraft } from '@/store/draft'
 
 type View =
   | { name: 'list' }
-  | { name: 'create'; from?: 'ready' }
+  | { name: 'create'; from?: 'ready' | 'home' }
   | { name: 'ready' }
   | { name: 'workshop' }
   | { name: 'workshopSpell'; spellId?: string }
@@ -23,26 +23,31 @@ export default function App() {
   const reset = useDraft((state) => state.reset)
 
   /**
-   * Abre uma ficha pronta no assistente para alteração.
+   * Abre uma ficha salva no assistente para alteração.
    *
    * A ficha é carregada e validada antes de entrar no rascunho: o assistente
    * trabalha com os mesmos dados salvos e, ao salvar, atualiza o mesmo registro
-   * (o `referenceId` é preservado pelo storage).
+   * (o `referenceId` é preservado pelo storage quando for uma ficha pronta).
+   *
+   * `from` define o caminho de volta: a página de fichas prontas ou a lista de
+   * fichas do jogador na página inicial.
    */
-  async function editReady(id: string) {
+  async function editCharacter(id: string, from: 'ready' | 'home') {
     const record = await getCharacter(id)
     if (!record) return
     const parsed = characterSchema.safeParse(record.data)
     if (!parsed.success) return
     reset(parsed.data)
-    setView({ name: 'create', from: 'ready' })
+    setView({ name: 'create', from })
   }
 
   if (view.name === 'create') {
     const fromReady = view.from === 'ready'
+    const editing = view.from !== undefined
     return (
       <CreateWizard
-        editing={fromReady}
+        editing={editing}
+        backLabel={fromReady ? '← Fichas Prontas' : '← Fichas'}
         onExit={() => setView(fromReady ? { name: 'ready' } : { name: 'list' })}
         onSaved={(id) => setView(fromReady ? { name: 'ready' } : { name: 'sheet', id })}
       />
@@ -54,7 +59,7 @@ export default function App() {
       <ReadySheetsPage
         onBack={() => setView({ name: 'list' })}
         onOpen={(id) => setView({ name: 'sheet', id, from: 'ready' })}
-        onEdit={(id) => void editReady(id)}
+        onEdit={(id) => void editCharacter(id, 'ready')}
       />
     )
   }
@@ -111,6 +116,7 @@ export default function App() {
       onReady={() => setView({ name: 'ready' })}
       onWorkshop={() => setView({ name: 'workshop' })}
       onOpen={(id) => setView({ name: 'sheet', id })}
+      onEdit={(id) => void editCharacter(id, 'home')}
     />
   )
 }

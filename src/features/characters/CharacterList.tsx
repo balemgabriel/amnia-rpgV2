@@ -13,11 +13,13 @@ export function CharacterList({
   onReady,
   onWorkshop,
   onOpen,
+  onEdit,
 }: {
   onNew: () => void
   onReady: () => void
   onWorkshop: () => void
   onOpen: (id: string) => void
+  onEdit: (id: string) => void
 }) {
   const [records, setRecords] = useState<CharacterRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -115,7 +117,7 @@ export function CharacterList({
                 const character = parseCharacter(record)
                 return (
                   <li key={record.id}>
-                    <div className="group relative rounded-xl border border-ink/10 bg-white/45 p-4 transition hover:border-ink/25">
+                    <div className="group relative flex h-full flex-col rounded-xl border border-ink/10 bg-white/45 p-4 transition hover:border-ink/25">
                       <button
                         type="button"
                         onClick={() => onOpen(record.id)}
@@ -175,6 +177,19 @@ export function CharacterList({
                       >
                         excluir
                       </button>
+
+                      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-ink/10 pt-3">
+                        <Button onClick={() => onOpen(record.id)} className="px-3 py-1.5 text-xs">
+                          Abrir
+                        </Button>
+                        <Button
+                          variant="quiet"
+                          onClick={() => onEdit(record.id)}
+                          className="px-3 py-1.5 text-xs"
+                        >
+                          Alterar
+                        </Button>
+                      </div>
                     </div>
                   </li>
                 )
