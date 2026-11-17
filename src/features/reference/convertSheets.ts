@@ -9,6 +9,7 @@ import {
   type Trait,
 } from '@/rules/data'
 import { skills as skillCatalog } from '@/rules/amnia'
+import { lineageTraits } from '@/rules/lineages'
 import {
   createEmptyCharacter,
   emptySkills,
@@ -604,7 +605,6 @@ const TRAIT_ALIASES: Record<string, string> = {
   'mestre da camuflagem': 'mestre-da-camuflagem',
   'parede ambulante': 'parede-ambulante',
   'corpo gigante': 'corpo-gigante',
-  'caminho da vida': 'caminho-da-vida',
   'saude de gigante': 'saude-de-gigante',
   'passos pesados': 'passos-pesados',
   'impeto solar': 'impeto-solar',
@@ -632,12 +632,7 @@ function parseTraits(
   meta: SheetMeta,
 ): { positive: string[]; negative: string[]; unmatched: string[] } {
   const lineage: Lineage | undefined = lineages.find((item) => item.id === meta.ancestryId)
-  const sublineage = lineage?.lineages.find((item) => item.id === meta.sublineageId)
-  const allTraits: Trait[] = [
-    ...(sublineage?.traits ?? []),
-    ...(lineage?.racialTraits ?? []),
-    ...(lineage?.negativeTraits ?? []),
-  ]
+  const allTraits: Trait[] = lineageTraits(lineage ?? null)
 
   const byName = new Map<string, Trait>()
   for (const trait of allTraits) byName.set(normalize(trait.name), trait)
@@ -654,6 +649,16 @@ function parseTraits(
   for (const rawLine of linesOf(section)) {
     const line = rawLine.trim()
     if (!line || /^-{3,}$/.test(line) || /^[-*]$/.test(line)) continue
+
+    // Golshoy: "Caminho da Vida: Queimada, Runa de fogo" resolve para a opção
+    // do caminho pelo nome do fenômeno.
+    const pathOption = lineage?.path?.options.find((option) =>
+      normalize(line).includes(normalize(option.name)),
+    )
+    if (pathOption) {
+      if (!positive.includes(pathOption.id)) positive.push(pathOption.id)
+      continue
+    }
 
     const name = traitNameOf(line)
     if (!name) continue

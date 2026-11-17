@@ -463,12 +463,6 @@
     "lineages": [],
     "racialTraits": [
       {
-        "id": "caminho-da-vida",
-        "name": "Caminho da Vida",
-        "cost": 1,
-        "description": "No momento da criação, escolha o fenômeno climático que marcou seu nascimento. Você ganha afinidade com o clima e Especialização no elemento correspondente, além de um direcionamento para seu Gut’zir:\nTempestade: Você nasceu sob raios que derrubariam castelos. Seu Gut’zir é a compreensão e o estudo. Você mantém a calma no caos. (Recebe a Runa de Raio).\nNevasca: Você nasceu em um frio que gelaria um urso polar. Seu espírito é inabalável e seu Gut’zir é a robustez e a superação das dificuldades diárias. (Recebe a Runa de Gelo).\nTerremoto: O solo se movia e montanhas se rachavam ao seu redor. Você se sente em casa nos momentos mais caóticos e imprevisíveis. (Recebe a Runa de Terra).\nEnchente: A água o tocava antes mesmo de você respirar. Você quase viu a morte antes de conhecer a vida. Seu Gut’zir é a celebração do ciclo entre a vida e a morte. (Recebe a Runa de Água).\nQueimada: O horizonte estava vermelho e seu sangue fervia. Você busca a sensação de adrenalina e sobrevivência pura. Seu Gut’zir é o combate e a superação física. (Recebe a Runa de Fogo)."
-      },
-      {
         "id": "parede-ambulante",
         "name": "Parede Ambulante",
         "cost": 2,
@@ -518,7 +512,45 @@
         "cost": -2,
         "description": "Recebe -1 em deslocamento."
       }
-    ]
+    ],
+    "path": {
+      "id": "caminho-da-vida",
+      "name": "O Caminho da Vida",
+      "cost": 1,
+      "description": "No momento da criação, escolha o fenômeno climático que marcou seu nascimento. Você ganha afinidade com o clima e Especialização no elemento correspondente, além de um direcionamento para seu Gut’zir:",
+      "options": [
+        {
+          "id": "caminho-tempestade",
+          "name": "Tempestade",
+          "cost": 1,
+          "description": "Você nasceu sob raios que derrubariam castelos. Seu Gut’zir é a compreensão e o estudo. Você mantém a calma no caos. (Recebe a Runa de Raio)."
+        },
+        {
+          "id": "caminho-nevasca",
+          "name": "Nevasca",
+          "cost": 1,
+          "description": "Você nasceu em um frio que gelaria um urso polar. Seu espírito é inabalável e seu Gut’zir é a robustez e a superação das dificuldades diárias. (Recebe a Runa de Gelo)."
+        },
+        {
+          "id": "caminho-terremoto",
+          "name": "Terremoto",
+          "cost": 1,
+          "description": "O solo se movia e montanhas se rachavam ao seu redor. Você se sente em casa nos momentos mais caóticos e imprevisíveis. (Recebe a Runa de Terra)."
+        },
+        {
+          "id": "caminho-enchente",
+          "name": "Enchente",
+          "cost": 1,
+          "description": "A água o tocava antes mesmo de você respirar. Você quase viu a morte antes de conhecer a vida. Seu Gut’zir é a celebração do ciclo entre a vida e a morte. (Recebe a Runa de Água)."
+        },
+        {
+          "id": "caminho-queimada",
+          "name": "Queimada",
+          "cost": 1,
+          "description": "O horizonte estava vermelho e seu sangue fervia. Você busca a sensação de adrenalina e sobrevivência pura. Seu Gut’zir é o combate e a superação física. (Recebe a Runa de Fogo)."
+        }
+      ]
+    }
   },
   {
     "id": "wyad",
@@ -743,75 +775,36 @@
     "description": "Habitando as profundezas do Vale de Lethesab, os Skaraeb foram descobertos pelos habitantes de Amnia a pouco tempo, mas por milenios eles tiveram seus imperios, guerras e conquistas nas imensas cavernas abaixo do lago das Cinzas nas Planicies centrais. Os Skaraeb são semelhantes aos Lirizatls no sentido que são uma raça cheia de sub-especies dentro dela. Cada uma com sua função para o avanço da colônia.",
     "lineages": [
       {
-        "id": "trabalhador",
-        "name": "Trabalhador",
-        "traits": [
-          {
-            "id": "construtor-instintivo",
-            "name": "Construtor Instintivo",
-            "cost": 0,
-            "description": "Você naturalmente entende como construir objetos, recebendo 1 especialização em Ofícios."
-          },
-          {
-            "id": "bracos-insectoides",
-            "name": "Braços Insectoídes",
-            "cost": 2,
-            "description": "Você tem um par de braços pequenos extras diretamente abaixo de seus braços, eles podem realizar ações menores sem gastar PA, e trabalham duas vezes mais rápido quando envolvem Ofícios."
-          }
-        ]
-      },
-      {
-        "id": "protetor",
-        "name": "Protetor",
-        "traits": [
-          {
-            "id": "carapaca-do-guardiao",
-            "name": "Carapaça do Guardião",
-            "cost": 0,
-            "description": "Você tem uma carapaça mais grossa que o normal, concedendo +1RD, mas armaduras devem ser customizadas para servir em você."
-          },
-          {
-            "id": "sendo-de-protecao",
-            "name": "Sendo de Proteção",
-            "cost": 2,
-            "description": "Ações ou manobras defensivas recebem +1 dado, e caso envolvam proteger alguém recebem +2."
-          }
-        ]
-      },
-      {
-        "id": "cacador",
-        "name": "Caçador",
-        "traits": [
-          {
-            "id": "visao-predatoria",
-            "name": "Visão Predatória",
-            "cost": 0,
-            "description": "Você tem olhos naturalmente mais perceptivos que outros, concedendo +1 dado de percepção."
-          },
-          {
-            "id": "armas-naturais",
-            "name": "Armas Naturais",
-            "cost": 2,
-            "description": "Você desenvolveu uma arma natural, seja uma cauda com ferrão, presas ou garras, recebendo +1 de Dano ao usar elas e especialização em Armas Naturais."
-          }
-        ]
-      },
-      {
-        "id": "qatae",
-        "name": "Qatae",
+        "id": "qamil",
+        "name": "Qamil",
+        "casteId": "trabalhador",
         "traits": [
           {
             "id": "forca-faz-a-uniao",
             "name": "Força faz a União",
             "cost": 1,
             "description": "Ao usar a ação de ajuda, concede 1 sucesso automático para o teste de um aliado junto do +1 dado extra."
-          },
+          }
+        ]
+      },
+      {
+        "id": "qahame",
+        "name": "Qahame",
+        "casteId": "protetor",
+        "traits": [
           {
             "id": "aura-de-protecao",
             "name": "Aura de Proteção",
             "cost": 0,
             "description": "Aliados a sua volta recebem 1RD."
-          },
+          }
+        ]
+      },
+      {
+        "id": "qasayad",
+        "name": "Qasayad",
+        "casteId": "cacador",
+        "traits": [
           {
             "id": "feromonios-de-medo",
             "name": "Feromônios de Medo",
@@ -821,21 +814,36 @@
         ]
       },
       {
-        "id": "khayat",
-        "name": "Khayat",
+        "id": "khaymil",
+        "name": "Khaymil",
+        "casteId": "trabalhador",
         "traits": [
           {
             "id": "tecelao-de-mana",
             "name": "Tecelão de Mana",
             "cost": 1,
             "description": "Você consegue tecer teias finas reforçadas por mana, fazendo com que você possa criar ou manipular objetos com suas teias, objetos criados por sua teia recebem o seu bónus de CAR nos respectivos testes."
-          },
+          }
+        ]
+      },
+      {
+        "id": "khayame",
+        "name": "Khayame",
+        "casteId": "protetor",
+        "traits": [
           {
             "id": "instinto-do-vigia",
             "name": "Instinto do Vigia",
             "cost": 1,
             "description": "Você naturalmente percebe ações minúsculas que podem ser suspeitas, recebendo +1 em testes de percepção, pode usar testes de percepção para tentar prever exatamente oq um alvo irá fazer."
-          },
+          }
+        ]
+      },
+      {
+        "id": "khayad",
+        "name": "Khayad",
+        "casteId": "cacador",
+        "traits": [
           {
             "id": "feromonios-do-fantasma",
             "name": "Feromônios do fantasma",
@@ -845,21 +853,36 @@
         ]
       },
       {
-        "id": "rasasa",
-        "name": "Rasasa",
+        "id": "rasamil",
+        "name": "Rasamil",
+        "casteId": "trabalhador",
         "traits": [
           {
             "id": "fazendo-sua-parte",
             "name": "Fazendo sua parte",
             "cost": 1,
             "description": "Você sempre sabe cobrir a posição necessária, assim que uma cena ou combate começa você pode assumir uma posição e receber +1 dado para atacar ou defender."
-          },
+          }
+        ]
+      },
+      {
+        "id": "rasame",
+        "name": "Rasame",
+        "casteId": "protetor",
+        "traits": [
           {
             "id": "carapaca-negra",
             "name": "Carapaça Negra",
             "cost": 1,
             "description": "Sua carapaça é extremamente pesada e robusta, fazendo com que ataques precisam ter uma margem de sucesso maior que sua RD para que eles não sejam ricocheteados. Mas recebe -2 em testes de Destreza."
-          },
+          }
+        ]
+      },
+      {
+        "id": "rasayad",
+        "name": "Rasayad",
+        "casteId": "cacador",
+        "traits": [
           {
             "id": "duelista-nato",
             "name": "Duelista Nato",
@@ -920,6 +943,95 @@
         "cost": -2,
         "description": "Sua forma de comunicação inclui feromônios, sons de mandíbula ou movimentos de antenas que não-Skaraeb acham perturbadores. Sofre -2 dados em testes Sociais com não-Skaraeb, a menos que passe tempo adaptando sua comunicação (1 semana de convívio, ou traços positivos de linguistica)."
       }
+    ],
+    "casteDescription": "Skaraebs são divididos naturalmente por sua casta de nascimento, sendo elas Trabalhador, Protetor e Caçador. Trabalhadores podem subir na casta social e atingir uma posição maior na hierarquia Skaraeb, mas apenas se forem escolhidos pessoalmente por suas Rainhas.",
+    "castes": [
+      {
+        "id": "trabalhador",
+        "name": "Trabalhador",
+        "traits": [
+          {
+            "id": "construtor-instintivo",
+            "name": "Construtor Instintivo",
+            "cost": 0,
+            "description": "Você naturalmente entende como construir objetos, recebendo 1 especialização em Ofícios."
+          },
+          {
+            "id": "bracos-insectoides",
+            "name": "Braços Insectoídes",
+            "cost": 2,
+            "description": "Você tem um par de braços pequenos extras diretamente abaixo de seus braços, eles podem realizar ações menores sem gastar PA, e trabalham duas vezes mais rápido quando envolvem Ofícios."
+          }
+        ]
+      },
+      {
+        "id": "protetor",
+        "name": "Protetor",
+        "traits": [
+          {
+            "id": "carapaca-do-guardiao",
+            "name": "Carapaça do Guardião",
+            "cost": 0,
+            "description": "Você tem uma carapaça mais grossa que o normal, concedendo +1RD, mas armaduras devem ser customizadas para servir em você."
+          },
+          {
+            "id": "sendo-de-protecao",
+            "name": "Sendo de Proteção",
+            "cost": 2,
+            "description": "Ações ou manobras defensivas recebem +1 dado, e caso envolvam proteger alguém recebem +2."
+          }
+        ]
+      },
+      {
+        "id": "cacador",
+        "name": "Caçador",
+        "traits": [
+          {
+            "id": "visao-predatoria",
+            "name": "Visão Predatória",
+            "cost": 0,
+            "description": "Você tem olhos naturalmente mais perceptivos que outros, concedendo +1 dado de percepção."
+          },
+          {
+            "id": "armas-naturais",
+            "name": "Armas Naturais",
+            "cost": 2,
+            "description": "Você desenvolveu uma arma natural, seja uma cauda com ferrão, presas ou garras, recebendo +1 de Dano ao usar elas e especialização em Armas Naturais."
+          }
+        ]
+      }
+    ],
+    "lineageGroups": [
+      {
+        "id": "qatae",
+        "name": "Qatae",
+        "description": "Qatae são os Skaraebs mais numerosos e comuns do Lethesab, Súditos da rainha Qata e habitando a cidade de Akh’Murat, cujo é o centro de comércio e cultura do Lethesab, seu foco principal é a versatilidade, sendo tecnológica, cultural e militar. Os Qatae também são fascinados com Alquimia e os melhores alquimistas de todo Lethesab e possivelmente Amnia estão em Akh’Morath.",
+        "sublineageIds": [
+          "qamil",
+          "qahame",
+          "qasayad"
+        ]
+      },
+      {
+        "id": "khayat",
+        "name": "Khayat",
+        "description": "Khayat são os Skaraebs que habitam Nashra’Zeen, a cidade flutuante de Nashra, a Rainha Tecelã. Sendo exímios artesãos, músicos e artistas, os Khayat criam suas cidades e casas com suas teias naturalmente reforçadas com magia, fazendo com que elas possam flutuar livremente pelos Grandes Vales do Lethesab via as correntes de ar subterrâneas ou fiquem suspensas no topo dos vales e penhascos.",
+        "sublineageIds": [
+          "khaymil",
+          "khayame",
+          "khayad"
+        ]
+      },
+      {
+        "id": "rasasa",
+        "name": "Rasasa",
+        "description": "Habitando a cidade-fortaleza de Rasadur, os súditos da rainha Rasa valorizam o combate e o militarismo acima de tudo, sendo grandes guerreiros e ferreiros, participando de rituais de combate diariamente pela glória de sua rainha.",
+        "sublineageIds": [
+          "rasamil",
+          "rasame",
+          "rasayad"
+        ]
+      }
     ]
   },
   {
@@ -938,7 +1050,8 @@
             "cost": 0,
             "description": "Sua pele se adapta ao ambiente. Recebendo a runa de Camaleão, e efeitos de ilusão em você tem custo reduzido em -1."
           }
-        ]
+        ],
+        "description": "Olhos grandes e independentes, estatura pequena, pele que muda de cor sutilmente. Movimentos lentos e calculados."
       },
       {
         "id": "kaispalin",
@@ -950,7 +1063,8 @@
             "cost": 0,
             "description": "Sua versatilidade é sua maior arma. Você recebe 3 especializações de sua escolha (que não sejam de combate direto)."
           }
-        ]
+        ],
+        "description": "Estatura mediana, aparência de lagarto comum, cauda forte e musculosa. São os mais adaptáveis e curiosos, e o tipo de Lirizatl mais comum em Amnia."
       },
       {
         "id": "siskoatl",
@@ -962,7 +1076,8 @@
             "cost": 0,
             "description": "Você é naturalmente resistente a venenos recebendo +1 em dados para resistir venenos, e além disso, qualquer dano de veneno que você receba cura você igual a metade a margem de sucesso no SAVE."
           }
-        ]
+        ],
+        "description": "Estatura mediana, escamas lisas e brilhantes, presas retráteis. Adaptados a ambientes áridos, mas com veneno letal. São comumente vistos habitando o Grande Deserto."
       },
       {
         "id": "toroyotl",
@@ -974,7 +1089,8 @@
             "cost": 0,
             "description": "Sua carapaça é uma fortaleza. Você ganha +1RD e +1 em dados de Defesa, mas diminui seu deslocamento em -3."
           }
-        ]
+        ],
+        "description": "Estatura mediana a grande, carapaça óssea robusta, movimentos lentos mas inabaláveis. São tanques naturais dos Lirizatl."
       },
       {
         "id": "ketsapuek",
@@ -986,7 +1102,8 @@
             "cost": 0,
             "description": "Suas escamas canalizam magia, magias de reforço ou alteração tem o custo reduzido em -1 ao afetar suas escamas."
           }
-        ]
+        ],
+        "description": "Estatura mediana a grande, escamas extremamente resistentes e afiadas que crescem constantemente. São comumente vistos nas Ilhas Vermelhas."
       },
       {
         "id": "krepetl",
@@ -1004,7 +1121,8 @@
             "cost": 0,
             "description": "Sua natureza colossal exige muito de você. Você precisa consumir o dobro de comida e água de um Lirizatl comum, e se ficar mais de 4 horas sem comer, sofre -2 dado em todos os testes."
           }
-        ]
+        ],
+        "description": "Enormes (tamanho de 2 homens adultos), mandíbula poderosa semelhante a um crocodilo. São líderes guerreiros e protetores."
       },
       {
         "id": "kolotl",
@@ -1022,7 +1140,8 @@
             "cost": 0,
             "description": "Por serem vistos como santos, as pessoas esperam que você tenha todas as respostas. Em situações de crise, você sofre -2 em testes de Intimidação ou Persuasão se tentar se esquivar de responsabilidades ou admitir ignorância."
           }
-        ]
+        ],
+        "description": "Grandes, corpo serpentino, cabeça semelhante a um dragão do Oriente. São sábios e canalizadores de magia elemental."
       },
       {
         "id": "xalimikol",
@@ -1040,7 +1159,8 @@
             "cost": 0,
             "description": "Você se sente sufocado em espaços abertos demais. Em ambientes sem teto ou muito vastos (como planícies ou céus abertos), você sofre -2em testes de Percepção e Vontade, pois se sente exposto e vulnerável."
           }
-        ]
+        ],
+        "description": "Um pouco maiores que Kuets, mas consideravelmente mais esguios. Adaptados ao subterrâneo, com garras extremamente potentes."
       },
       {
         "id": "kamaxa",
@@ -1058,7 +1178,8 @@
             "cost": 0,
             "description": "Sua casta é temida e odiada. Você sofre -2 em todos os testes sociais iniciais com estranhos, pois eles instintivamente desconfiam ou temem de você."
           }
-        ]
+        ],
+        "description": "Tamanho normal, mas extremamente largos e esguios, semelhantes a salamandras. São vistos como mau agouro devido ao seu veneno letal."
       },
       {
         "id": "axokatol",
@@ -1076,7 +1197,8 @@
             "cost": 0,
             "description": "Você precisa estar submerso ou em contato com água regularmente. Se ficar fora de submersão por mais de 3 horas, recebe -2 em todas as rolagens, pois seu corpo começa a secar e enfraquecer."
           }
-        ]
+        ],
+        "description": "Pequenos e pálidos, corpo maleável semelhante a um axolote. São abençoados com regeneração extrema e afinidade com a água."
       }
     ],
     "racialTraits": [
@@ -1129,6 +1251,32 @@
         "name": "Costumes Diferentes",
         "cost": -2,
         "description": "Você recebe -1 em testes sociais ao falar com Raças diferentes."
+      }
+    ],
+    "lineageGroups": [
+      {
+        "id": "kuetz",
+        "name": "Kuetz",
+        "description": "A casta mais comum dos Lirizatl, presente em toda Amnia. Escolha qual é a sua “casta” de nascença entre as linhagens Kuetz.",
+        "sublineageIds": [
+          "kameyotl",
+          "kaispalin",
+          "siskoatl",
+          "toroyotl",
+          "ketsapuek"
+        ]
+      },
+      {
+        "id": "tlahkoa",
+        "name": "Tlahkoa",
+        "description": "A casta de líderes e santos, na qual raramente nascem, apenas durante eventos especiais ou Calamidades. Devido à natureza quase divina dos Tlahkoa, eles recebem um fardo adicional em cima de seus traços.",
+        "sublineageIds": [
+          "krepetl",
+          "kolotl",
+          "xalimikol",
+          "kamaxa",
+          "axokatol"
+        ]
       }
     ]
   },

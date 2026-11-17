@@ -14,7 +14,7 @@ import type { Character } from '@/rules/character'
 import { resolveAdvantageDescription } from '@/rules/advantages'
 import { circleColor } from '@/rules/circleColors'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
-import { classes, lineages } from '@/rules/data'
+import { classes } from '@/rules/data'
 import { computeDerived } from '@/rules/derive'
 import {
   activeBonuses,
@@ -24,6 +24,13 @@ import {
   type BonusChip,
 } from '@/rules/equipment'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
+import {
+  findCaste,
+  findLineage,
+  findSublineage,
+  lineageTraits,
+  selectedPathOption,
+} from '@/rules/lineages'
 import { runeById, runeName } from '@/rules/runes'
 import { skillGroupColor } from '@/rules/skillColors'
 import {
@@ -95,8 +102,10 @@ export function ExportSheet({
   const equipped = useMemo(() => activeBonuses(character.inventory), [character.inventory])
   const context = useMemo(() => spellContext(character), [character])
 
-  const lineage = lineages.find((item) => item.id === character.ancestryId)
-  const sublineage = lineage?.lineages.find((item) => item.id === character.sublineageId)
+  const lineage = findLineage(character.ancestryId)
+  const sublineage = findSublineage(lineage, character.sublineageId)
+  const caste = findCaste(lineage, character.casteId)
+  const pathOption = selectedPathOption(lineage, character.ancestryTraits)
   const classDef = classes.find((item) => item.id === character.classId)
   const ability = classDef?.coreAbilities.find((item) => item.id === character.classAbilityId)
   const abilityIndex =
@@ -107,19 +116,18 @@ export function ExportSheet({
   const method = channelingMethods.find((item) => item.id === character.channelingMethodId)
 
   const lineageLabel = lineage
-    ? sublineage
-      ? `${lineage.name} — ${sublineage.name}`
-      : lineage.name
+    ? [
+        lineage.name,
+        ...(caste ? [caste.name] : []),
+        ...(sublineage ? [sublineage.name] : []),
+        ...(pathOption ? [`${lineage.path?.name ?? 'Caminho'}: ${pathOption.name}`] : []),
+      ].join(' — ')
     : null
   const lineageTone =
     lineageColor(character.sublineageId) ?? ancestryColor(character.ancestryId) ?? '#5c5044'
   const classTint = classDef ? (classTone(classDef.id) ?? '#5c5044') : '#5c5044'
 
-  const traitPool = [
-    ...(sublineage?.traits ?? []),
-    ...(lineage?.racialTraits ?? []),
-    ...(lineage?.negativeTraits ?? []),
-  ]
+  const traitPool = lineageTraits(lineage)
   const traitIds = [...character.ancestryTraits, ...character.negativeTraits]
   const traits = traitPool.filter((trait) => traitIds.includes(trait.id))
 

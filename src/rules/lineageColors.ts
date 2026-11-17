@@ -90,13 +90,24 @@ export const lineageColors: Record<string, string> = {
   kalik: lineagePalette.verde,
   kadin: lineagePalette.azulEscuro,
 
-  // Skaraeb
-  trabalhador: lineagePalette.laranja,
-  protetor: lineagePalette.vermelho,
-  cacador: lineagePalette.roxo,
+  // Skaraeb — grupos
   qatae: lineagePalette.azulEsverdeado,
   khayat: lineagePalette.ciano,
   rasasa: lineagePalette.verde,
+  // Skaraeb — linhagens por casta (herdam a cor do grupo)
+  qamil: lineagePalette.azulEsverdeado,
+  qahame: lineagePalette.azulEsverdeado,
+  qasayad: lineagePalette.azulEsverdeado,
+  khaymil: lineagePalette.ciano,
+  khayame: lineagePalette.ciano,
+  khayad: lineagePalette.ciano,
+  rasamil: lineagePalette.verde,
+  rasame: lineagePalette.verde,
+  rasayad: lineagePalette.verde,
+
+  // Lirizatl — grupos
+  kuetz: lineagePalette.azulEsverdeado,
+  tlahkoa: lineagePalette.roxo,
 
   // Lirizatl
   kameyotl: lineagePalette.azulEscuro,

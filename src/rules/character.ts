@@ -16,7 +16,7 @@ import { xpPurchaseSchema } from './xp'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 6
+export const SHEET_VERSION = 7
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)
@@ -67,6 +67,8 @@ const characterObjectSchema = z.object({
   // Etapa 1 — Conceito e Essência
   ancestryId: z.string().nullable(),
   sublineageId: z.string().nullable(),
+  /** Casta de nascimento (ex.: Skaraeb Trabalhador/Protetor/Caçador). */
+  casteId: z.string().nullable().default(null),
   ancestryTraits: z.array(z.string()),
   negativeTraits: z.array(z.string()),
   desire: z.string(),
@@ -148,6 +150,7 @@ export function createEmptyCharacter(now = Date.now()): Character {
 
     ancestryId: null,
     sublineageId: null,
+    casteId: null,
     ancestryTraits: [],
     negativeTraits: [],
     desire: '',

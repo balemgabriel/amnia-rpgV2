@@ -17,7 +17,38 @@ export interface Trait {
 export interface SubLineage {
   id: string
   name: string
+  /** Descrição própria da linhagem, quando o material traz. */
+  description?: string
+  /** Casta exigida para escolher esta linhagem (ex.: Skaraeb). */
+  casteId?: string
   traits: Trait[]
+}
+
+export interface Caste {
+  id: string
+  name: string
+  traits: Trait[]
+}
+
+export interface LineageGroup {
+  id: string
+  name: string
+  description: string
+  /** Ids das linhagens que pertencem a este grupo. */
+  sublineageIds: string[]
+}
+
+/**
+ * Caminho de vida com opções exclusivas (ex.: O Caminho da Vida dos Golshoy).
+ * O jogador compra apenas uma opção; trocar de opção não custa pontos extras.
+ */
+export interface TraitPath {
+  id: string
+  name: string
+  description: string
+  /** Custo de cada opção, em pontos de ancestralidade. */
+  cost: number
+  options: Trait[]
 }
 
 export interface Lineage {
@@ -28,6 +59,14 @@ export interface Lineage {
   group: LineageGroupId
   description: string
   lineages: SubLineage[]
+  /** Grupos de linhagens com descrição própria (ex.: Kuetz/Tlahkoa). */
+  lineageGroups?: LineageGroup[]
+  /** Castas da raça e seus traços gerais (ex.: Skaraeb). */
+  castes?: Caste[]
+  /** Texto introdutório da seção de castas. */
+  casteDescription?: string
+  /** Caminho exclusivo que substitui a seção de linhagens (ex.: Golshoy). */
+  path?: TraitPath
   racialTraits: Trait[]
   negativeTraits: Trait[]
 }

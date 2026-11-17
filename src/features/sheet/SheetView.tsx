@@ -26,8 +26,14 @@ import {
 } from '@/rules/character'
 import { computeDerived } from '@/rules/derive'
 import { activeBonuses, bonusChips, type BonusChip } from '@/rules/equipment'
-import { classes, lineages } from '@/rules/data'
+import { classes } from '@/rules/data'
 import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
+import {
+  findCaste,
+  findLineage,
+  findSublineage,
+  selectedPathOption,
+} from '@/rules/lineages'
 import { circleColor } from '@/rules/circleColors'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { skillGroupColor } from '@/rules/skillColors'
@@ -229,8 +235,10 @@ export function SheetView({
   // Bônus de itens equipados: aparecem ao lado do valor e somem ao desequipar.
   const equipped = activeBonuses(character.inventory)
   const byId = Object.fromEntries(derived.map((stat) => [stat.id, stat]))
-  const lineage = lineages.find((item) => item.id === character.ancestryId)
-  const sublineage = lineage?.lineages.find((item) => item.id === character.sublineageId)
+  const lineage = findLineage(character.ancestryId)
+  const sublineage = findSublineage(lineage, character.sublineageId)
+  const caste = findCaste(lineage, character.casteId)
+  const pathOption = selectedPathOption(lineage, character.ancestryTraits)
   const classDef = classes.find((item) => item.id === character.classId)
   const ability = classDef?.coreAbilities.find((item) => item.id === character.classAbilityId)
   const abilityIndex =
@@ -257,9 +265,12 @@ export function SheetView({
   )
 
   const lineageLabel = lineage
-    ? sublineage
-      ? `${lineage.name} — ${sublineage.name}`
-      : lineage.name
+    ? [
+        lineage.name,
+        ...(caste ? [caste.name] : []),
+        ...(sublineage ? [sublineage.name] : []),
+        ...(pathOption ? [`${lineage.path?.name ?? 'Caminho'}: ${pathOption.name}`] : []),
+      ].join(' — ')
     : null
   const lineageTone =
     lineageColor(character.sublineageId) ?? ancestryColor(character.ancestryId) ?? null
