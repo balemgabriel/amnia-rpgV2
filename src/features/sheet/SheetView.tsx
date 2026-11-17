@@ -65,10 +65,13 @@ export function SheetView({
   id,
   onBack,
   onOpenSpell,
+  backLabel = '← Fichas',
 }: {
   id: string
   onBack: () => void
   onOpenSpell: (spellId?: string) => void
+  /** Texto do botão de voltar (fichas prontas voltam para a própria página). */
+  backLabel?: string
 }) {
   const [character, setCharacter] = useState<Character | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -265,7 +268,7 @@ export function SheetView({
       <header className="no-print border-b border-ink/10">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-4">
           <Button variant="quiet" onClick={onBack} className="px-2">
-            ← Fichas
+            {backLabel}
           </Button>
           <div className="flex items-center gap-1.5">
             <Button
@@ -683,6 +686,15 @@ export function SheetView({
             </p>
           ) : null}
         </Card>
+
+        {character.notes.trim() ? (
+          <Card>
+            <h2 className="mb-2 font-display text-xl tracking-wide">Anotações</h2>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-ink-soft">
+              {character.notes}
+            </p>
+          </Card>
+        ) : null}
 
         <Card id="experiencia" className="print-avoid-break scroll-mt-24">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">

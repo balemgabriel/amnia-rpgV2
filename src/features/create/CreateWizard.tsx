@@ -23,9 +23,12 @@ const STEP_COMPONENTS = [
 export function CreateWizard({
   onExit,
   onSaved,
+  editing = false,
 }: {
   onExit: () => void
   onSaved: (id: string) => void
+  /** Edição de uma ficha pronta: muda só os rótulos da navegação. */
+  editing?: boolean
 }) {
   const step = useDraft((state) => state.step)
   const goTo = useDraft((state) => state.goTo)
@@ -42,11 +45,13 @@ export function CreateWizard({
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-3">
             <Button variant="quiet" onClick={onExit} className="px-2">
-              ← Fichas
+              {editing ? '← Fichas Prontas' : '← Fichas'}
             </Button>
             <span className="h-5 w-px bg-ink/15" />
             <div>
-              <p className="font-display text-lg leading-none">Nova ficha</p>
+              <p className="font-display text-lg leading-none">
+                {editing ? 'Alterar ficha' : 'Nova ficha'}
+              </p>
               <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-ink-soft">
                 {name.trim() || 'Sem nome'}
               </p>

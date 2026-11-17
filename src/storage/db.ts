@@ -14,6 +14,12 @@ export interface CharacterRecord {
   rulesVersion: string
   /** Versão do formato da ficha, para migrar fichas antigas. */
   sheetVersion: number
+  /**
+   * Presente apenas em fichas prontas da campanha. Guarda o id da ficha de
+   * referência original (`sheets.json`) para permitir "Resetar ao padrão".
+   * Fichas do jogador não têm esse campo.
+   */
+  referenceId?: string
   data: unknown
   createdAt: number
   updatedAt: number
@@ -46,6 +52,11 @@ db.version(1).stores({
 // v2: biblioteca da Oficina de Magias (não mexe nas fichas existentes).
 db.version(2).stores({
   spells: 'id, name, updatedAt',
+})
+
+// v3: marcador das fichas prontas da campanha (referenceId).
+db.version(3).stores({
+  characters: 'id, name, updatedAt, referenceId',
 })
 
 export { db }
