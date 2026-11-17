@@ -9,26 +9,31 @@ import {
   buildAntecedentAdvantage,
   findAntecedentLevel,
   resolveAdvantageDescription,
+  type AntecedentGroup,
 } from '@/rules/advantages'
 import { creationBudget } from '@/rules/amnia'
-import { advantagePoints, validateAdvantages } from '@/rules/character'
-import { advantages } from '@/rules/data'
+import { advantagePoints, validateAdvantages, type Character } from '@/rules/character'
+import { advantages, type AdvantageDef } from '@/rules/data'
 import { checkAdvantageRequirement } from '@/rules/requirements'
 import { useDraft } from '@/store/draft'
 
-type Tab = 'vantagem' | 'desvantagem' | 'antecedente'
+type Tab = 'vantagem' | 'desvantagem'
 
-const TABS: Tab[] = ['vantagem', 'desvantagem', 'antecedente']
+const TABS: Tab[] = ['vantagem', 'desvantagem']
 
 const KIND_LABEL: Record<Tab, string> = {
   vantagem: 'Vantagens',
   desvantagem: 'Desvantagens',
-  antecedente: 'Antecedentes',
+}
+
+interface CategoryCatalog {
+  defs: AdvantageDef[]
+  /** Antecedentes da categoria, comprados diretamente pelos pontos. */
+  groups: AntecedentGroup[]
 }
 
 export function StepAdvantages() {
   const character = useDraft((state) => state.character)
-  const addAdvantage = useDraft((state) => state.addAdvantage)
   const removeAdvantage = useDraft((state) => state.removeAdvantage)
   const setAdvantagePoints = useDraft((state) => state.setAdvantagePoints)
   const updateAdvantage = useDraft((state) => state.updateAdvantage)
@@ -42,18 +47,29 @@ export function StepAdvantages() {
     creationBudget.minDisadvantagePoints,
   )
 
-  const catalog = useMemo(
-    () =>
-      tab === 'antecedente'
-        ? []
-        : advantages.filter((item) => item.kind === tab),
-    [tab],
-  )
+  const categories = useMemo(() => {
+    const map = new Map<string, CategoryCatalog>()
 
-  const categories = useMemo(
-    () => [...new Set(catalog.map((item) => item.category))],
-    [catalog],
-  )
+    for (const def of advantages) {
+      if (def.kind !== tab) continue
+      const entry = map.get(def.category) ?? { defs: [], groups: [] }
+      entry.defs.push(def)
+      map.set(def.category, entry)
+    }
+
+    // Antecedentes são vantagens compradas em pontos. Eles entram na própria
+    // categoria (Fama, Refúgio…) em vez de uma seção separada, para o jogador
+    // escolher os pontos no mesmo lugar em que lê a explicação.
+    if (tab === 'vantagem') {
+      for (const group of antecedents) {
+        const entry = map.get(group.category) ?? { defs: [], groups: [] }
+        entry.groups.push(group)
+        map.set(group.category, entry)
+      }
+    }
+
+    return [...map.entries()]
+  }, [tab])
 
   return (
     <div className="space-y-6">
@@ -188,155 +204,208 @@ export function StepAdvantages() {
         ))}
       </div>
 
-      {tab === 'antecedente' ? (
-        <Card>
-          <h3 className="mb-1 font-display text-lg tracking-wide">Antecedentes</h3>
-          <p className="mb-3 text-sm leading-relaxed text-ink-soft">
-            Cada antecedente é comprado com pontos (1 a 5) e conta no orçamento de vantagens.
-            Ter Refúgio ○○, por exemplo, libera opções que exigem esse antecedente.
-          </p>
-          <ul className="space-y-2">
-            {antecedents.map((group) => {
-              const selected = character.advantages.find(
-                (item) => antecedentGroupOf(item)?.baseId === group.baseId,
-              )
-              const points = selected?.points ?? 0
-              const level = findAntecedentLevel(group, Math.max(1, points))
-              const maxLevel = antecedentMaxPoints(group)
-              return (
-                <li
-                  key={group.baseId}
-                  className={cn(
-                    'rounded-lg border p-3 transition',
-                    selected ? 'border-accent/40 bg-accent/[0.05]' : 'border-ink/10',
-                  )}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="font-semibold">{group.name}</p>
-                      <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-                        {points > 0
-                          ? level.description
-                          : 'Escolha de 1 a 5 pontos para comprar este antecedente.'}
-                      </p>
-                    </div>
-                    <DotRating
-                      value={points}
-                      max={maxLevel}
-                      min={0}
-                      label={group.name}
-                      onChange={(value) => {
-                        if (value <= 0) {
-                          if (selected) removeAdvantage(selected.id)
-                          return
-                        }
-                        if (selected) {
-                          updateAdvantage(selected.id, buildAntecedentAdvantage(group, value))
-                        } else {
-                          addAdvantage(buildAntecedentAdvantage(group, value))
-                        }
-                      }}
-                    />
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </Card>
-      ) : catalog.length === 0 ? (
+      {categories.length === 0 ? (
         <Callout>Os dados de vantagens ainda estão sendo extraídos do material.</Callout>
       ) : (
-        categories.map((category) => (
+        categories.map(([category, entry]) => (
           <Card key={category}>
             <h3 className="mb-3 font-display text-lg tracking-wide">{category}</h3>
             <ul className="space-y-2">
-              {catalog
-                .filter((item) => item.category === category)
-                .map((item) => {
-                  const selected = character.advantages.find(
-                    (option) => option.sourceId === item.id,
-                  )
-                  const requirement = checkAdvantageRequirement(item.description, character)
-                  const blocked = requirement?.status === 'unmet'
-                  const pointsLabel =
-                    item.pointsMax !== undefined
-                      ? `${item.points}–${item.pointsMax} pt`
-                      : `${item.points} pt`
-                  return (
-                    <li key={item.id}>
-                      <div
-                        className={cn(
-                          'rounded-lg border p-3 transition',
-                          selected
-                            ? 'border-accent/40 bg-accent/[0.05]'
-                            : blocked
-                              ? 'border-ink/10 opacity-70'
-                              : 'border-ink/10',
-                        )}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="flex flex-wrap items-baseline gap-2">
-                              <span className="font-semibold">{item.name}</span>
-                              <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
-                                {pointsLabel}
-                              </span>
-                              {blocked ? <Badge tone="warn">requisito</Badge> : null}
-                            </p>
-                            <p
-                              className={cn(
-                                'mt-1 text-sm leading-relaxed',
-                                blocked ? 'text-red-800/90' : 'text-ink-soft',
-                              )}
-                            >
-                              {item.description}
-                            </p>
-                            {requirement?.status === 'unmet' ? (
-                              <p className="mt-1 text-xs font-medium text-red-700">
-                                {requirement.detail}
-                              </p>
-                            ) : null}
-                            {requirement?.status === 'unknown' ? (
-                              <p className="mt-1 text-xs text-ink-soft">
-                                Requisito não verificável automaticamente.
-                              </p>
-                            ) : null}
-                          </div>
-                          <button
-                            type="button"
-                            disabled={!selected && blocked}
-                            title={!selected && blocked ? requirement?.detail : undefined}
-                            onClick={() =>
-                              selected
-                                ? removeAdvantage(selected.id)
-                                : addAdvantage({
-                                    sourceId: item.id,
-                                    name: item.name,
-                                    kind: item.kind as 'vantagem' | 'desvantagem',
-                                    points: item.points,
-                                    description: item.description,
-                                  })
-                            }
-                            className={cn(
-                              'shrink-0 rounded-md border px-2.5 py-1 text-xs transition',
-                              selected
-                                ? 'border-accent/40 text-accent hover:bg-accent/10'
-                                : blocked
-                                  ? 'cursor-not-allowed border-ink/10 text-ink-soft/60'
-                                  : 'border-ink/15 text-ink-soft hover:border-ink/30 hover:text-ink',
-                            )}
-                          >
-                            {selected ? 'remover' : blocked ? 'bloqueado' : 'adicionar'}
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  )
-                })}
+              {entry.groups.map((group) => (
+                <AntecedentOption key={group.baseId} group={group} character={character} />
+              ))}
+              {entry.defs.map((item) => (
+                <CatalogOption key={item.id} item={item} character={character} />
+              ))}
             </ul>
           </Card>
         ))
       )}
     </div>
+  )
+}
+
+/**
+ * Antecedente comprado diretamente pelos pontos, no lugar em que a ficha
+ * mostra a explicação. Cada ponto troca o texto pelo nível correspondente.
+ */
+function AntecedentOption({
+  group,
+  character,
+}: {
+  group: AntecedentGroup
+  character: Character
+}) {
+  const addAdvantage = useDraft((state) => state.addAdvantage)
+  const removeAdvantage = useDraft((state) => state.removeAdvantage)
+  const updateAdvantage = useDraft((state) => state.updateAdvantage)
+
+  const selected = character.advantages.find(
+    (item) => antecedentGroupOf(item)?.baseId === group.baseId,
+  )
+  const points = selected?.points ?? 0
+  const maxPoints = antecedentMaxPoints(group)
+  const level = points > 0 ? findAntecedentLevel(group, points) : null
+  const requirement = level ? checkAdvantageRequirement(level.description, character) : null
+  const blocked = requirement?.status === 'unmet'
+
+  function choose(value: number) {
+    if (value <= 0) {
+      if (selected) removeAdvantage(selected.id)
+      return
+    }
+
+    const next = buildAntecedentAdvantage(group, value)
+    if (selected) updateAdvantage(selected.id, next)
+    else addAdvantage(next)
+  }
+
+  return (
+    <li>
+      <div
+        className={cn(
+          'rounded-lg border p-3 transition',
+          selected ? 'border-accent/40 bg-accent/[0.05]' : 'border-ink/10',
+        )}
+      >
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold">{group.name}</span>
+            <DotRating
+              value={points}
+              max={maxPoints}
+              min={0}
+              label={group.name}
+              size="sm"
+              onChange={blocked && !selected ? undefined : choose}
+              className={blocked && !selected ? 'opacity-50' : undefined}
+            />
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
+              antecedente
+            </span>
+          </div>
+          <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+            {level
+              ? `${level.points} ${level.points === 1 ? 'ponto' : 'pontos'}: ${level.description}`
+              : `Sem pontos. Escolha de 1 a ${maxPoints} para comprar este antecedente.`}
+          </p>
+          {requirement?.status === 'unmet' ? (
+            <p className="mt-1 text-xs font-medium text-red-700">
+              Requisito não atendido: {requirement.detail}
+            </p>
+          ) : null}
+          {requirement?.status === 'unknown' ? (
+            <p className="mt-1 text-xs text-ink-soft">
+              Requisito não verificável automaticamente.
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </li>
+  )
+}
+
+/** Vantagem/desvantagem comum do catálogo, com pontos quando o material prevê. */
+function CatalogOption({ item, character }: { item: AdvantageDef; character: Character }) {
+  const addAdvantage = useDraft((state) => state.addAdvantage)
+  const removeAdvantage = useDraft((state) => state.removeAdvantage)
+  const setAdvantagePoints = useDraft((state) => state.setAdvantagePoints)
+
+  const selected = character.advantages.find((option) => option.sourceId === item.id)
+  const requirement = checkAdvantageRequirement(item.description, character)
+  const blocked = requirement?.status === 'unmet'
+  const adjustable = item.pointsMax !== undefined
+  const maxPoints = item.pointsMax ?? item.points
+
+  function add(points: number) {
+    addAdvantage({
+      sourceId: item.id,
+      name: item.name,
+      kind: item.kind === 'desvantagem' ? 'desvantagem' : 'vantagem',
+      points,
+      description: item.description,
+    })
+  }
+
+  function choose(value: number) {
+    if (value <= 0) {
+      if (selected) removeAdvantage(selected.id)
+      return
+    }
+    if (selected) setAdvantagePoints(selected.id, value)
+    else add(value)
+  }
+
+  return (
+    <li>
+      <div
+        className={cn(
+          'rounded-lg border p-3 transition',
+          selected
+            ? 'border-accent/40 bg-accent/[0.05]'
+            : blocked
+              ? 'border-ink/10 opacity-70'
+              : 'border-ink/10',
+        )}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-semibold">{item.name}</span>
+              {adjustable ? (
+                <DotRating
+                  value={selected?.points ?? 0}
+                  max={maxPoints}
+                  min={0}
+                  label={item.name}
+                  size="sm"
+                  onChange={blocked && !selected ? undefined : choose}
+                  className={blocked && !selected ? 'opacity-50' : undefined}
+                />
+              ) : (
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
+                  {item.points} pt
+                </span>
+              )}
+              {blocked ? <Badge tone="warn">requisito</Badge> : null}
+            </div>
+            <p
+              className={cn(
+                'mt-1 text-sm leading-relaxed',
+                blocked ? 'text-red-800/90' : 'text-ink-soft',
+              )}
+            >
+              {item.description}
+            </p>
+            {requirement?.status === 'unmet' ? (
+              <p className="mt-1 text-xs font-medium text-red-700">{requirement.detail}</p>
+            ) : null}
+            {requirement?.status === 'unknown' ? (
+              <p className="mt-1 text-xs text-ink-soft">
+                Requisito não verificável automaticamente.
+              </p>
+            ) : null}
+          </div>
+          {adjustable ? null : (
+            <button
+              type="button"
+              disabled={!selected && blocked}
+              title={!selected && blocked ? requirement?.detail : undefined}
+              onClick={() => (selected ? removeAdvantage(selected.id) : add(item.points))}
+              className={cn(
+                'shrink-0 rounded-md border px-2.5 py-1 text-xs transition',
+                selected
+                  ? 'border-accent/40 text-accent hover:bg-accent/10'
+                  : blocked
+                    ? 'cursor-not-allowed border-ink/10 text-ink-soft/60'
+                    : 'border-ink/15 text-ink-soft hover:border-ink/30 hover:text-ink',
+              )}
+            >
+              {selected ? 'remover' : blocked ? 'bloqueado' : 'adicionar'}
+            </button>
+          )}
+        </div>
+      </div>
+    </li>
   )
 }
