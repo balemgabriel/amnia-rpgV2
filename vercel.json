@@ -5,7 +5,6 @@
   "outputDirectory": "dist",
   "functions": {
     "api/chat-mestre.ts": {
-      "runtime": "nodejs22.x",
       "maxDuration": 60
     }
   }
