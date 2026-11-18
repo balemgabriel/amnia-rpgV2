@@ -12,7 +12,7 @@ import { readJsonBody, sendJson } from '../server/http'
  */
 type VercelRequest = IncomingMessage & { body?: unknown }
 
-export default async function handler(
+async function handler(
   req: VercelRequest,
   res: ServerResponse,
 ): Promise<void> {
@@ -62,3 +62,8 @@ export default async function handler(
     res.off('close', abortIfDisconnected)
   }
 }
+
+// A Vercel compila as funções em CommonJS (o projeto não é `type: module`);
+// nesse formato o runtime procura o handler em `module.exports`, não em
+// `exports.default`.
+module.exports = handler
