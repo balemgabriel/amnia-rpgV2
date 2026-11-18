@@ -5,6 +5,11 @@ dist-ssr
 .DS_Store
 .vite
 
+# segredos: nunca commitar a chave do Groq
+.env
+.env.*
+!.env.example
+
 # material de referência (PDFs, docs) não versionado
 docs/*
 !docs/LEIA-ME.md

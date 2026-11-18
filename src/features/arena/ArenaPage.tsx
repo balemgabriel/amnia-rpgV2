@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
-import { ArrowLeft, Dices, Swords } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ArrowLeft, Dices, ScrollText, Sparkles, Swords } from 'lucide-react'
+import { createGameState } from '@/lib/amnia/rules'
+import type { ArenaGameState } from '@/lib/amnia/types'
 import {
   publishCurrentCharacter,
   readCurrentCharacter,
@@ -7,28 +9,33 @@ import {
 } from '@/storage/currentCharacter'
 import { ChatInterface } from './ChatInterface'
 import { CharacterSheetPanel } from './CharacterSheetPanel'
+import { clearArenaState, readArenaState, writeArenaState } from './arenaStorage'
 import { createMockArenaCharacter } from './mockCharacter'
+import { buildSheetSummary } from './sheetSummary'
 
 /**
  * Arena de Amnia: chat do Mestre (esquerda) + ficha ativa (direita).
  *
  * A ficha vem de `localStorage['amnia_ficha_atual']`, publicado pela ficha
- * completa ao ser aberta/salva. Sem ficha, semeamos uma demonstração para o
- * design ficar visível e mantemos o botão de voltar ao criador.
+ * completa ao ser aberta/salva. Sem ficha, mostramos um estado vazio com
+ * caminho de volta ao criador (e uma ficha de exemplo opcional).
+ *
+ * O estado da mesa (PV/PM/Limiar/relógios) é salvo por personagem em
+ * `amnia_arena_estado`; a IA recebe uma cópia e devolve o estado atualizado
+ * junto da narração.
  */
 export function ArenaPage({ onBack }: { onBack: () => void }) {
-  const [loaded, setLoaded] = useState<CurrentCharacter | null>(null)
+  /** `undefined` = carregando; `null` = nenhuma ficha publicada. */
+  const [current, setCurrent] = useState<CurrentCharacter | null | undefined>(undefined)
+  const [gameState, setGameState] = useState<ArenaGameState | null>(null)
 
   useEffect(() => {
-    const current = readCurrentCharacter()
-    if (current) {
-      setLoaded(current)
-      return
+    const loaded = readCurrentCharacter()
+    setCurrent(loaded)
+    if (loaded) {
+      const summary = buildSheetSummary(loaded.character)
+      setGameState(readArenaState(loaded.character.id, summary.max))
     }
-
-    const mock = createMockArenaCharacter()
-    publishCurrentCharacter(mock, { demo: true })
-    setLoaded({ character: mock, demo: true })
   }, [])
 
   // O título da aba acompanha a página; a ficha completa restaura o original.
@@ -39,6 +46,46 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
       document.title = previous
     }
   }, [])
+
+  const sheet = useMemo(
+    () => (current ? buildSheetSummary(current.character) : null),
+    [current],
+  )
+
+  const updateGameState = useCallback(
+    (next: ArenaGameState) => {
+      setGameState(next)
+      if (current) writeArenaState(current.character.id, next)
+    },
+    [current],
+  )
+
+  const resetTable = useCallback(() => {
+    if (!current || !sheet) return
+    clearArenaState(current.character.id)
+    const next = createGameState(sheet.max)
+    setGameState(next)
+    writeArenaState(current.character.id, next)
+  }, [current, sheet])
+
+  function loadDemo() {
+    const mock = createMockArenaCharacter()
+    publishCurrentCharacter(mock, { demo: true })
+    const summary = buildSheetSummary(mock)
+    const next = createGameState(summary.max)
+    setCurrent({ character: mock, demo: true })
+    setGameState(next)
+    writeArenaState(mock.id, next)
+  }
+
+  const status =
+    current === undefined
+      ? 'Carregando ficha'
+      : current === null
+        ? 'Sem ficha ativa'
+        : current.demo
+          ? 'Ficha de exemplo'
+          : 'Ficha conectada'
 
   return (
     <div
@@ -69,7 +116,7 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
           <div className="flex shrink-0 items-center gap-2">
             <span className="hidden items-center gap-1.5 rounded-full border border-slate-700/70 bg-slate-900/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400 sm:inline-flex">
               <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" aria-hidden />
-              {loaded ? (loaded.demo ? 'Modo demonstração' : 'Ficha conectada') : 'Carregando ficha'}
+              {status}
             </span>
             <button
               type="button"
@@ -84,38 +131,99 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
       </header>
 
       <main className="relative z-10 mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-3 px-3 py-3 sm:px-4 lg:grid lg:min-h-0 lg:grid-cols-[3fr_2fr] lg:gap-5 lg:px-6 lg:py-5">
-        <section
-          aria-label="Chat com o Mestre"
-          className="flex min-h-[68dvh] flex-col lg:min-h-0"
-        >
-          {loaded ? (
-            <ChatInterface character={loaded.character} demo={loaded.demo} />
-          ) : (
-            <PanelSkeleton lines={5} />
-          )}
-        </section>
+        {current === undefined ? (
+          <section aria-label="Carregando Arena" className="flex min-h-[68dvh] flex-col lg:min-h-0">
+            <PanelSkeleton lines={6} />
+          </section>
+        ) : current === null || !sheet || !gameState ? (
+          <EmptyState onBack={onBack} onUseDemo={loadDemo} />
+        ) : (
+          <>
+            <section
+              aria-label="Chat com o Mestre"
+              className="flex min-h-[68dvh] flex-col lg:min-h-0"
+            >
+              <ChatInterface
+                sheet={sheet}
+                gameState={gameState}
+                onGameState={updateGameState}
+                demo={current.demo}
+              />
+            </section>
 
-        <aside
-          aria-label="Ficha do personagem"
-          className="arena-scroll flex flex-col lg:min-h-0 lg:overflow-y-auto"
-        >
-          {loaded ? (
-            <CharacterSheetPanel
-              character={loaded.character}
-              demo={loaded.demo}
-              onBackToCreator={onBack}
-            />
-          ) : (
-            <PanelSkeleton lines={8} />
-          )}
+            <aside
+              aria-label="Ficha do personagem"
+              className="arena-scroll flex flex-col lg:min-h-0 lg:overflow-y-auto"
+            >
+              <CharacterSheetPanel
+                character={current.character}
+                state={gameState}
+                onStateChange={updateGameState}
+                onReset={resetTable}
+                demo={current.demo}
+                onBackToCreator={onBack}
+              />
 
-          <p className="mt-3 flex items-center justify-center gap-1.5 px-2 text-center text-[10px] text-slate-600">
-            <Dices className="size-3" aria-hidden />
-            Dados, magias e Limiar são calculados pela ficha salva neste dispositivo.
-          </p>
-        </aside>
+              <p className="mt-3 flex items-center justify-center gap-1.5 px-2 text-center text-[10px] text-slate-600">
+                <Dices className="size-3" aria-hidden />
+                A IA narra. Dados, dano, PM e Limiar são calculados no servidor.
+              </p>
+            </aside>
+          </>
+        )}
       </main>
     </div>
+  )
+}
+
+function EmptyState({
+  onBack,
+  onUseDemo,
+}: {
+  onBack: () => void
+  onUseDemo: () => void
+}) {
+  return (
+    <section
+      aria-label="Nenhuma ficha ativa"
+      className="flex min-h-[68dvh] flex-col items-center justify-center lg:col-span-2 lg:min-h-0"
+    >
+      <div className="w-full max-w-xl rounded-2xl border border-slate-800/80 bg-slate-950/50 p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.35)] sm:p-8">
+        <span className="mx-auto grid size-14 place-items-center rounded-2xl border border-[#0055FE]/40 bg-gradient-to-br from-[#0055FE]/20 to-[#F1269C]/20 text-slate-200">
+          <ScrollText className="size-6" aria-hidden />
+        </span>
+        <h2 className="mt-4 font-display text-2xl tracking-wide text-slate-50">
+          Nenhuma ficha ativa
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-400">
+          A Arena lê a ficha salva neste dispositivo. Crie ou abra um personagem e
+          salve a ficha para carregar PV, PM, Limiar, Ímpeto e suas runas aqui.
+        </p>
+
+        <div className="mt-6 flex flex-col items-center justify-center gap-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0055FE] to-[#F1269C] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(0,85,254,0.25)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F1269C]/70 sm:w-auto"
+          >
+            <ArrowLeft className="size-4" aria-hidden />
+            Voltar ao criador
+          </button>
+          <button
+            type="button"
+            onClick={onUseDemo}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700/80 bg-slate-900/70 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0055FE]/60 sm:w-auto"
+          >
+            <Sparkles className="size-4" aria-hidden />
+            Usar ficha de exemplo
+          </button>
+        </div>
+
+        <p className="mt-4 text-[11px] text-slate-600">
+          A ficha de exemplo é criada só no seu navegador e pode ser substituída a qualquer momento.
+        </p>
+      </div>
+    </section>
   )
 }
 

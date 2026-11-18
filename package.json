@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "start": "tsx server/index.ts",
     "typecheck": "tsc --noEmit",
+    "test:arena": "tsx --test tests/amnia.test.ts",
     "sheets:extract": "node scripts/extract-sheets.mjs"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^4.0.85",
+    "ai": "^7.0.176",
     "clsx": "^2.1.1",
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
@@ -29,6 +33,7 @@
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.4.0",
     "tailwindcss": "^4.1.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.8.3",
     "vite": "^6.3.0"
   },

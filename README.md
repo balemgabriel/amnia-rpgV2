@@ -25,6 +25,59 @@ npm run dev
 
 Requer Node.js 20+.
 
+## Arena de Amnia (Mestre com IA)
+
+A página `/arena` é uma mesa de RPG com o Mestre narrando por IA (Groq via
+Vercel AI SDK). A ficha ativa vem de `localStorage['amnia_ficha_atual']` e o
+estado da mesa (PV, PM, Limiar, PA, relógios) fica em `amnia_arena_estado`.
+
+### Configuração
+
+1. Copie `.env.example` para `.env`.
+2. Preencha `GROQ_API_KEY` com sua chave do Groq.
+3. `GROQ_MODEL` é opcional; o padrão é `llama-3.3-70b-versatile`.
+
+```bash
+# desenvolvimento (Vite + API no mesmo processo)
+npm run dev
+
+# produção (build + servidor Node com a API)
+npm run build
+npm run start
+```
+
+A chave **nunca** vai para o navegador: o cliente chama `POST /api/chat-mestre`
+e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com
+`Groq API key ausente. Configure GROQ_API_KEY.`
+
+### Como funciona
+
+- A IA **narra**; quem calcula é o código.
+- Ferramentas do servidor: `roll_test`, `calculate_enemy_damage`, `spend_mana`,
+  `roll_macula_save` e `advance_threat_clock`.
+- As regras puras ficam em `src/lib/amnia/` (dados, testes e regras) e são
+  reutilizadas pelo navegador e pelo servidor.
+- O chat mostra os resultados reais das ferramentas em cartões abaixo da
+  narração (dados, sucessos, MoS, segmentos, PM/Limiar, relógios).
+- O painel lateral destaca o Limiar em azul (seguro), amarelo (perto do limite)
+  e vermelho pulsante (Sobrecarga).
+
+### Teste manual
+
+1. Crie uma ficha no criador e salve (ou abra uma ficha existente).
+2. Volte à lista e clique em **Arena** (ou abra `/arena`).
+3. Confirme que o painel mostra nome, classe, PV, PM, Limiar, Ímpeto, PA e runas.
+4. Envie: `Eu ataco o bandido mais próximo com minha espada.`
+5. Verifique se o cartão de `roll_test` aparece com dados e MoS reais e se o
+   Mestre narra o resultado.
+6. Peça um gasto de magia (ex.: `Lanço minha magia no bandido`) e confira
+   `spend_mana` e o Limiar subindo no painel.
+7. Rode `npm run test:arena` para validar dados, dano, PM, Mácula e relógios.
+
+Sem ficha, `/arena` mostra um estado vazio com botão para o criador e a opção
+de carregar uma ficha de exemplo (criada só no navegador).
+
+
 ## Tipografia
 
 | Uso | Fonte | Arquivo |
@@ -42,22 +95,23 @@ Ambas são servidas localmente (sem CDN) e passaram por subset latino. Os tokens
 
 ```
 src/
-  App.tsx              shell da aplicação
+  App.tsx              shell da aplicação e rotas
   index.css            tokens de design (cores, fontes)
   storage/
     db.ts              schema do IndexedDB
     characters.ts      operações de salvar/listar/excluir
-  rules/               ⚠️ ainda não existe — entra aqui o sistema como dado
+  rules/               sistema de Amnia como dados + motores de ficha
+  lib/amnia/           regras puras da Arena (dados, dano, PM, Mácula)
+  features/arena/      página /arena, chat e painel da ficha
+server/
+  chatMestre.ts        tools + chamada ao Groq
+  index.ts             servidor de produção (dist + API)
+tests/                 testes das regras puras
 ```
 
-A pasta `src/rules/` é o coração do projeto e só será criada com o material
-das regras em mãos. Ela vai conter:
-
-1. `types.ts` — o modelo declarativo (atributos, perícias, origens, poderes…).
-2. `amnia.ts` — os dados reais do Amnia v2.
-3. `character.ts` — schema Zod da ficha + fábrica de personagem.
-4. `formula.ts` — avaliador de expressões para os stats derivados.
-5. `compute.ts` — cálculo dos valores derivados a partir da ficha.
+`src/rules/` é o coração do projeto: `types.ts` (modelo declarativo),
+`amnia.ts` (dados do Amnia v2), `character.ts` (schema Zod da ficha),
+`formula.ts` (avaliador de expressões) e `derive.ts` (stats derivados).
 
 ## Roadmap
 
