@@ -291,8 +291,9 @@ export async function handleChatMestre(
       temperature: 0.7,
       maxOutputTokens: 700,
       // O plano gratuito do Groq tem TPM baixo: uma nova tentativa cobre a
-      // janela de 1 minuto sem deixar o jogador esperando demais.
-      maxRetries: 2,
+      // janela de 1 minuto sem deixar o jogador esperando demais. Em serverless
+      // (Vercel) o tempo máximo da função é curto, então fica só uma.
+      maxRetries: process.env.VERCEL ? 1 : 2,
       abortSignal: options.signal,
     })
 

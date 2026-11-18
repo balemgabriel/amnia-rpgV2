@@ -61,6 +61,23 @@ npm run preview
 > responde **HTTP 404** nessa rota, porque a chave do Groq precisa ficar no
 > servidor.
 
+### Deploy na Vercel
+
+O site é estático, mas a API é publicada como função serverless no mesmo
+projeto (`api/chat-mestre.ts`, que reaproveita o núcleo de `server/`):
+
+1. Importe o repositório na Vercel. O `vercel.json` fixa o build (`npm run build`)
+   e a saída (`dist`).
+2. Em **Settings → Environment Variables**, adicione:
+   - `GROQ_API_KEY` (obrigatória, em Production/Preview/Development);
+   - `GROQ_MODEL` (opcional; padrão `openai/gpt-oss-120b`).
+3. Faça um novo deploy (ou *Redeploy*) para a função pegar as variáveis.
+
+O arquivo `.env` local **não** é enviado; a chave no deploy vem só das
+variáveis de ambiente da Vercel. A função tem `maxDuration: 60s` — o suficiente
+para uma resposta do Groq, mas o limite gratuito de tokens/minuto continua
+valendo.
+
 A chave **nunca** vai para o navegador: o cliente chama `POST /api/chat-mestre`
 e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com
 `Groq API key ausente. Configure GROQ_API_KEY.`
