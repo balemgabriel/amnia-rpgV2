@@ -51,7 +51,15 @@ npm run dev
 # produção (build + servidor Node com a API)
 npm run build
 npm run start
+
+# atalho: build já feito, sobe o mesmo servidor de produção
+npm run preview
 ```
+
+> A API `/api/chat-mestre` só existe nos servidores acima. Servir o `dist/`
+> com `vite preview`, `serve`, GitHub Pages ou qualquer hospedagem estática
+> responde **HTTP 404** nessa rota, porque a chave do Groq precisa ficar no
+> servidor.
 
 A chave **nunca** vai para o navegador: o cliente chama `POST /api/chat-mestre`
 e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com

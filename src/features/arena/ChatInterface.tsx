@@ -99,6 +99,12 @@ export function ChatInterface({
 
       const payload: unknown = await response.json().catch(() => null)
 
+      if (response.status === 404) {
+        throw new Error(
+          'A API do Mestre não está disponível neste endereço (HTTP 404). Use `npm run dev` ou `npm run preview`; o `vite preview` puro não monta a API.',
+        )
+      }
+
       if (!response.ok) {
         throw new Error(readError(payload) ?? `O Mestre não respondeu (HTTP ${response.status}).`)
       }
