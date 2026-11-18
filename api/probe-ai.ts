@@ -9,7 +9,7 @@ import { generateText } from 'ai'
  *
  * Não chama a rede nem exige chave: só instancia o provider e o modelo.
  */
-function handler(_req: IncomingMessage, res: ServerResponse): void {
+export default function handler(_req: IncomingMessage, res: ServerResponse): void {
   const groq = createGroq({ apiKey: process.env.GROQ_API_KEY?.trim() || 'sonda-sem-chave' })
   const model = groq(process.env.GROQ_MODEL?.trim() || 'openai/gpt-oss-120b')
 
@@ -27,7 +27,3 @@ function handler(_req: IncomingMessage, res: ServerResponse): void {
   res.setHeader('Cache-Control', 'no-store')
   res.end(body)
 }
-
-// A Vercel compila as funções em CommonJS (o projeto não é `type: module`);
-// nesse formato o runtime procura o handler em `module.exports`.
-module.exports = handler
