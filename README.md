@@ -64,7 +64,9 @@ npm run preview
 ### Deploy na Vercel
 
 O site é estático, mas a API é publicada como função serverless no mesmo
-projeto (`api/chat-mestre.ts`, que reaproveita o núcleo de `server/`):
+projeto. A entrada fica em `server/vercelEntry.ts` e o build gera
+`api/chat-mestre.js` já empacotado (a Vercel não compila TypeScript fora de
+`api/`):
 
 1. Importe o repositório na Vercel. O `vercel.json` fixa o build (`npm run build`)
    e a saída (`dist`).
@@ -72,6 +74,11 @@ projeto (`api/chat-mestre.ts`, que reaproveita o núcleo de `server/`):
    - `GROQ_API_KEY` (obrigatória, em Production/Preview/Development);
    - `GROQ_MODEL` (opcional; padrão `openai/gpt-oss-120b`).
 3. Faça um novo deploy (ou *Redeploy*) para a função pegar as variáveis.
+
+`npm run build` roda `npm run build:api` no final e regenera
+`api/chat-mestre.js` a partir de `server/vercelEntry.ts`. Não edite esse arquivo
+à mão. Para conferir o deploy, abra `/api/chat-mestre` no navegador: a resposta
+mostra `hasGroqKey` e o modelo em uso (sem expor a chave).
 
 O arquivo `.env` local **não** é enviado; a chave no deploy vem só das
 variáveis de ambiente da Vercel. A função tem `maxDuration: 60s` — o suficiente
