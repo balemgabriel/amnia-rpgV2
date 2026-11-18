@@ -1,12 +1,16 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { DEFAULT_GROQ_MODEL, handleChatMestre } from '../server/chatMestre'
-import { readJsonBody, sendJson } from '../server/http'
+import { DEFAULT_GROQ_MODEL, handleChatMestre } from './chatMestre'
+import { readJsonBody, sendJson } from './http'
 
 /**
- * Função serverless da Vercel para `POST /api/chat-mestre`.
+ * Entrada da função serverless da Vercel (`api/chat-mestre.js`).
  *
- * Reaproveita o mesmo núcleo do servidor local: nada de regra duplicada e a
- * chave do Groq continua só no servidor (variável de ambiente da Vercel).
+ * Este arquivo fica em `server/` porque a Vercel só compila TypeScript que
+ * está dentro de `api/`. O build (`npm run build:api`) empacota este módulo e
+ * suas dependências locais em um único `api/chat-mestre.js`, deixando os
+ * pacotes npm (`ai`, `@ai-sdk/groq`, `zod`) como imports externos.
+ *
+ * A chave do Groq continua só no servidor (variável de ambiente da Vercel).
  * A Vercel já entrega o corpo JSON parseado em `req.body`; se vier cru, lemos
  * o stream como o servidor Node faz.
  */
