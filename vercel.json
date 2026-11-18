@@ -3,6 +3,16 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/arena",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/arena/",
+      "destination": "/index.html"
+    }
+  ],
   "functions": {
     "api/chat-mestre.js": {
       "maxDuration": 60
