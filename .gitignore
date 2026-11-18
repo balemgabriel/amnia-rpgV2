@@ -9,6 +9,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+Novo Documento de Texto.txt
 
 # material de referência (PDFs, docs) não versionado
 docs/*
