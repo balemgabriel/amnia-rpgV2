@@ -79,6 +79,32 @@
 }
 
 /*
+ * Arena de Amnia: rolagem discreta no tema escuro (chat e painel da ficha).
+ */
+.arena-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.32) transparent;
+}
+
+.arena-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.arena-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.arena-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.28);
+}
+
+.arena-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}
+
+/*
  * Impressão / PDF da ficha.
  * A ficha é feita para caber em A4: removemos a navegação, deixamos o papel
  * branco e evitamos quebrar blocos pequenos no meio.

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Swords } from 'lucide-react'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
 import { DotRating } from '@/components/DotRating'
 import { KnownRunes } from './KnownRunes'
@@ -53,6 +54,7 @@ import { EquipmentSection } from './EquipmentSection'
 import { ExportSheet, type ExportMode } from './ExportSheet'
 import { captureNodeAsPng, downloadDataUrl, exportSlug } from './capture'
 import { getCharacter, saveCharacter } from '@/storage/characters'
+import { publishCurrentCharacter } from '@/storage/currentCharacter'
 
 const GROUP_ORDER = ['fisica', 'social', 'mental'] as const
 
@@ -72,11 +74,14 @@ export function SheetView({
   id,
   onBack,
   onOpenSpell,
+  onArena,
   backLabel = '← Fichas',
 }: {
   id: string
   onBack: () => void
   onOpenSpell: (spellId?: string) => void
+  /** Abre a Arena de Amnia com esta ficha publicada no localStorage. */
+  onArena?: () => void
   /** Texto do botão de voltar (fichas prontas voltam para a própria página). */
   backLabel?: string
 }) {
@@ -105,6 +110,8 @@ export function SheetView({
           return
         }
         setCharacter(parsed.data)
+        // A ficha aberta vira a "ficha atual" da Arena de Amnia.
+        publishCurrentCharacter(parsed.data)
       })
       .catch(() => {
         if (active) setError('Não foi possível carregar a ficha.')
@@ -167,6 +174,7 @@ export function SheetView({
   async function persist(updated: Character) {
     const next: Character = { ...updated, updatedAt: Date.now() }
     setCharacter(next)
+    publishCurrentCharacter(next)
     try {
       await saveCharacter({
         id: next.id,
@@ -283,6 +291,17 @@ export function SheetView({
             {backLabel}
           </Button>
           <div className="flex items-center gap-1.5">
+            {onArena ? (
+              <Button
+                variant="ghost"
+                onClick={onArena}
+                className="text-xs"
+                title="Jogar esta ficha na Arena de Amnia"
+              >
+                <Swords className="size-3.5" aria-hidden />
+                Arena
+              </Button>
+            ) : null}
             <Button
               variant="ghost"
               onClick={() => startExport('pdf')}

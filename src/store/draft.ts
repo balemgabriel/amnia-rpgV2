@@ -11,6 +11,7 @@ import {
 import { toggleKnownRune } from '@/rules/runes'
 import type { AttributeId } from '@/rules/types'
 import { saveCharacter } from '@/storage/characters'
+import { publishCurrentCharacter } from '@/storage/currentCharacter'
 
 export const WIZARD_STEPS = [
   { id: 'conceito', title: 'Conceito' },
@@ -232,6 +233,7 @@ export const useDraft = create<DraftState>()((set, get) => ({
       sheetVersion: SHEET_VERSION,
       data: character,
     })
+    publishCurrentCharacter(character)
     set({ dirty: false })
     return id
   },

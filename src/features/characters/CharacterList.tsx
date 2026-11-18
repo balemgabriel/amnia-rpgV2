@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Swords } from 'lucide-react'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
 import { cn } from '@/lib/cn'
@@ -12,12 +13,14 @@ export function CharacterList({
   onNew,
   onReady,
   onWorkshop,
+  onArena,
   onOpen,
   onEdit,
 }: {
   onNew: () => void
   onReady: () => void
   onWorkshop: () => void
+  onArena: () => void
   onOpen: (id: string) => void
   onEdit: (id: string) => void
 }) {
@@ -52,6 +55,15 @@ export function CharacterList({
               Fichas de personagem
             </p>
           </div>
+          <button
+            type="button"
+            onClick={onArena}
+            className="inline-flex items-center gap-2 rounded-lg border border-ink/15 bg-white/40 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-ink-soft transition hover:border-accent/40 hover:bg-white/70 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-parchment"
+            title="Abrir o chat da Arena com a última ficha aberta"
+          >
+            <Swords className="size-4" aria-hidden />
+            Arena de Amnia
+          </button>
         </div>
       </header>
 

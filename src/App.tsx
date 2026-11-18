@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { ArenaPage } from '@/features/arena/ArenaPage'
 import { CharacterList } from '@/features/characters/CharacterList'
 import { CreateWizard } from '@/features/create/CreateWizard'
 import { ReadySheetsPage } from '@/features/reference/ReadySheetsPage'
@@ -11,6 +12,7 @@ import { useDraft } from '@/store/draft'
 
 type View =
   | { name: 'list' }
+  | { name: 'arena' }
   | { name: 'create'; from?: 'ready' | 'home' }
   | { name: 'ready' }
   | { name: 'workshop' }
@@ -18,9 +20,41 @@ type View =
   | { name: 'sheet'; id: string; from?: 'ready' }
   | { name: 'spell'; id: string; spellId?: string; from?: 'ready' }
 
+/** `/arena` abre direto na Arena (o dev server e o preview servem o index.html). */
+function initialView(): View {
+  const path = window.location.pathname.replace(/\/+$/, '')
+  return path === '/arena' ? { name: 'arena' } : { name: 'list' }
+}
+
 export default function App() {
-  const [view, setView] = useState<View>({ name: 'list' })
+  const [view, setView] = useState<View>(initialView)
   const reset = useDraft((state) => state.reset)
+  /** Tela para onde a Arena volta (ficha, início ou fichas prontas). */
+  const arenaReturn = useRef<View>({ name: 'list' })
+
+  // Botão voltar/avançar do navegador acompanha a única rota real: /arena.
+  useEffect(() => {
+    function onPopState() {
+      setView(initialView())
+    }
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  function openArena() {
+    if (view.name !== 'arena') arenaReturn.current = view
+    if (window.location.pathname.replace(/\/+$/, '') !== '/arena') {
+      window.history.pushState({ arena: true }, '', '/arena')
+    }
+    setView({ name: 'arena' })
+  }
+
+  function closeArena() {
+    if (window.location.pathname.replace(/\/+$/, '') === '/arena') {
+      window.history.replaceState({}, '', '/')
+    }
+    setView(arenaReturn.current)
+  }
 
   /**
    * Abre uma ficha salva no assistente para alteração.
@@ -39,6 +73,10 @@ export default function App() {
     if (!parsed.success) return
     reset(parsed.data)
     setView({ name: 'create', from })
+  }
+
+  if (view.name === 'arena') {
+    return <ArenaPage onBack={closeArena} />
   }
 
   if (view.name === 'create') {
@@ -100,6 +138,7 @@ export default function App() {
         id={view.id}
         onBack={() => setView(fromReady ? { name: 'ready' } : { name: 'list' })}
         backLabel={fromReady ? '← Fichas Prontas' : undefined}
+        onArena={openArena}
         onOpenSpell={(spellId) =>
           setView({ name: 'spell', id: view.id, spellId, from: view.from })
         }
@@ -115,6 +154,7 @@ export default function App() {
       }}
       onReady={() => setView({ name: 'ready' })}
       onWorkshop={() => setView({ name: 'workshop' })}
+      onArena={openArena}
       onOpen={(id) => setView({ name: 'sheet', id })}
       onEdit={(id) => void editCharacter(id, 'home')}
     />
