@@ -44,12 +44,23 @@ export async function handleChatMestreRequest(
     return
   }
 
+  const controller = new AbortController()
+  // Se o navegador fechar a aba/recarregar, aborta a chamada ao Groq em vez de
+  // continuar gastando tokens por uma resposta que ninguém vai ler.
+  const abortIfDisconnected = () => {
+    if (!res.writableEnded) controller.abort()
+  }
+  res.on('close', abortIfDisconnected)
+
   try {
     const payload = await readJsonBody(req)
-    const result = await handleChatMestre(payload)
-    sendJson(res, result.status, result.body)
+    const result = await handleChatMestre(payload, { signal: controller.signal })
+    if (!res.writableEnded && !res.destroyed) sendJson(res, result.status, result.body)
   } catch (error) {
+    if (res.writableEnded || res.destroyed) return
     const message = error instanceof Error ? error.message : 'erro desconhecido'
     sendJson(res, 400, { error: `Não foi possível ler a requisição: ${message}` })
+  } finally {
+    res.off('close', abortIfDisconnected)
   }
 }

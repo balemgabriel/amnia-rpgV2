@@ -5,6 +5,7 @@ import {
   Dices,
   Droplet,
   Loader2,
+  RefreshCw,
   Send,
   ShieldAlert,
   Sparkles,
@@ -34,6 +35,9 @@ const SUGGESTIONS = [
 ]
 
 let messageSequence = 0
+
+/** Tempo máximo de espera por uma resposta do Mestre. */
+const REQUEST_TIMEOUT_MS = 120_000
 
 function nextMessageId(prefix: string): string {
   messageSequence += 1
@@ -67,27 +71,19 @@ export function ChatInterface({
   const [error, setError] = useState<string | null>(null)
   const [model, setModel] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  /** Último histórico enviado, para o botão "Tentar novamente". */
+  const lastRequest = useRef<ChatMessage[]>([])
 
   useEffect(() => {
     const node = scrollRef.current
     if (node) node.scrollTop = node.scrollHeight
   }, [messages, loading, error])
 
-  async function send(raw: string) {
-    const text = raw.trim()
-    if (!text || loading) return
-
-    const userMessage: ChatMessage = {
-      id: nextMessageId('user'),
-      role: 'user',
-      content: text,
-    }
-    const history = [...messages, userMessage]
-
-    setMessages(history)
-    setInput('')
+  async function request(history: ChatMessage[]) {
     setError(null)
     setLoading(true)
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
     try {
       const response = await fetch('/api/chat-mestre', {
@@ -98,6 +94,7 @@ export function ChatInterface({
           fichaPersonagem: sheet,
           gameState,
         }),
+        signal: controller.signal,
       })
 
       const payload: unknown = await response.json().catch(() => null)
@@ -124,12 +121,39 @@ export function ChatInterface({
       setModel(data.model)
       if (data.gameState) onGameState(data.gameState)
     } catch (caught) {
-      const message =
-        caught instanceof Error ? caught.message : 'Não foi possível falar com o Mestre.'
+      const message = controller.signal.aborted
+        ? 'O Mestre demorou demais para responder. Se o limite do Groq foi atingido, aguarde ~20 segundos e tente novamente.'
+        : caught instanceof Error
+          ? caught.message
+          : 'Não foi possível falar com o Mestre.'
       setError(message)
     } finally {
+      window.clearTimeout(timeout)
       setLoading(false)
     }
+  }
+
+  async function send(raw: string) {
+    const text = raw.trim()
+    if (!text || loading) return
+
+    const userMessage: ChatMessage = {
+      id: nextMessageId('user'),
+      role: 'user',
+      content: text,
+    }
+    const history = [...messages, userMessage]
+
+    lastRequest.current = history
+    setMessages(history)
+    setInput('')
+    await request(history)
+  }
+
+  /** Reenvia a última mensagem sem duplicá-la no histórico. */
+  function retry() {
+    if (loading || lastRequest.current.length === 0) return
+    void request(lastRequest.current)
   }
 
   function handleSubmit(event: FormEvent) {
@@ -217,7 +241,18 @@ export function ChatInterface({
             className="ml-10 flex items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-2.5 text-[12px] leading-relaxed text-rose-200 sm:ml-11"
           >
             <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
-            <p>{error}</p>
+            <div className="min-w-0">
+              <p>{error}</p>
+              <button
+                type="button"
+                onClick={retry}
+                disabled={loading}
+                className="mt-1.5 inline-flex items-center gap-1 rounded-md border border-rose-400/40 bg-rose-500/10 px-2 py-1 text-[11px] font-semibold text-rose-100 transition hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <RefreshCw className="size-3" aria-hidden />
+                Tentar novamente
+              </button>
+            </div>
           </div>
         ) : null}
       </div>

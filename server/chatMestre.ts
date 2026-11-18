@@ -31,7 +31,11 @@ export const CHAT_MESTRE_PATH = '/api/chat-mestre'
 
 export const MISSING_KEY_ERROR = 'Groq API key ausente. Configure GROQ_API_KEY.'
 
-export const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile'
+/**
+ * Modelo padrão. `llama-3.3-70b-versatile` foi aposentado pelo Groq; este é o
+ * modelo atual com suporte a tool calling. Pode ser trocado por `GROQ_MODEL`.
+ */
+export const DEFAULT_GROQ_MODEL = 'openai/gpt-oss-120b'
 
 export type ChatMestreHttpResult =
   | { status: 200; body: ArenaChatResponse }
@@ -108,13 +112,10 @@ function buildTools(getState: () => ArenaGameState, setState: (next: ArenaGameSt
 
     spend_mana: tool({
       description:
-        'Calcula o gasto de PM de uma magia e o aumento equivalente do Limiar. Atualiza PM e Limiar na mesa. Se o Limiar passar do máximo, marca Sobrecarga. Se a Supressão estiver ativa, a magia é bloqueada.',
+        'OBRIGATÓRIO ao lançar qualquer magia. Calcula o gasto de PM, sobe o Limiar na mesma quantidade e atualiza a mesa. Nunca narre PM ou Limiar sem chamar esta ferramenta. Se o Limiar passar do máximo, chame roll_macula_save em seguida. Se a Supressão estiver ativa, a magia é bloqueada.',
       inputSchema: z.object({
         amount: z.number().int().min(0).max(99).describe('Custo em PM da magia.'),
         spellName: z.string().min(1).max(160).describe('Nome da magia lançada.'),
-        currentPlayerMana: z.number().int().min(0).max(99).describe('PM atual (referência da ficha).'),
-        currentThreshold: z.number().int().min(0).max(199).describe('Limiar atual (referência da ficha).'),
-        maxThreshold: z.number().int().min(0).max(99).describe('Limiar máximo (referência da ficha).'),
       }),
       execute: async (input) => {
         const state = getState()
@@ -135,8 +136,8 @@ function buildTools(getState: () => ArenaGameState, setState: (next: ArenaGameSt
         const result = spendMana({
           amount: input.amount,
           spellName: input.spellName,
-          // O estado da mesa é a fonte da verdade; os campos do input servem
-          // apenas como referência para o modelo.
+          // O estado da mesa é a fonte da verdade: o modelo não envia números
+          // de PM/Limiar, só o custo da magia.
           currentPlayerMana: state.resources.pm.current,
           currentThreshold: state.resources.limiar.current,
           maxThreshold: state.resources.limiar.max,
@@ -246,7 +247,10 @@ function buildTools(getState: () => ArenaGameState, setState: (next: ArenaGameSt
  * Separado do `node:http` para poder ser testado e reutilizado pelo middleware
  * de desenvolvimento do Vite.
  */
-export async function handleChatMestre(payload: unknown): Promise<ChatMestreHttpResult> {
+export async function handleChatMestre(
+  payload: unknown,
+  options: { signal?: AbortSignal } = {},
+): Promise<ChatMestreHttpResult> {
   const apiKey = process.env.GROQ_API_KEY?.trim()
   if (!apiKey) {
     return { status: 500, body: { error: MISSING_KEY_ERROR } }
@@ -284,8 +288,12 @@ export async function handleChatMestre(payload: unknown): Promise<ChatMestreHttp
       messages,
       tools,
       stopWhen: stepCountIs(6),
-      temperature: 0.8,
-      maxOutputTokens: 900,
+      temperature: 0.7,
+      maxOutputTokens: 700,
+      // O plano gratuito do Groq tem TPM baixo: uma nova tentativa cobre a
+      // janela de 1 minuto sem deixar o jogador esperando demais.
+      maxRetries: 2,
+      abortSignal: options.signal,
     })
 
     const toolResults: ArenaToolResultView[] = result.toolResults.map((entry) => ({
@@ -309,9 +317,15 @@ export async function handleChatMestre(payload: unknown): Promise<ChatMestreHttp
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'erro desconhecido'
+    const rateLimited = /rate limit|429|too many requests/i.test(message)
+    const hint = rateLimited
+      ? `Limite de uso do Groq atingido (modelo ${modelId}). O plano gratuito permite poucas chamadas por minuto: aguarde cerca de 20 segundos e tente novamente.`
+      : /does not exist|do not have access/i.test(message)
+        ? `${message} Verifique GROQ_MODEL (modelo configurado: ${modelId}).`
+        : message
     return {
-      status: 502,
-      body: { error: `Falha ao consultar o Groq: ${message}` },
+      status: rateLimited ? 429 : 502,
+      body: { error: `Falha ao consultar o Groq: ${hint}` },
     }
   }
 }

@@ -35,7 +35,14 @@ estado da mesa (PV, PM, Limiar, PA, relógios) fica em `amnia_arena_estado`.
 
 1. Copie `.env.example` para `.env`.
 2. Preencha `GROQ_API_KEY` com sua chave do Groq.
-3. `GROQ_MODEL` é opcional; o padrão é `llama-3.3-70b-versatile`.
+3. `GROQ_MODEL` é opcional; o padrão é `openai/gpt-oss-120b`. Para ver os
+   modelos disponíveis na sua conta: `GET https://api.groq.com/openai/v1/models`
+   com o header `Authorization: Bearer $GROQ_API_KEY`.
+
+> O plano gratuito do Groq limita poucos milhares de tokens por minuto. Cada
+> resposta do Mestre envia a ficha, o estado e as etapas das ferramentas, então
+> duas mensagens seguidas podem esbarrar no limite. O servidor já tenta de novo
+> algumas vezes; se ainda falhar, aguarde ~20 segundos e reenvie.
 
 ```bash
 # desenvolvimento (Vite + API no mesmo processo)
