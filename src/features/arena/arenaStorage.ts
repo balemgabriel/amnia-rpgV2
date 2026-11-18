@@ -1,4 +1,4 @@
-import { normalizeGameState } from '@/lib/amnia/rules'
+import { createGameState, normalizeGameState } from '@/lib/amnia/rules'
 import type { ArenaGameState, ArenaMaxValues } from '@/lib/amnia/types'
 
 /**
@@ -25,7 +25,10 @@ function readStore(): ArenaStateStore {
 
 export function readArenaState(characterId: string, max: ArenaMaxValues): ArenaGameState {
   const store = readStore()
-  return normalizeGameState(store[characterId], max)
+  const saved = store[characterId]
+  // Primeira visita: começa com PV/PM/Ímpeto/PA cheios e Limiar zerado.
+  if (!saved) return createGameState(max)
+  return normalizeGameState(saved, max)
 }
 
 export function writeArenaState(characterId: string, state: ArenaGameState): void {

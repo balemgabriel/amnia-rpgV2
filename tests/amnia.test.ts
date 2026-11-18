@@ -181,6 +181,16 @@ test('normalizeGameState preserva a Sobrecarga do Limiar e limita recursos', () 
   assert.equal(state.clocks[0]?.resilient, true)
 })
 
+test('normalizeGameState começa com o Limiar zerado quando não há estado salvo', () => {
+  const state = normalizeGameState(undefined, MAX)
+
+  assert.equal(state.resources.pv.current, MAX.pv)
+  assert.equal(state.resources.pm.current, MAX.pm)
+  assert.equal(state.resources.limiar.current, 0)
+  assert.equal(state.overloaded, false)
+  assert.deepEqual(state.clocks, [])
+})
+
 test('limiarTone separa seguro, perto do limite e sobrecarga', () => {
   assert.equal(limiarTone(4, 8), 'safe')
   assert.equal(limiarTone(6, 8), 'warn')

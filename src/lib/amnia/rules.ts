@@ -104,10 +104,12 @@ function normalizeResource(
   value: unknown,
   fallbackMax: number,
   roomAboveMax = 0,
+  /** Valor usado quando `current` está ausente; por padrão, o máximo. */
+  fallbackCurrent?: number,
 ): ArenaResourceValue {
   const record = asRecord(value)
   const max = asInt(record.max, fallbackMax, 0, 99)
-  const current = asInt(record.current, max, 0, max + roomAboveMax)
+  const current = asInt(record.current, fallbackCurrent ?? max, 0, max + roomAboveMax)
   return { current, max }
 }
 
@@ -161,7 +163,8 @@ export function normalizeGameState(raw: unknown, max: ArenaMaxValues): ArenaGame
     pv: normalizeResource(sourceResources.pv, max.pv),
     pm: normalizeResource(sourceResources.pm, max.pm),
     // O Limiar pode passar do máximo (Sobrecarga), então há espaço acima.
-    limiar: normalizeResource(sourceResources.limiar, max.limiar, 99),
+    // Sem estado salvo ele começa em zero: a carga sobe ao gastar PM.
+    limiar: normalizeResource(sourceResources.limiar, max.limiar, 99, 0),
     impeto: normalizeResource(sourceResources.impeto, max.impeto),
     pa: normalizeResource(sourceResources.pa, max.pa),
   }
