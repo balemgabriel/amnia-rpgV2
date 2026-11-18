@@ -31,16 +31,22 @@ export function RuneLevelSelector({
   spellRune,
   onChange,
   tone,
+  effectiveLevel,
+  effectiveNote,
 }: {
   rune: RuneDef | undefined
   spellRune: SpellRune
   onChange: (level: number) => void
   tone?: string | null
+  /** Nível de efeito quando outra fonte (Exponencializar) o define. */
+  effectiveLevel?: number | null
+  /** Explicação curta para o nível efetivo, quando não vem das condições. */
+  effectiveNote?: string
 }) {
   const anyLocked = RUNE_LEVELS.some(
     (level) => isLevelDefined(rune, level) && isRuneLevelLocked(spellRune, level),
   )
-  const effective = effectiveRuneLevel(spellRune)
+  const effective = effectiveLevel ?? effectiveRuneLevel(spellRune)
 
   return (
     <div>
@@ -89,12 +95,22 @@ export function RuneLevelSelector({
       </div>
       {effective !== spellRune.level ? (
         <p className="mt-1 text-[11px] leading-snug text-ink-soft">
-          Com as condições desta runa, o efeito atual é{' '}
-          <strong className="text-ink">nível {effective}</strong>. O PM pago continua no nível{' '}
-          {spellRune.level}.
+          {effectiveNote ? (
+            <>
+              {effectiveNote} O efeito atual é{' '}
+              <strong className="text-ink">nível {effective}</strong>. O PM pago continua no nível{' '}
+              {spellRune.level}.
+            </>
+          ) : (
+            <>
+              Com as condições desta runa, o efeito atual é{' '}
+              <strong className="text-ink">nível {effective}</strong>. O PM pago continua no nível{' '}
+              {spellRune.level}.
+            </>
+          )}
         </p>
       ) : null}
-      {anyLocked ? (
+      {anyLocked && !effectiveNote ? (
         <p className="mt-1 text-[11px] leading-snug text-ink-soft">
           Níveis 6 e 7 só destravam com uma condição Severa, Extrema ou Absoluta vinculada a{' '}
           <strong className="text-ink">esta runa</strong>.

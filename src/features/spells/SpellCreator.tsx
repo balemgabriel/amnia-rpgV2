@@ -35,7 +35,12 @@ import {
   conditionMode,
   effectiveRuneLevel,
   emptySpell,
+  exponentialIssue,
+  exponentialReleasedLevel,
+  exponentialRune,
+  exponentialTargetRune,
   formatModifier,
+  isExponencializar,
   lockedRunes,
   normalizeRune,
   personalMagicOwner,
@@ -191,14 +196,25 @@ export function SpellCreator({
   const personalOwner = personalMagicOwner(context, spell.id)
   const personalAllowed = workshop || (hasPersonalTrait && !personalOwner)
   const hasLockedRune = lockedRunes(spell).length > 0
-  const canSave = spell.name.trim() !== '' && spell.runes.length > 0 && !hasLockedRune
+  const exponential = exponentialRune(spell)
+  const exponentialTarget = exponentialTargetRune(spell)
+  const exponentialProblem = exponentialIssue(spell)
+  const canSave =
+    spell.name.trim() !== '' &&
+    spell.runes.length > 0 &&
+    !hasLockedRune &&
+    exponentialProblem === null
   const totalConditions = allConditions(spell).length
-  const hasEffectiveBonus = spell.runes.some((rune) => effectiveRuneLevel(rune) !== rune.level)
+  const hasEffectiveBonus = spell.runes.some(
+    (rune) => effectiveRuneLevel(rune, spell) !== rune.level,
+  )
   const openRune = openRuneId ? owned.find((rune) => rune.id === openRuneId) : undefined
   const openSelected = openRune
     ? spell.runes.find((item) => item.runeId === openRune.id)
     : undefined
-  const openEffective = openSelected ? effectiveRuneLevel(openSelected) : null
+  const openEffective = openSelected ? effectiveRuneLevel(openSelected, spell) : null
+  const openIsTarget =
+    Boolean(openSelected) && exponentialTarget?.runeId === openSelected?.runeId
 
   function update(partial: Partial<Spell>) {
     setSpell((previous) =>
@@ -210,11 +226,104 @@ export function SpellCreator({
   function toggleRune(rune: RuneDef) {
     setSpell((previous) => {
       if (!previous) return previous
+      const exponential = exponentialRune(previous)
       const exists = previous.runes.some((item) => item.runeId === rune.id)
+
+      // Exponencializar liga/desliga sozinha: ao entrar, suprime o circuito e
+      // deixa no máximo uma runa alvo (a única que já existia, se for o caso).
+      if (isExponencializar(rune.id)) {
+        if (exists) {
+          return {
+            ...previous,
+            runes: previous.runes.filter((item) => !isExponencializar(item.runeId)),
+            updatedAt: Date.now(),
+          }
+        }
+        const others = previous.runes.filter((item) => !isExponencializar(item.runeId))
+        const target = others.length === 1 ? others[0] : undefined
+        const next: SpellRune = {
+          runeId: rune.id,
+          level: defaultLevel(rune),
+          conditions: [],
+          targetRuneId: target?.runeId ?? null,
+        }
+        return {
+          ...previous,
+          runes: target ? [next, target] : [next],
+          updatedAt: Date.now(),
+        }
+      }
+
+      // Com Exponencializar na composição, qualquer outra runa vira a alvo.
+      if (exponential) {
+        if (exists && exponential.targetRuneId === rune.id) {
+          return {
+            ...previous,
+            runes: previous.runes.filter((item) => item.runeId !== rune.id),
+            updatedAt: Date.now(),
+          }
+        }
+        const targetRune: SpellRune = exists
+          ? (previous.runes.find((item) => item.runeId === rune.id) as SpellRune)
+          : {
+              runeId: rune.id,
+              level: defaultLevel(rune),
+              conditions: [],
+              targetRuneId: null,
+            }
+        return {
+          ...previous,
+          runes: [{ ...exponential, targetRuneId: rune.id }, targetRune],
+          updatedAt: Date.now(),
+        }
+      }
+
       const runes: SpellRune[] = exists
         ? previous.runes.filter((item) => item.runeId !== rune.id)
-        : [...previous.runes, { runeId: rune.id, level: defaultLevel(rune), conditions: [] }]
+        : [
+            ...previous.runes,
+            {
+              runeId: rune.id,
+              level: defaultLevel(rune),
+              conditions: [],
+              targetRuneId: null,
+            },
+          ]
       return { ...previous, runes, updatedAt: Date.now() }
+    })
+  }
+
+  /** Troca (ou limpa) a runa alvo de Exponencializar sem mexer no resto. */
+  function setExponentialTarget(runeId: string | null) {
+    setSpell((previous) => {
+      if (!previous) return previous
+      const exponential = exponentialRune(previous)
+      if (!exponential) return previous
+
+      const target = runeId
+        ? (previous.runes.find((item) => item.runeId === runeId) ??
+          (() => {
+            const def = runeById(runeId)
+            if (!def) return undefined
+            return {
+              runeId,
+              level: defaultLevel(def),
+              conditions: [],
+              targetRuneId: null,
+            } satisfies SpellRune
+          })())
+        : undefined
+
+      const exponentialRuneNext: SpellRune = {
+        ...exponential,
+        targetRuneId: target?.runeId ?? null,
+      }
+
+      return {
+        ...previous,
+        runes: target ? [exponentialRuneNext, target] : [exponentialRuneNext],
+        updatedAt: Date.now(),
+      }
     })
   }
 
@@ -477,7 +586,9 @@ export function SpellCreator({
                     <div className="flex flex-wrap gap-1.5">
                       {filtered.map((rune) => {
                         const selected = spell.runes.find((item) => item.runeId === rune.id)
-                        const effective = selected ? effectiveRuneLevel(selected) : null
+                        const effective = selected ? effectiveRuneLevel(selected, spell) : null
+                        const isTarget =
+                          Boolean(selected) && exponentialTarget?.runeId === selected?.runeId
                         const tone = circleColor(rune.circle) ?? '#5c5044'
                         return (
                           <button
@@ -510,9 +621,11 @@ export function SpellCreator({
                                 className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums"
                                 style={{ backgroundColor: withAlpha(tone, 0.18) }}
                                 title={
-                                  effective !== null && effective !== selected.level
-                                    ? `Nível pago ${selected.level} · efeito nível ${effective} pelas condições`
-                                    : `Nível ${selected.level}`
+                                  isTarget
+                                    ? `Nível pago ${selected.level} · Exponencializar libera o efeito no nível ${effective}`
+                                    : effective !== null && effective !== selected.level
+                                      ? `Nível pago ${selected.level} · efeito nível ${effective} pelas condições`
+                                      : `Nível ${selected.level}`
                                 }
                               >
                                 {effective !== null && effective !== selected.level
@@ -525,6 +638,57 @@ export function SpellCreator({
                       })}
                     </div>
                   )}
+
+                  {exponential ? (
+                    <div className="mt-4 rounded-lg border border-ink/10 bg-ink/[0.02] p-3">
+                      <p className="text-sm font-semibold">Runa alvo de Exponencializar</p>
+                      <p className="mt-1 text-xs leading-snug text-ink-soft">
+                        Exponencializar suprime todo o circuito: só ela e a runa alvo podem existir.
+                        Todo o foco vai para a alvo, que é liberada no nível que a carta de
+                        Exponencializar indica. O nível pago da alvo continua contando no custo.
+                      </p>
+                      <select
+                        value={exponential.targetRuneId ?? ''}
+                        onChange={(event) =>
+                          setExponentialTarget(event.target.value || null)
+                        }
+                        aria-label="Runa alvo de Exponencializar"
+                        className="mt-2 h-9 w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
+                      >
+                        <option value="">Escolha a runa alvo…</option>
+                        {owned
+                          .filter((rune) => !isExponencializar(rune.id))
+                          .map((rune) => (
+                            <option key={rune.id} value={rune.id}>
+                              {rune.name}
+                            </option>
+                          ))}
+                        {exponentialTarget &&
+                        !owned.some((rune) => rune.id === exponentialTarget.runeId) ? (
+                          <option value={exponentialTarget.runeId}>
+                            {runeName(exponentialTarget.runeId)}
+                          </option>
+                        ) : null}
+                      </select>
+                      {exponentialTarget ? (
+                        <p className="mt-2 text-xs leading-snug">
+                          <strong className="text-ink">{runeName(exponentialTarget.runeId)}</strong>{' '}
+                          paga nível {exponentialTarget.level} e é liberada no{' '}
+                          <strong className="text-ink">
+                            nível {effectiveRuneLevel(exponentialTarget, spell)}
+                          </strong>
+                          {effectiveRuneLevel(exponential) >= 2 ? (
+                            <>
+                              {' '}
+                              (Exponencializar nível {effectiveRuneLevel(exponential)} → alvo{' '}
+                              {exponentialReleasedLevel(effectiveRuneLevel(exponential))})
+                            </>
+                          ) : null}
+                          .
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </>
               )}
             </Card>
@@ -566,6 +730,12 @@ export function SpellCreator({
                               rune={openRune}
                               spellRune={openSelected}
                               tone={circleColor(openRune.circle)}
+                              effectiveLevel={openEffective}
+                              effectiveNote={
+                                openIsTarget
+                                  ? `Exponencializar libera esta runa no nível ${openEffective}.`
+                                  : undefined
+                              }
                               onChange={(level) => setRuneLevel(openRune.id, level)}
                             />
                             <div className="flex items-center justify-between gap-2">
@@ -582,7 +752,9 @@ export function SpellCreator({
                                     <strong className="tabular-nums text-ink">
                                       {openEffective}
                                     </strong>{' '}
-                                    <span className="text-[11px]">(condições)</span>
+                                    <span className="text-[11px]">
+                                      ({openIsTarget ? 'Exponencializar' : 'condições'})
+                                    </span>
                                   </>
                                 ) : null}
                               </span>
@@ -634,7 +806,8 @@ export function SpellCreator({
                     const def = runeById(spellRune.runeId)
                     const tone = circleColor(def?.circle)
                     const unlocked = hasUnlockingCondition(spellRune.conditions)
-                    const effective = effectiveRuneLevel(spellRune)
+                    const effective = effectiveRuneLevel(spellRune, spell)
+                    const isTarget = exponentialTarget?.runeId === spellRune.runeId
                     return (
                       <section
                         key={spellRune.runeId}
@@ -651,7 +824,7 @@ export function SpellCreator({
                                 <>
                                   {' '}
                                   → <strong className="font-semibold text-ink">{effective}</strong>{' '}
-                                  com condições
+                                  {isTarget ? 'via Exponencializar' : 'com condições'}
                                 </>
                               ) : null}
                             </span>
@@ -660,6 +833,14 @@ export function SpellCreator({
                             {unlocked ? 'níveis 6–7 liberados' : 'níveis 6–7 bloqueados'}
                           </Badge>
                         </div>
+
+                        {isTarget ? (
+                          <p className="mb-3 rounded-md border border-ink/10 bg-ink/[0.02] px-2.5 py-2 text-xs leading-snug text-ink-soft">
+                            Esta é a runa alvo de Exponencializar: o nível efetivo vem dela.
+                            Condições aqui ainda contam para a Complexidade, mas não mudam o nível
+                            liberado.
+                          </p>
+                        ) : null}
 
                         <div className="mb-3 flex flex-wrap gap-1.5">
                           {CONDITION_WEIGHTS.map((weight) => {
@@ -859,8 +1040,14 @@ export function SpellCreator({
                 </div>
                 {hasEffectiveBonus ? (
                   <p className="pt-1 text-[11px] leading-snug text-ink-soft">
-                    O nível depois da seta é o efeito alcançado com condições; o PM cobrado
-                    continua no nível pago.
+                    O nível depois da seta é o efeito alcançado com condições ou
+                    Exponencializar; o PM cobrado continua no nível pago.
+                  </p>
+                ) : null}
+                {cost.lines.some((line) => line.label === 'Custo mínimo') ? (
+                  <p className="pt-1 text-[11px] leading-snug text-ink-soft">
+                    Toda magia custa pelo menos <strong className="text-ink">1 PM</strong>, mesmo
+                    depois das reduções.
                   </p>
                 ) : null}
               </div>
@@ -945,9 +1132,11 @@ export function SpellCreator({
               </Button>
               {!canSave ? (
                 <p className="mt-2 text-center text-xs text-ink-soft">
-                  {hasLockedRune
-                    ? 'Há runa em nível 6 ou 7 sem condição Severa, Extrema ou Absoluta.'
-                    : 'Dê um nome e escolha ao menos uma runa.'}
+                  {exponentialProblem
+                    ? exponentialProblem
+                    : hasLockedRune
+                      ? 'Há runa em nível 6 ou 7 sem condição Severa, Extrema ou Absoluta.'
+                      : 'Dê um nome e escolha ao menos uma runa.'}
                 </p>
               ) : null}
             </Card>

@@ -16,7 +16,7 @@ import { xpPurchaseSchema } from './xp'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 7
+export const SHEET_VERSION = 8
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)

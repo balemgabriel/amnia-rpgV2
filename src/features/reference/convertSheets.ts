@@ -24,6 +24,7 @@ import {
 } from '@/rules/runes'
 import {
   CONDITION_WEIGHTS,
+  isExponencializar,
   type ConditionWeight,
   type Spell,
   type SpellCondition,
@@ -880,7 +881,7 @@ function parseXp(markdown: string): XpPurchase[] {
 // ---------------------------------------------------------------------------
 
 const RUNE_TOKEN =
-  /([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\-]*(?:\s+[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\-]*)*)\s*(\d+)?\s*(?:\(\s*([+-]?\s*\d+)\s*\))?/g
+  /([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\-]*(?:\s+[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\-]*)*)\s*(\d+)?\s*(?:\(\s*([+-]?\s*\d+(?:\s*[+-]\s*\d+)*)\s*\))?/g
 
 function isPlaceholderSpell(block: string): boolean {
   const first = stripMarkdown(
@@ -966,13 +967,16 @@ function parseSpellRunes(block: string, innateCircle: CircleId): SpellRune[] {
     const runeId = findRuneId(name, innateCircle, hint)
     if (!runeId) continue
 
+    // "7 (3+4)" = efeito total 7, sendo 3 pagos e 4 vindos de condições.
+    // O nível que conta no custo é o primeiro número do parêntese.
+    const basePlusBonus = match[3]?.match(/^(\d+)\s*\+\s*(\d+)$/)
     const explicitLevel = match[2] ? Number(match[2]) : undefined
     const rune = runeById(runeId)
-    const level = explicitLevel && explicitLevel >= 1 && explicitLevel <= 7
-      ? explicitLevel
-      : defaultLevel(rune)
+    const candidate = basePlusBonus ? Number(basePlusBonus[1]) : explicitLevel
+    const level =
+      candidate && candidate >= 1 && candidate <= 7 ? candidate : defaultLevel(rune)
 
-    result.push({ runeId, level, conditions: [] })
+    result.push({ runeId, level, conditions: [], targetRuneId: null })
   }
 
   return result
@@ -1042,7 +1046,11 @@ function spellConditionsOf(block: string, runes: SpellRune[]): SpellCondition[] 
       ...(mode ? { mode } : {}),
     })
 
-    const owner = runes.find((rune) => lineMentionsRune(line, rune.runeId)) ?? runes[0]
+    const exponential = runes.find((rune) => isExponencializar(rune.runeId))
+    const owner =
+      exponential ??
+      runes.find((rune) => lineMentionsRune(line, rune.runeId)) ??
+      runes[0]
     if (owner) owner.conditions.push(conditions[conditions.length - 1] as SpellCondition)
   }
 
@@ -1105,6 +1113,18 @@ function parseSpellBlock(block: string, innateCircle: CircleId): Spell | null {
   if (runes.length === 0) return null
 
   spellConditionsOf(clean, runes)
+
+  // Exponencializar suprime o circuito: só ela e uma runa alvo permanecem.
+  // As condições pertencem a ela (é ela que concentra a mana e libera a alvo).
+  const exponential = runes.find((rune) => isExponencializar(rune.runeId))
+  if (exponential) {
+    const target = runes.find((rune) => !isExponencializar(rune.runeId))
+    exponential.targetRuneId = target?.runeId ?? null
+    const kept = runes.filter((rune) => rune === exponential || rune === target)
+    runes.length = 0
+    runes.push(...kept)
+  }
+
   ensureHeavyConditionsForHighLevels(runes)
 
   const costMatch = clean.match(/(?:Custo\s*)?(\d+)\s*PM/i)

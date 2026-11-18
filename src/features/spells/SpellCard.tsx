@@ -10,12 +10,12 @@ import {
   AREA_OPTIONS,
   conditionImpactLabel,
   allConditions,
-  effectiveRuneLevel,
   formatModifier,
   optionLabel,
   spellCircleInfo,
   spellCost,
   spellCx,
+  spellRuneSummary,
   type Spell,
   type SpellContext,
 } from '@/rules/spell'
@@ -118,15 +118,7 @@ export function SpellCard({
           </span>
           {spell.runes.length === 0
             ? 'nenhuma'
-            : spell.runes
-                .map((rune) => {
-                  const effective = effectiveRuneLevel(rune)
-                  const name = runeName(rune.runeId)
-                  return effective === rune.level
-                    ? `${name} ${rune.level}`
-                    : `${name} ${rune.level} (→ ${effective})`
-                })
-                .join(' · ')}
+            : spell.runes.map((rune) => spellRuneSummary(spell, rune)).join(' · ')}
         </p>
 
         {hasMeta ? (

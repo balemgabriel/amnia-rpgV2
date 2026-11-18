@@ -40,12 +40,12 @@ import {
   TARGET_OPTIONS,
   allConditions,
   conditionImpactLabel,
-  effectiveRuneLevel,
   formatModifier,
   optionLabel,
   spellCircleInfo,
   spellCost,
   spellCx,
+  spellRuneSummary,
   type Spell,
   type SpellContext,
 } from '@/rules/spell'
@@ -670,15 +670,7 @@ function ExportSpell({ spell, context }: { spell: Spell; context: SpellContext }
         <b>Runas:</b>{' '}
         {spell.runes.length === 0
           ? 'nenhuma'
-          : spell.runes
-              .map((rune) => {
-                const effective = effectiveRuneLevel(rune)
-                const name = runeName(rune.runeId)
-                return effective === rune.level
-                  ? `${name} ${rune.level}`
-                  : `${name} ${rune.level} (→ ${effective})`
-              })
-              .join(' · ')}
+          : spell.runes.map((rune) => spellRuneSummary(spell, rune)).join(' · ')}
       </p>
       {meta.length > 0 ? <p className="xs-small xs-muted">{meta.join(' · ')}</p> : null}
       {allConditions(spell).length > 0 ? (

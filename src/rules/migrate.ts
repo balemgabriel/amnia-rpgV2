@@ -48,7 +48,12 @@ export function migrateSpell(raw: unknown): unknown {
   const oldRunes = Array.isArray(raw.runes) ? raw.runes : []
   const oldConditions = Array.isArray(raw.conditions) ? raw.conditions : []
 
-  const runes: { runeId: string; level: number; conditions: Obj[] }[] = []
+  const runes: {
+    runeId: string
+    level: number
+    conditions: Obj[]
+    targetRuneId: string | null
+  }[] = []
   /** id antigo da runa dentro da magia → posição na lista nova. */
   const positions = new Map<string, number>()
 
@@ -66,10 +71,23 @@ export function migrateSpell(raw: unknown): unknown {
         conditions: Array.isArray(item.conditions)
           ? item.conditions.filter(isObj).map(migrateCondition)
           : [],
+        targetRuneId: typeof item.targetRuneId === 'string' ? item.targetRuneId : null,
       })
       index = runes.length - 1
     }
     if (typeof item.id === 'string') positions.set(item.id, index)
+  }
+
+  // A alvo de Exponencializar pode ter sido gravada como id de instância
+  // (formato antigo) ou como id do catálogo (formato novo).
+  for (const rune of runes) {
+    if (!rune.targetRuneId) continue
+    const mapped = positions.get(rune.targetRuneId)
+    if (mapped !== undefined) {
+      rune.targetRuneId = runes[mapped]?.runeId ?? null
+    } else if (!runes.some((item) => item.runeId === rune.targetRuneId)) {
+      rune.targetRuneId = null
+    }
   }
 
   // Condições que viviam na magia inteira passam a morar numa runa:

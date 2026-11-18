@@ -153,6 +153,11 @@ export const spellRuneSchema = z.object({
   level: z.number().int().min(1).max(7),
   /** Condições vinculadas A ESTA runa (não à magia inteira). */
   conditions: z.array(spellConditionSchema),
+  /**
+   * Exponencializar: id da única outra runa da magia, que ela suprime e
+   * libera no nível calculado pela carta. Null nas demais runas.
+   */
+  targetRuneId: z.string().nullable().default(null),
 })
 
 export const spellSchema = z.object({
@@ -262,6 +267,59 @@ export function spellCircleInfo(spell: Spell, context: SpellContext): SpellCircl
 }
 
 // ---------------------------------------------------------------------------
+// Exponencializar
+// ---------------------------------------------------------------------------
+
+/** Runa que suprime o resto do circuito para concentrar toda a mana numa runa alvo. */
+export const EXPONENCIALIZAR_RUNE_ID = 'multiplicacao-exponencializar'
+
+export function isExponencializar(runeId: string): boolean {
+  return runeId === EXPONENCIALIZAR_RUNE_ID
+}
+
+/** A runa Exponencializar da magia, se ela estiver na composição. */
+export function exponentialRune(spell: Spell): SpellRune | undefined {
+  return spell.runes.find((rune) => isExponencializar(rune.runeId))
+}
+
+/** A runa alvo escolhida por Exponencializar, se ela ainda estiver na magia. */
+export function exponentialTargetRune(spell: Spell): SpellRune | undefined {
+  const exponential = exponentialRune(spell)
+  if (!exponential?.targetRuneId) return undefined
+  return spell.runes.find((rune) => rune.runeId === exponential.targetRuneId)
+}
+
+/**
+ * Nível em que Exponencializar libera a runa alvo.
+ *
+ * A carta da runa: níveis 2–5 liberam com +2 níveis (2→4, 3→5, 4→6, 5→7);
+ * níveis 6 e 7 liberam a runa alvo diretamente no nível 6/7.
+ */
+export function exponentialReleasedLevel(level: number): number {
+  if (level <= 5) return Math.min(7, level + 2)
+  return level
+}
+
+/**
+ * Problema de composição com Exponencializar, ou null quando está válida.
+ * A runa suprime todas as outras: só ela e a runa alvo podem existir.
+ */
+export function exponentialIssue(spell: Spell): string | null {
+  const exponential = exponentialRune(spell)
+  if (!exponential) return null
+
+  const others = spell.runes.filter((rune) => !isExponencializar(rune.runeId))
+  if (others.length === 0) return 'Exponencializar precisa de uma runa alvo.'
+  if (others.length > 1) {
+    return 'Exponencializar suprime todas as outras runas: a magia pode ter apenas ela e uma runa alvo.'
+  }
+  if (exponential.targetRuneId !== others[0]?.runeId) {
+    return 'Escolha a runa alvo de Exponencializar.'
+  }
+  return null
+}
+
+// ---------------------------------------------------------------------------
 // Condições
 // ---------------------------------------------------------------------------
 
@@ -301,12 +359,33 @@ export function bonusLevelsForRune(rune: SpellRune): number {
  * nunca passam do teto livre. Com condição Severa/Extrema/Absoluta, o teto
  * sobe para 7. O resultado sempre cai num nível que a runa realmente possui:
  * se o alvo cair num vão da escada, usa o maior nível definido abaixo dele.
+ *
+ * Quando a magia é passada, a runa alvo de Exponencializar ignora o próprio
+ * nível e recebe o nível liberado pela carta de Exponencializar.
  */
-export function effectiveRuneLevel(rune: SpellRune): number {
+export function effectiveRuneLevel(rune: SpellRune, spell?: Spell): number {
+  if (spell) {
+    const exponential = exponentialRune(spell)
+    if (
+      exponential &&
+      exponential.runeId !== rune.runeId &&
+      exponential.targetRuneId === rune.runeId
+    ) {
+      return clampRuneLevel(
+        rune,
+        exponentialReleasedLevel(effectiveRuneLevel(exponential)),
+      )
+    }
+  }
+
   const ceiling = hasUnlockingCondition(rune.conditions) ? 7 : FREE_LEVEL_MAX
   const target = Math.min(ceiling, rune.level + bonusLevelsForRune(rune))
-  const def = runeById(rune.runeId)
+  return clampRuneLevel(rune, target)
+}
 
+/** Desce para o maior nível que a runa realmente define, sem passar do alvo. */
+function clampRuneLevel(rune: SpellRune, target: number): number {
+  const def = runeById(rune.runeId)
   if (!def || def.levels.length === 0) return target
 
   const defined = def.levels
@@ -372,16 +451,21 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
   const lines: CostLine[] = []
   let runeBase = 0
 
+  const exponentialTarget = exponentialTargetRune(spell)
+
   for (const rune of spell.runes) {
     runeBase += rune.level
-    // O PM pago é o nível base; as condições elevam o efeito (nível efetivo)
-    // sem cobrar o mesmo que os níveis extras.
-    const effective = effectiveRuneLevel(rune)
+    // O PM pago é o nível base; as condições (e Exponencializar) elevam o
+    // efeito sem cobrar o mesmo que os níveis extras.
+    const effective = effectiveRuneLevel(rune, spell)
+    const target = isExponencializar(rune.runeId) ? exponentialTarget : undefined
+    const via = exponentialTarget?.runeId === rune.runeId ? ' via Exponencializar' : ''
+    const suffix = target ? ` · alvo ${runeName(target.runeId)}` : ''
     lines.push({
       label:
         effective === rune.level
-          ? `${runeName(rune.runeId)} (nível ${rune.level})`
-          : `${runeName(rune.runeId)} (nível ${rune.level} → ${effective})`,
+          ? `${runeName(rune.runeId)} (nível ${rune.level}${via})${suffix}`
+          : `${runeName(rune.runeId)} (nível ${rune.level} → ${effective}${via})${suffix}`,
       value: rune.level,
       kind: 'rune',
     })
@@ -465,8 +549,15 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
     lines.push({ label: 'Magia Pessoal', value: -3, kind: 'discount' })
   }
 
+  const rawTotal = runeBase + circleMods + extras + discounts
+  const minimum = spell.runes.length > 0 ? 1 : 0
+  const total = Math.max(minimum, rawTotal)
+  if (minimum > 0 && total !== rawTotal) {
+    lines.push({ label: 'Custo mínimo', value: total - rawTotal, kind: 'extra' })
+  }
+
   return {
-    total: Math.max(0, runeBase + circleMods + extras + discounts),
+    total,
     runeBase,
     circleMods,
     extras,
@@ -474,6 +565,20 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
     lines,
     circles,
   }
+}
+
+/** Texto curto de uma runa na magia: nível pago → efetivo e alvo de Exponencializar. */
+export function spellRuneSummary(spell: Spell, rune: SpellRune): string {
+  const name = runeName(rune.runeId)
+  const effective = effectiveRuneLevel(rune, spell)
+  const label =
+    effective === rune.level
+      ? `${name} ${rune.level}`
+      : `${name} ${rune.level} (→ ${effective})`
+  if (isExponencializar(rune.runeId) && rune.targetRuneId) {
+    return `${label} · alvo ${runeName(rune.targetRuneId)}`
+  }
+  return label
 }
 
 // ---------------------------------------------------------------------------
@@ -616,6 +721,11 @@ export function spellWarnings(
       tone: 'warn',
       message: 'Adicione ao menos uma runa para a magia existir.',
     })
+  }
+
+  const exponentialProblem = exponentialIssue(spell)
+  if (exponentialProblem) {
+    warnings.push({ tone: 'warn', message: exponentialProblem })
   }
 
   if (!context.innateCircle) {
