@@ -97,7 +97,13 @@ export function ChatInterface({
         signal: controller.signal,
       })
 
-      const payload: unknown = await response.json().catch(() => null)
+      const raw = await response.text()
+      let payload: unknown = null
+      try {
+        payload = raw ? JSON.parse(raw) : null
+      } catch {
+        payload = null
+      }
 
       if (response.status === 404) {
         throw new Error(
@@ -106,7 +112,14 @@ export function ChatInterface({
       }
 
       if (!response.ok) {
-        throw new Error(readError(payload) ?? `O Mestre não respondeu (HTTP ${response.status}).`)
+        const detail = readError(payload)
+        const snippet = raw.trim().replace(/\s+/g, ' ').slice(0, 180)
+        throw new Error(
+          detail ??
+            (snippet
+              ? `O Mestre não respondeu (HTTP ${response.status}): ${snippet}`
+              : `O Mestre não respondeu (HTTP ${response.status}).`),
+        )
       }
 
       const data = payload as ArenaChatResponse | null

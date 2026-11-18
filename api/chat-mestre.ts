@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { handleChatMestre } from '../server/chatMestre'
+import { DEFAULT_GROQ_MODEL, handleChatMestre } from '../server/chatMestre'
 import { readJsonBody, sendJson } from '../server/http'
 
 /**
@@ -16,8 +16,19 @@ export default async function handler(
   req: VercelRequest,
   res: ServerResponse,
 ): Promise<void> {
+  // Diagnóstico rápido: abrir /api/chat-mestre no navegador mostra se a função
+  // subiu e se a chave chegou nas variáveis de ambiente do deploy.
+  if (req.method === 'GET') {
+    sendJson(res, 200, {
+      ok: true,
+      hasGroqKey: Boolean(process.env.GROQ_API_KEY?.trim()),
+      model: process.env.GROQ_MODEL?.trim() || DEFAULT_GROQ_MODEL,
+    })
+    return
+  }
+
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST')
+    res.setHeader('Allow', 'GET, POST')
     sendJson(res, 405, { error: 'Método não permitido. Use POST.' })
     return
   }
@@ -41,7 +52,12 @@ export default async function handler(
   } catch (error) {
     if (res.writableEnded || res.destroyed) return
     const message = error instanceof Error ? error.message : 'erro desconhecido'
-    sendJson(res, 400, { error: `Não foi possível ler a requisição: ${message}` })
+    const badRequest = error instanceof SyntaxError
+    sendJson(res, badRequest ? 400 : 500, {
+      error: badRequest
+        ? `JSON inválido na requisição: ${message}`
+        : `Falha interna na API do Mestre: ${message}`,
+    })
   } finally {
     res.off('close', abortIfDisconnected)
   }
