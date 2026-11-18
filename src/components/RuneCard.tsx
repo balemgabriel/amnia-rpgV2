@@ -11,10 +11,15 @@ interface RuneCardProps {
   /** Carta em destaque (conhecida, ou presente na magia). */
   active?: boolean
   /**
-   * Linha da escada a destacar — na criação de magias, o nível escolhido
-   * (o efeito que o jogador está pagando).
+   * Linha da escada a destacar — na criação de magias, o nível efetivo
+   * (o efeito que a runa alcança, já contando as condições).
    */
   highlightLevel?: number | null
+  /**
+   * Nível realmente pago em PM. Quando as condições elevam o efeito, esta
+   * linha ganha uma marca discreta para separar "pago" de "efetivo".
+   */
+  paidLevel?: number | null
   /**
    * Quando presente, a carta inteira alterna ACESSO (conhecida/desconhecida).
    * Sem isto a carta é só leitura.
@@ -41,6 +46,7 @@ export function RuneCard({
   rune,
   active = false,
   highlightLevel = null,
+  paidLevel = null,
   onToggle,
   disabled = false,
   blockedReason,
@@ -102,15 +108,17 @@ export function RuneCard({
         {RUNE_LEVELS.map((level) => {
           const effect = rune.levels.find((item) => item.level === level)?.effect
           const highlighted = highlightLevel === level
+          const paid = paidLevel === level
           return (
             <li
               key={level}
               aria-current={highlighted ? 'true' : undefined}
               data-level={level}
               data-highlighted={highlighted ? 'true' : undefined}
+              data-paid={paid ? 'true' : undefined}
               className={cn(
                 'grid grid-cols-[4.1rem_minmax(0,1fr)] gap-2 rounded px-1.5 py-1 text-xs leading-snug',
-                highlighted ? 'font-medium text-ink' : 'text-ink-soft',
+                highlighted ? 'font-medium text-ink' : paid ? 'text-ink' : 'text-ink-soft',
               )}
               style={
                 highlighted
@@ -118,7 +126,9 @@ export function RuneCard({
                       backgroundColor: withAlpha(tone ?? '#5c5044', 0.15),
                       boxShadow: `inset 3px 0 0 ${tone ?? '#5c5044'}`,
                     }
-                  : undefined
+                  : paid
+                    ? { boxShadow: `inset 0 0 0 1px ${withAlpha(tone ?? '#5c5044', 0.5)}` }
+                    : undefined
               }
             >
               <span className="flex items-start gap-[3px] pt-[5px]" aria-hidden>
@@ -135,6 +145,11 @@ export function RuneCard({
               </span>
               <span className={effect ? undefined : 'italic opacity-60'}>
                 <span className="sr-only">Nível {level}: </span>
+                {paid && !highlighted ? (
+                  <span className="mr-1 rounded bg-ink/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wide text-ink-soft">
+                    PM pago
+                  </span>
+                ) : null}
                 {effect ?? 'Sem efeito neste nível.'}
               </span>
             </li>

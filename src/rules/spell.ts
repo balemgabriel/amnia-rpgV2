@@ -299,11 +299,22 @@ export function bonusLevelsForRune(rune: SpellRune): number {
  *
  * Sem condição pesada, os bônus param em 5: condições Moderadas acumuladas
  * nunca passam do teto livre. Com condição Severa/Extrema/Absoluta, o teto
- * sobe para 7.
+ * sobe para 7. O resultado sempre cai num nível que a runa realmente possui:
+ * se o alvo cair num vão da escada, usa o maior nível definido abaixo dele.
  */
 export function effectiveRuneLevel(rune: SpellRune): number {
   const ceiling = hasUnlockingCondition(rune.conditions) ? 7 : FREE_LEVEL_MAX
-  return Math.min(ceiling, rune.level + bonusLevelsForRune(rune))
+  const target = Math.min(ceiling, rune.level + bonusLevelsForRune(rune))
+  const def = runeById(rune.runeId)
+
+  if (!def || def.levels.length === 0) return target
+
+  const defined = def.levels
+    .map((item) => item.level)
+    .filter((level) => level <= target)
+    .sort((a, b) => b - a)
+
+  return defined[0] ?? rune.level
 }
 
 /** O nível escolhido desta runa está bloqueado (6–7 sem condição pesada nela)? */
@@ -363,8 +374,14 @@ export function spellCost(spell: Spell, context: SpellContext): SpellCostResult 
 
   for (const rune of spell.runes) {
     runeBase += rune.level
+    // O PM pago é o nível base; as condições elevam o efeito (nível efetivo)
+    // sem cobrar o mesmo que os níveis extras.
+    const effective = effectiveRuneLevel(rune)
     lines.push({
-      label: `${runeName(rune.runeId)} (nível ${rune.level})`,
+      label:
+        effective === rune.level
+          ? `${runeName(rune.runeId)} (nível ${rune.level})`
+          : `${runeName(rune.runeId)} (nível ${rune.level} → ${effective})`,
       value: rune.level,
       kind: 'rune',
     })

@@ -1,7 +1,7 @@
 import { cn } from '@/lib/cn'
 import type { RuneDef } from '@/rules/data'
 import { RUNE_LEVELS, UNLOCK_WEIGHTS, isLevelDefined } from '@/rules/runes'
-import { isRuneLevelLocked, type SpellRune } from '@/rules/spell'
+import { effectiveRuneLevel, isRuneLevelLocked, type SpellRune } from '@/rules/spell'
 
 function LockIcon() {
   return (
@@ -40,11 +40,12 @@ export function RuneLevelSelector({
   const anyLocked = RUNE_LEVELS.some(
     (level) => isLevelDefined(rune, level) && isRuneLevelLocked(spellRune, level),
   )
+  const effective = effectiveRuneLevel(spellRune)
 
   return (
     <div>
       <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-        Nível · custo em PM
+        Nível pago · custo em PM
       </p>
       <div role="radiogroup" aria-label="Nível da runa na magia" className="flex flex-wrap gap-1">
         {RUNE_LEVELS.map((level) => {
@@ -86,6 +87,13 @@ export function RuneLevelSelector({
           )
         })}
       </div>
+      {effective !== spellRune.level ? (
+        <p className="mt-1 text-[11px] leading-snug text-ink-soft">
+          Com as condições desta runa, o efeito atual é{' '}
+          <strong className="text-ink">nível {effective}</strong>. O PM pago continua no nível{' '}
+          {spellRune.level}.
+        </p>
+      ) : null}
       {anyLocked ? (
         <p className="mt-1 text-[11px] leading-snug text-ink-soft">
           Níveis 6 e 7 só destravam com uma condição Severa, Extrema ou Absoluta vinculada a{' '}

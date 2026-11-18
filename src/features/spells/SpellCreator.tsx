@@ -33,6 +33,7 @@ import {
   TARGET_OPTIONS,
   allConditions,
   conditionMode,
+  effectiveRuneLevel,
   emptySpell,
   formatModifier,
   lockedRunes,
@@ -192,10 +193,12 @@ export function SpellCreator({
   const hasLockedRune = lockedRunes(spell).length > 0
   const canSave = spell.name.trim() !== '' && spell.runes.length > 0 && !hasLockedRune
   const totalConditions = allConditions(spell).length
+  const hasEffectiveBonus = spell.runes.some((rune) => effectiveRuneLevel(rune) !== rune.level)
   const openRune = openRuneId ? owned.find((rune) => rune.id === openRuneId) : undefined
   const openSelected = openRune
     ? spell.runes.find((item) => item.runeId === openRune.id)
     : undefined
+  const openEffective = openSelected ? effectiveRuneLevel(openSelected) : null
 
   function update(partial: Partial<Spell>) {
     setSpell((previous) =>
@@ -401,7 +404,8 @@ export function SpellCreator({
                   ? 'Todas as runas do catálogo estão disponíveis. Clique numa runa para abrir a carta completa, escolher o '
                   : 'Só aparecem as runas a que este personagem tem acesso. Clique numa runa para abrir a carta completa, escolher o '}
                 <strong className="text-ink">nível</strong> (quanto PM você paga por aquele efeito) e
-                jogá-la na magia. A linha destacada mostra o que está sendo pago.
+                jogá-la na magia. Condições elevam o nível efetivo da runa; a carta destaca o
+                efeito alcançado e o PM pago continua no nível escolhido.
               </p>
 
               {owned.length === 0 ? (
@@ -473,6 +477,7 @@ export function SpellCreator({
                     <div className="flex flex-wrap gap-1.5">
                       {filtered.map((rune) => {
                         const selected = spell.runes.find((item) => item.runeId === rune.id)
+                        const effective = selected ? effectiveRuneLevel(selected) : null
                         const tone = circleColor(rune.circle) ?? '#5c5044'
                         return (
                           <button
@@ -504,8 +509,15 @@ export function SpellCreator({
                               <span
                                 className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums"
                                 style={{ backgroundColor: withAlpha(tone, 0.18) }}
+                                title={
+                                  effective !== null && effective !== selected.level
+                                    ? `Nível pago ${selected.level} · efeito nível ${effective} pelas condições`
+                                    : `Nível ${selected.level}`
+                                }
                               >
-                                Nv {selected.level}
+                                {effective !== null && effective !== selected.level
+                                  ? `Nv ${selected.level} → ${effective}`
+                                  : `Nv ${selected.level}`}
                               </span>
                             ) : null}
                           </button>
@@ -544,7 +556,8 @@ export function SpellCreator({
                     <RuneCard
                       rune={openRune}
                       active={Boolean(openSelected)}
-                      highlightLevel={openSelected?.level ?? null}
+                      highlightLevel={openEffective}
+                      paidLevel={openSelected?.level ?? null}
                       badge={openSelected ? <Badge tone="ok">Na magia</Badge> : null}
                       footer={
                         openSelected ? (
@@ -561,6 +574,17 @@ export function SpellCreator({
                                 <strong className="tabular-nums text-ink">
                                   {openSelected.level} PM
                                 </strong>
+                                {openEffective !== null &&
+                                openEffective !== openSelected.level ? (
+                                  <>
+                                    {' '}
+                                    · efeito nível{' '}
+                                    <strong className="tabular-nums text-ink">
+                                      {openEffective}
+                                    </strong>{' '}
+                                    <span className="text-[11px]">(condições)</span>
+                                  </>
+                                ) : null}
                               </span>
                               <Button
                                 variant="quiet"
@@ -595,8 +619,9 @@ export function SpellCreator({
               <p className="mb-3 text-sm text-ink-soft">
                 Cada condição pertence a uma runa específica. Para usar o nível 6 ou 7 de uma
                 runa, é ela que precisa ter uma condição Severa, Extrema ou Absoluta; condições
-                de outras runas da magia não destravam. Os limites do material valem para a magia
-                inteira.
+                de outras runas da magia não destravam. Condições que dão níveis elevam o{' '}
+                <strong className="text-ink">nível efetivo</strong> da runa, mas o PM pago continua
+                sendo o nível base escolhido. Os limites do material valem para a magia inteira.
               </p>
 
               {spell.runes.length === 0 ? (
@@ -609,6 +634,7 @@ export function SpellCreator({
                     const def = runeById(spellRune.runeId)
                     const tone = circleColor(def?.circle)
                     const unlocked = hasUnlockingCondition(spellRune.conditions)
+                    const effective = effectiveRuneLevel(spellRune)
                     return (
                       <section
                         key={spellRune.runeId}
@@ -621,6 +647,13 @@ export function SpellCreator({
                             {runeName(spellRune.runeId)}{' '}
                             <span className="text-xs font-normal text-ink-soft">
                               · nível {spellRune.level}
+                              {effective !== spellRune.level ? (
+                                <>
+                                  {' '}
+                                  → <strong className="font-semibold text-ink">{effective}</strong>{' '}
+                                  com condições
+                                </>
+                              ) : null}
                             </span>
                           </p>
                           <Badge tone={unlocked ? 'ok' : 'neutral'}>
@@ -824,6 +857,12 @@ export function SpellCreator({
                   <span>Total</span>
                   <span className="tabular-nums">{cost.total} PM</span>
                 </div>
+                {hasEffectiveBonus ? (
+                  <p className="pt-1 text-[11px] leading-snug text-ink-soft">
+                    O nível depois da seta é o efeito alcançado com condições; o PM cobrado
+                    continua no nível pago.
+                  </p>
+                ) : null}
               </div>
 
               <div className="mt-3 space-y-1 border-t border-ink/8 pt-3">
