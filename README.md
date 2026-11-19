@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-Requer Node.js 20+.
+Requer Node.js 22+.
 
 ## Arena de Amnia (Mestre com IA)
 
@@ -92,14 +92,39 @@ e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com
 ### Como funciona
 
 - A IA **narra**; quem calcula é o código.
-- Ferramentas do servidor: `roll_test`, `calculate_enemy_damage`, `spend_mana`,
-  `roll_macula_save` e `advance_threat_clock`.
+- Ferramentas do servidor: `spend_action_points`, `roll_test`,
+  `reroll_with_impeto`, `calculate_enemy_damage`, `spend_mana`,
+  `roll_macula_save`, `advance_threat_clock`, `end_turn` e `enter_suppression`.
+- Toda ação declarada gasta PA pelo código (`spend_action_points`, custo padrão
+  1). Sem PA suficiente a ação é bloqueada e nenhum teste é rolado.
+- O Mestre escolhe o teste (ex.: `Armas Brancas + Destreza`) e o servidor soma
+  os valores da ficha. Em testes opostos, o defensor rola a própria pilha:
+  `MoS = sucessos do jogador − sucessos do Mestre` e a DIF é ignorada.
+- A DIF é situacional (padrão **0**, sem DIF fixa). Só sobe quando a ficção
+  impõe resistência passiva (escuridão, terreno, pressa, ferimento); a
+  dificuldade principal vem da margem (MoS).
 - As regras puras ficam em `src/lib/amnia/` (dados, testes e regras) e são
   reutilizadas pelo navegador e pelo servidor.
 - O chat mostra os resultados reais das ferramentas em cartões abaixo da
-  narração (dados, sucessos, MoS, segmentos, PM/Limiar, relógios).
+  narração. Os dados do jogador têm contorno **verde**; os dados do
+  Mestre/inimigo têm contorno **vermelho**.
+- Quando um teste falha, o jogador pode gastar 1 Ímpeto para rerrolar até 2
+  dados falhos **escolhidos por ele** na própria mesa de dados. A defesa do
+  inimigo não muda.
 - O painel lateral destaca o Limiar em azul (seguro), amarelo (perto do limite)
   e vermelho pulsante (Sobrecarga).
+- **Encerrar turno** e **Supressão** (no painel ou no menu **Ações**, acima do
+  campo de mensagem) são enviados ao chat. O servidor aplica a regra antes de
+  responder e o Mestre narra a transição; os botões ficam bloqueados enquanto o
+  chat espera, então não dá para clicar infinitamente.
+- O menu **Ações** também oferece atalhos narrativos (atacar, defender, observar
+  etc.) que só preenchem o campo. **Inimigos** abre uma faixa compacta com os
+  relógios de ameaça atuais e uma barra de vida simplificada; clicar em um
+  inimigo prepara a mensagem de ataque.
+- **Ocultar ficha** esconde a barra lateral e devolve a tela inteira ao chat; o
+  mesmo botão a traz de volta.
+- Clicar em uma magia preparada abre um pop-up com custo, efeito, runas,
+  condições, alcance e alvo. Fecha no **X**, clicando fora ou com **Escape**.
 
 ### Teste manual
 
@@ -107,11 +132,29 @@ e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com
 2. Volte à lista e clique em **Arena** (ou abra `/arena`).
 3. Confirme que o painel mostra nome, classe, PV, PM, Limiar, Ímpeto, PA e runas.
 4. Envie: `Eu ataco o bandido mais próximo com minha espada.`
-5. Verifique se o cartão de `roll_test` aparece com dados e MoS reais e se o
-   Mestre narra o resultado.
-6. Peça um gasto de magia (ex.: `Lanço minha magia no bandido`) e confira
+5. Verifique se o cartão de `spend_action_points` mostra o PA caindo (4 → 3) e se
+   o cartão de `roll_test` aparece com os dados do jogador em **verde** e, quando
+   houver defesa, os dados do inimigo em **vermelho**.
+6. Confira que o teste usa a perícia + atributo pedidos pelo Mestre (ex.:
+   `Armas Brancas + Destreza`) e que a DIF só aparece quando a ficção justifica.
+7. Force uma falha e clique em até 2 dados falhos na mesa; confirme que o botão
+   **Rerrolar · 1 Ímpeto** gasta 1 Ímpeto, muda só os dados escolhidos e mantém
+   a defesa do inimigo.
+8. Peça um gasto de magia (ex.: `Lanço minha magia no bandido`) e confira
    `spend_mana` e o Limiar subindo no painel.
-7. Rode `npm run test:arena` para validar dados, dano, PM, Mácula e relógios.
+9. Clique em **Encerrar turno** (painel ou menu **Ações**). Confirme que o chat
+   mostra a mensagem e o Mestre narra a transição, que o turno sobe, PA/PM são
+   restaurados e que os botões ficam desabilitados durante a resposta. Clicar de
+   novo depois não deve aplicar o turno duas vezes na mesma mensagem.
+10. Clique em **Supressão**. O Mestre deve narrar o resfriamento do Limiar e a
+    mana cortada; o botão fica desabilitado até o próximo turno.
+11. Clique em uma magia preparada: o pop-up deve mostrar custo, efeito, runas,
+    condições, alcance e alvo. Feche no **X**, clicando fora e com **Escape**.
+12. Abra **Inimigos** e clique em um relógio: a mensagem de ataque é preenchida
+    no campo. Abra **Ações** e use um atalho narrativo. Use **Ocultar ficha** e
+    **Mostrar ficha** para alternar a barra lateral.
+13. Rode `npm run test:arena` para validar dados, teste oposto, DIF, PA,
+    rerrolagem de Ímpeto, dano, PM, Mácula, Supressão e relógios.
 
 Sem ficha, `/arena` mostra um estado vazio com botão para o criador e a opção
 de carregar uma ficha de exemplo (criada só no navegador).

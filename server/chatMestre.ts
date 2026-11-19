@@ -2,20 +2,29 @@ import { createGroq } from '@ai-sdk/groq'
 import { generateText, stepCountIs, tool } from 'ai'
 import { z } from 'zod'
 import {
+  applyImpetoReroll,
   applyMaculaEffect,
   appendArenaLog,
   calculateEnemyDamage,
   isThreatKind,
   normalizeGameState,
   normalizeSheetSummary,
+  spendActionPoints,
   spendMana,
+  startTurn,
+  suppressMana,
   upsertThreatClock,
 } from '../src/lib/amnia/rules'
 import { resolveAmniaTest, rollMaculaSave } from '../src/lib/amnia/dice'
+import { resolveTestPool } from '../src/lib/amnia/testResolver'
 import { buildArenaSystemPrompt } from '../src/lib/amnia/prompt'
 import type {
+  AmniaAttributeId,
   ArenaChatResponse,
   ArenaGameState,
+  ArenaPendingTest,
+  ArenaSheetSummary,
+  ArenaTableActionType,
   ArenaToolResultView,
 } from '../src/lib/amnia/types'
 
@@ -50,33 +59,183 @@ const requestSchema = z.object({
   messages: z.array(messageSchema).min(1).max(60),
   fichaPersonagem: z.unknown(),
   gameState: z.unknown().optional(),
+  /** Rerrolagem de Ímpeto escolhida na interface (dados falhos, 0-based). */
+  impetoReroll: z
+    .object({
+      indices: z.array(z.number().int().min(0).max(29)).min(1).max(2),
+    })
+    .optional(),
+  /**
+   * Ação de mesa disparada por botão (Encerrar turno / Supressão). O motor
+   * aplica o efeito ANTES de chamar o modelo; a narração só descreve o que já
+   * aconteceu. `id` é um nonce local para diferenciar cliques.
+   */
+  tableAction: z
+    .object({
+      type: z.enum(['end_turn', 'suppress']),
+      id: z.number().int().optional(),
+    })
+    .optional(),
 })
 
 const MAX_HISTORY = 24
 
-function buildTools(getState: () => ArenaGameState, setState: (next: ArenaGameState) => void) {
+function nextTestId(): string {
+  return `test-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+}
+
+function buildTools(
+  sheet: ArenaSheetSummary,
+  getState: () => ArenaGameState,
+  setState: (next: ArenaGameState) => void,
+  keyAttributeValue: number,
+  /** Evita aplicar duas vezes a mesma ação de mesa na mesma mensagem. */
+  guard: Record<ArenaTableActionType, boolean>,
+) {
   return {
-    roll_test: tool({
+    spend_action_points: tool({
       description:
-        'Rola um teste de Amnia com d6 empilhados e calcula sucessos, dificuldade e Margem de Sucesso (MoS). Use SEMPRE antes de narrar qualquer ataque, defesa, perícia ou resistência. Nunca invente dados.',
+        'OBRIGATÓRIO quando o jogador declara uma ação que custa PA (atacar, mover, manobrar, lançar magia, ajudar, reagir). Gasta o PA ANTES de rolar ou narrar. Sem PA suficiente a ação é bloqueada e o teste não acontece. Custo padrão 1. Não cobre PA duas vezes pela mesma ação.',
       inputSchema: z.object({
-        diceCount: z.number().int().min(0).max(30).describe('Quantidade de d6 a rolar.'),
-        difficulty: z.number().int().min(0).max(30).describe('Dificuldade do teste em sucessos.'),
-        label: z.string().min(1).max(160).describe('O que está sendo testado (ex.: ataque de espada).'),
+        amount: z.number().int().min(1).max(4).describe('Custo em PA da ação (normalmente 1).'),
+        actionName: z.string().min(1).max(120).describe('Ação declarada, ex.: "atacar o bandido".'),
       }),
       execute: async (input) => {
-        const result = resolveAmniaTest(input)
+        const state = getState()
+        const result = spendActionPoints({
+          amount: input.amount,
+          actionName: input.actionName,
+          currentPa: state.resources.pa.current,
+        })
+
+        const next: ArenaGameState = {
+          ...state,
+          resources: {
+            ...state.resources,
+            pa: { ...state.resources.pa, current: result.newPa },
+          },
+        }
+
         setState(
           appendArenaLog(
-            getState(),
-            'rolagem',
-            `${result.label}: ${result.successes} sucesso(s) vs DIF ${result.difficulty} (MoS ${result.mos})`,
-            `Dados: [${result.dice.join(', ')}]${result.criticalPairs > 0 ? ' · crítico (par de 6)' : ''}${
-              result.criticalFailures > 0 ? ' · falha crítica (par de 1)' : ''
-            }`,
+            next,
+            'acao',
+            `${input.actionName}: ${result.blocked ? 'bloqueada por falta de PA' : `−${result.spent} PA`}`,
+            result.message,
           ),
         )
         return result
+      },
+    }),
+
+    roll_test: tool({
+      description:
+        'Rola um teste de Amnia com d6 empilhados e calcula sucessos, alvo e Margem de Sucesso (MoS). Use SEMPRE antes de narrar qualquer ataque, defesa, perícia ou resistência. Monte o teste como o Mestre pediu (perícia + atributo): envie test/skill/attribute e o servidor soma os valores da ficha. Em ataques/defesas opostos, envie também enemyDiceCount/enemyLabel: a MoS vira sucessos do jogador − sucessos do Mestre e a DIF é ignorada. Nunca invente dados.',
+      inputSchema: z.object({
+        test: z
+          .string()
+          .min(1)
+          .max(160)
+          .describe('Teste pedido, ex.: "Armas brancas + Destreza" ou "Vontade vs medo".'),
+        skill: z.string().max(80).optional().describe('Perícia usada, ex.: "Armas brancas".'),
+        attribute: z
+          .enum(['forca', 'destreza', 'carisma', 'inteligencia', 'vontade'])
+          .optional()
+          .describe('Atributo usado, ex.: "destreza".'),
+        diceCount: z
+          .number()
+          .int()
+          .min(0)
+          .max(30)
+          .optional()
+          .describe(
+            'Só para modificadores explícitos (ex.: −2 por repetição). Se omitido, o servidor soma perícia + atributo da ficha.',
+          ),
+        difficulty: z
+          .number()
+          .int()
+          .min(0)
+          .max(30)
+          .optional()
+          .describe(
+            'DIF situacional. Padrão 0. Só use quando a ficção impõe resistência passiva; ignorada em teste oposto.',
+          ),
+        difficultyReason: z
+          .string()
+          .max(160)
+          .optional()
+          .describe('Por que a DIF é essa (ex.: "escuridão total").'),
+        enemyDiceCount: z
+          .number()
+          .int()
+          .min(0)
+          .max(30)
+          .optional()
+          .describe('Pilha de defesa do inimigo (dados do Mestre) em um teste oposto.'),
+        enemyLabel: z
+          .string()
+          .max(120)
+          .optional()
+          .describe('Quem está defendendo, ex.: "Bandido — Atletismo + Destreza".'),
+      }),
+      execute: async (input) => {
+        const pool = resolveTestPool(sheet, input)
+        const result = resolveAmniaTest({
+          diceCount: pool.diceCount,
+          difficulty: input.difficulty ?? 0,
+          difficultyReason: input.difficultyReason,
+          label: input.test,
+          test: input.test,
+          diceBreakdown: pool.breakdown,
+          enemyDiceCount: input.enemyDiceCount,
+          enemyLabel: input.enemyLabel,
+        })
+
+        const pending: ArenaPendingTest = {
+          ...result,
+          id: nextTestId(),
+          createdAt: Date.now(),
+        }
+
+        const targetDetail = result.enemy
+          ? `Mestre (${result.enemy.label}) [${result.enemy.dice.join(', ')}] = ${result.enemy.successes}`
+          : `DIF ${result.difficulty}${result.difficultyReason ? ` (${result.difficultyReason})` : ''}`
+
+        let next = appendArenaLog(
+          getState(),
+          'rolagem',
+          `${result.label}: ${result.successes} sucesso(s) vs ${result.targetSuccesses} (MoS ${result.mos >= 0 ? '+' : ''}${result.mos})`,
+          `${pool.breakdown} · Jogador [${result.dice.join(', ')}] = ${result.successes} · ${targetDetail}${
+            result.criticalPairs > 0 ? ' · crítico (par de 6)' : ''
+          }${result.criticalFailures > 0 ? ' · falha crítica (par de 1)' : ''}`,
+        )
+        next = { ...next, pendingTest: pending }
+        setState(next)
+
+        return { ...result, testId: pending.id }
+      },
+    }),
+
+    reroll_with_impeto: tool({
+      description:
+        'Rerrola até 2 dados falhos do último teste usando 1 ponto de Ímpeto. Use SOMENTE depois que o jogador escolher quais dados falhos rerrolar. Os índices são 0-based conforme o teste pendente no estado da mesa. Nunca escolha os dados pelo jogador.',
+      inputSchema: z.object({
+        indices: z
+          .array(z.number().int().min(0).max(29))
+          .min(1)
+          .max(2)
+          .describe('Índices 0-based dos dados falhos escolhidos pelo jogador.'),
+      }),
+      execute: async (input) => {
+        const outcome = applyImpetoReroll(getState(), input.indices)
+        if (!outcome.ok) return { error: outcome.error }
+
+        setState(outcome.state)
+        return {
+          ...outcome.test,
+          testId: outcome.test.id,
+          message: outcome.message,
+        }
       },
     }),
 
@@ -239,6 +398,77 @@ function buildTools(getState: () => ArenaGameState, setState: (next: ArenaGameSt
         return result
       },
     }),
+
+    end_turn: tool({
+      description:
+        'Encerra o turno do jogador: restaura PA e PM, encerra a Supressão e limpa o teste pendente. Use SOMENTE quando o jogador declarar que encerra o turno (ou clicar no botão). Nunca encerre o turno por conta própria.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        if (guard.end_turn) {
+          return {
+            applied: false,
+            alreadyApplied: true,
+            message:
+              'O turno já foi encerrado pelo motor nesta mensagem. Narre apenas a transição e devolva a palavra ao jogador.',
+          }
+        }
+
+        const before = getState()
+        const next = startTurn(before)
+        guard.end_turn = true
+        setState(next)
+
+        return {
+          applied: true,
+          turn: next.turn,
+          pa: next.resources.pa.current,
+          pm: next.resources.pm.current,
+          suppressed: next.suppressed,
+          message: `Turno ${before.turn} → ${next.turn}. PA e PM restaurados; Supressão encerrada.`,
+        }
+      },
+    }),
+
+    enter_suppression: tool({
+      description:
+        'Entra em Supressão Arcana: resfria o Limiar em 2 + atributo chave, corta a mana e bloqueia magias até o próximo turno. Use SOMENTE quando o jogador declarar Supressão (ou clicar no botão). Se a Supressão já estiver ativa, não aplique de novo.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        if (guard.suppress) {
+          return {
+            applied: false,
+            alreadyApplied: true,
+            message:
+              'A Supressão já foi aplicada pelo motor nesta mensagem. Narre apenas o resfriamento e devolva a palavra ao jogador.',
+          }
+        }
+
+        const state = getState()
+        if (state.suppressed) {
+          guard.suppress = true
+          return {
+            applied: false,
+            suppressed: true,
+            message:
+              'Supressão já está ativa: a mana só volta no próximo turno. Nada foi alterado.',
+          }
+        }
+
+        const next = suppressMana(state, keyAttributeValue)
+        const cooling = 2 + keyAttributeValue
+        guard.suppress = true
+        setState(next)
+
+        return {
+          applied: true,
+          cooling,
+          limiar: next.resources.limiar.current,
+          pm: next.resources.pm.current,
+          suppressed: next.suppressed,
+          message: `Supressão ativa: Limiar −${cooling} (agora ${next.resources.limiar.current}), mana cortada até o próximo turno.`,
+        }
+      },
+    }),
   }
 }
 
@@ -267,6 +497,103 @@ export async function handleChatMestre(
   const sheet = normalizeSheetSummary(parsed.data.fichaPersonagem)
   let gameState = normalizeGameState(parsed.data.gameState, sheet.max)
 
+  const keyAttributeValue = sheet.keyAttribute
+    ? Math.max(
+        0,
+        Math.trunc(sheet.attributes[sheet.keyAttribute as AmniaAttributeId] ?? 0),
+      )
+    : 0
+
+  // A rerrolagem de Ímpeto vem da seleção visual do jogador. O servidor aplica
+  // antes de chamar o modelo, para que a narração use os dados reais.
+  let rerollView: ArenaToolResultView | null = null
+  let rerollNote: string | undefined
+  if (parsed.data.impetoReroll) {
+    const outcome = applyImpetoReroll(gameState, parsed.data.impetoReroll.indices)
+    if (!outcome.ok) {
+      return { status: 400, body: { error: outcome.error } }
+    }
+
+    gameState = outcome.state
+    rerollNote = outcome.message
+    rerollView = {
+      toolName: 'reroll_with_impeto',
+      input: { indices: parsed.data.impetoReroll.indices },
+      output: {
+        ...outcome.test,
+        testId: outcome.test.id,
+        message: outcome.message,
+      },
+    }
+  }
+
+  // Ações de mesa (botões) são resolvidas deterministicamente aqui. O modelo
+  // recebe o resultado pronto e só narra a transição, sem recalcular nada.
+  const guard: Record<ArenaTableActionType, boolean> = {
+    end_turn: false,
+    suppress: false,
+  }
+  let tableActionView: ArenaToolResultView | null = null
+  let tableActionNote: string | undefined
+  const requestedAction = parsed.data.tableAction
+  if (requestedAction) {
+    const actionInput = { type: requestedAction.type, id: requestedAction.id }
+
+    if (requestedAction.type === 'end_turn') {
+      const before = gameState
+      const next = startTurn(before)
+      gameState = next
+      guard.end_turn = true
+      tableActionNote = `O jogador encerrou o turno. O motor já aplicou: turno ${before.turn} → ${next.turn}, PA ${before.resources.pa.current} → ${next.resources.pa.current}, PM ${before.resources.pm.current} → ${next.resources.pm.current}, Supressão encerrada. Narre a transição em 1–2 frases e devolva a palavra ao jogador. NÃO chame end_turn de novo.`
+      tableActionView = {
+        toolName: 'end_turn',
+        input: actionInput,
+        output: {
+          applied: true,
+          turn: next.turn,
+          pa: next.resources.pa.current,
+          pm: next.resources.pm.current,
+          suppressed: next.suppressed,
+          message: `Turno ${before.turn} → ${next.turn}. PA e PM restaurados; Supressão encerrada.`,
+        },
+      }
+    } else if (gameState.suppressed) {
+      guard.suppress = true
+      tableActionNote =
+        'O jogador tentou entrar em Supressão, mas ela já estava ativa. O motor não alterou nada. Narre brevemente que a Supressão continua e que a mana só volta no próximo turno. NÃO chame enter_suppression.'
+      tableActionView = {
+        toolName: 'enter_suppression',
+        input: actionInput,
+        output: {
+          applied: false,
+          suppressed: true,
+          message: 'Supressão já estava ativa: nada mudou.',
+        },
+      }
+    } else {
+      const before = gameState
+      const next = suppressMana(before, keyAttributeValue)
+      const cooling = 2 + keyAttributeValue
+      gameState = next
+      guard.suppress = true
+      tableActionNote = `O jogador entrou em Supressão Arcana. O motor já aplicou: Limiar ${before.resources.limiar.current} → ${next.resources.limiar.current} (−${cooling}), PM ${before.resources.pm.current} → 0, magias bloqueadas até o próximo turno. Narre brevemente o resfriamento e a mana cortada. NÃO chame enter_suppression de novo.`
+      tableActionView = {
+        toolName: 'enter_suppression',
+        input: actionInput,
+        output: {
+          applied: true,
+          cooling,
+          limiar: next.resources.limiar.current,
+          pm: next.resources.pm.current,
+          suppressed: next.suppressed,
+          message: `Supressão ativa: Limiar −${cooling} (agora ${next.resources.limiar.current}), mana cortada até o próximo turno.`,
+        },
+      }
+    }
+  }
+
+  const resolvedNote = [rerollNote, tableActionNote].filter(Boolean).join('\n\n') || undefined
+
   const messages = parsed.data.messages
     .slice(-MAX_HISTORY)
     .map((message) => ({ role: message.role, content: message.content }))
@@ -276,15 +603,18 @@ export async function handleChatMestre(
   try {
     const groq = createGroq({ apiKey })
     const tools = buildTools(
+      sheet,
       () => gameState,
       (next) => {
         gameState = next
       },
+      keyAttributeValue,
+      guard,
     )
 
     const result = await generateText({
       model: groq(modelId),
-      system: buildArenaSystemPrompt(sheet, gameState),
+      system: buildArenaSystemPrompt(sheet, gameState, resolvedNote),
       messages,
       tools,
       stopWhen: stepCountIs(6),
@@ -297,11 +627,15 @@ export async function handleChatMestre(
       abortSignal: options.signal,
     })
 
-    const toolResults: ArenaToolResultView[] = result.toolResults.map((entry) => ({
-      toolName: entry.toolName,
-      input: entry.input,
-      output: entry.output,
-    }))
+    const toolResults: ArenaToolResultView[] = [
+      ...(rerollView ? [rerollView] : []),
+      ...(tableActionView ? [tableActionView] : []),
+      ...result.toolResults.map((entry) => ({
+        toolName: entry.toolName,
+        input: entry.input,
+        output: entry.output,
+      })),
+    ]
 
     const reply =
       result.text.trim() ||

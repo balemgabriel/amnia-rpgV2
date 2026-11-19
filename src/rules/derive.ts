@@ -2,6 +2,7 @@ import { derivedStats } from './amnia'
 import type { Character } from './character'
 import { equipmentModifiers } from './equipment'
 import { compile, type FormulaScope } from './formula'
+import { traitModifiers } from './traitEffects'
 
 /**
  * Monta o escopo das fórmulas a partir dos atributos do personagem.
@@ -50,10 +51,12 @@ export function computeDerived(character: Character): DerivedValue[] {
   const scope = buildScope(character)
   // Itens equipados somam como modificadores (PM, Limiar, Deslocamento…); desequipar remove.
   const equipped = equipmentModifiers(character.inventory ?? [])
+  // Alguns traços raciais/negativos alteram stats derivados (ex.: Limiar −4).
+  const traits = traitModifiers([...character.ancestryTraits, ...character.negativeTraits])
 
   return derivedStats.map((stat) => {
     const base = evaluate(stat.formula, scope)
-    const sources = [...character.modifiers, ...equipped].filter(
+    const sources = [...character.modifiers, ...traits, ...equipped].filter(
       (modifier) => modifier.statId === stat.id,
     )
     const modifiers = sources.reduce((sum, modifier) => sum + modifier.value, 0)

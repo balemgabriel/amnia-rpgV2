@@ -1,7 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, Dices, ScrollText, Sparkles, Swords } from 'lucide-react'
+import { cn } from '@/lib/cn'
 import { createGameState } from '@/lib/amnia/rules'
-import type { ArenaGameState } from '@/lib/amnia/types'
+import type {
+  ArenaGameState,
+  ArenaTableActionRequest,
+  ArenaTableActionType,
+} from '@/lib/amnia/types'
 import {
   publishCurrentCharacter,
   readCurrentCharacter,
@@ -28,6 +33,13 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
   /** `undefined` = carregando; `null` = nenhuma ficha publicada. */
   const [current, setCurrent] = useState<CurrentCharacter | null | undefined>(undefined)
   const [gameState, setGameState] = useState<ArenaGameState | null>(null)
+  /** A ficha lateral pode ser ocultada para dar a tela toda ao chat. */
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  /** O chat está aguardando o Mestre; botões de mesa ficam bloqueados. */
+  const [chatBusy, setChatBusy] = useState(false)
+  /** Ação de mesa pedida por um botão; o chat envia e narra o resultado. */
+  const [tableAction, setTableAction] = useState<ArenaTableActionRequest | null>(null)
+  const tableActionSeq = useRef(0)
 
   useEffect(() => {
     const loaded = readCurrentCharacter()
@@ -67,6 +79,19 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
     setGameState(next)
     writeArenaState(current.character.id, next)
   }, [current, sheet])
+
+  /**
+   * Pede uma ação de mesa ao chat. O nonce (`id`) faz o chat distinguir um
+   * clique novo de um re-render, evitando disparos repetidos.
+   */
+  const requestTableAction = useCallback(
+    (type: ArenaTableActionType) => {
+      if (chatBusy) return
+      tableActionSeq.current += 1
+      setTableAction({ type, id: tableActionSeq.current })
+    },
+    [chatBusy],
+  )
 
   function loadDemo() {
     const mock = createMockArenaCharacter()
@@ -130,7 +155,12 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-3 px-3 py-3 sm:px-4 lg:grid lg:min-h-0 lg:grid-cols-[3fr_2fr] lg:gap-5 lg:px-6 lg:py-5">
+      <main
+        className={cn(
+          'relative z-10 mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-3 px-3 py-3 sm:px-4 lg:grid lg:min-h-0 lg:gap-5 lg:px-6 lg:py-5',
+          sidebarOpen ? 'lg:grid-cols-[3fr_2fr]' : 'lg:grid-cols-1',
+        )}
+      >
         {current === undefined ? (
           <section aria-label="Carregando Arena" className="flex min-h-[68dvh] flex-col lg:min-h-0">
             <PanelSkeleton lines={6} />
@@ -148,27 +178,36 @@ export function ArenaPage({ onBack }: { onBack: () => void }) {
                 gameState={gameState}
                 onGameState={updateGameState}
                 demo={current.demo}
+                tableAction={tableAction}
+                onTableAction={requestTableAction}
+                onBusyChange={setChatBusy}
+                sidebarOpen={sidebarOpen}
+                onToggleSidebar={() => setSidebarOpen((open) => !open)}
               />
             </section>
 
-            <aside
-              aria-label="Ficha do personagem"
-              className="arena-scroll flex flex-col lg:min-h-0 lg:overflow-y-auto"
-            >
-              <CharacterSheetPanel
-                character={current.character}
-                state={gameState}
-                onStateChange={updateGameState}
-                onReset={resetTable}
-                demo={current.demo}
-                onBackToCreator={onBack}
-              />
+            {sidebarOpen ? (
+              <aside
+                aria-label="Ficha do personagem"
+                className="arena-scroll flex flex-col lg:min-h-0 lg:overflow-y-auto"
+              >
+                <CharacterSheetPanel
+                  character={current.character}
+                  state={gameState}
+                  onStateChange={updateGameState}
+                  onReset={resetTable}
+                  onTableAction={requestTableAction}
+                  busy={chatBusy}
+                  demo={current.demo}
+                  onBackToCreator={onBack}
+                />
 
-              <p className="mt-3 flex items-center justify-center gap-1.5 px-2 text-center text-[10px] text-slate-600">
-                <Dices className="size-3" aria-hidden />
-                A IA narra. Dados, dano, PM e Limiar são calculados no servidor.
-              </p>
-            </aside>
+                <p className="mt-3 flex items-center justify-center gap-1.5 px-2 text-center text-[10px] text-slate-600">
+                  <Dices className="size-3" aria-hidden />
+                  A IA narra. Dados, PA, dano, PM, Limiar e Ímpeto são calculados no servidor.
+                </p>
+              </aside>
+            ) : null}
           </>
         )}
       </main>

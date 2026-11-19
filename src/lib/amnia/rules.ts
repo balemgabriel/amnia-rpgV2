@@ -1,3 +1,12 @@
+import {
+  countSuccesses,
+  failedDiceIndices,
+  IMPETO_REROLL_COST,
+  MAX_DICE,
+  MAX_IMPETO_REROLL,
+  rerollFailedDice,
+  type RandomSource,
+} from './dice'
 import type {
   AdvanceClockInput,
   AdvanceClockResult,
@@ -5,12 +14,15 @@ import type {
   ArenaGameState,
   ArenaLogEntry,
   ArenaMaxValues,
+  ArenaPendingTest,
   ArenaResourceValue,
   ArenaResources,
   ArenaSheetSummary,
   ArenaThreatClock,
   EnemyDamageInput,
   EnemyDamageResult,
+  SpendActionPointsInput,
+  SpendActionPointsResult,
   SpendManaInput,
   SpendManaResult,
   ThreatKind,
@@ -151,6 +163,87 @@ function normalizeLog(value: unknown): ArenaLogEntry[] {
   return entries
 }
 
+function normalizeDice(value: unknown): number[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((die): die is number => typeof die === 'number' && Number.isFinite(die))
+    .map((die) => Math.min(6, Math.max(1, Math.trunc(die))))
+    .slice(0, MAX_DICE)
+}
+
+/**
+ * Reconstrói o teste pendente a partir do que veio do navegador.
+ *
+ * Sucessos e MoS são recalculados dos dados (o servidor não confia em números
+ * salvos) e a pilha do inimigo é preservada intacta.
+ */
+function normalizePendingTest(value: unknown): ArenaPendingTest | undefined {
+  const record = asRecord(value)
+  const dice = normalizeDice(record.dice)
+  if (dice.length === 0) return undefined
+
+  const roll = countSuccesses(dice)
+  const difficulty = asInt(record.difficulty, 0, 0, 30)
+  const enemyRecord = asRecord(record.enemy)
+  const enemyDice = normalizeDice(enemyRecord.dice)
+  const enemyRoll = enemyDice.length > 0 ? countSuccesses(enemyDice) : null
+  const targetSuccesses = enemyRoll ? enemyRoll.successes : difficulty
+  const mos = roll.successes - targetSuccesses
+
+  const rerollRecord = asRecord(record.impetoReroll)
+  const rerollIndices = Array.isArray(rerollRecord.indices)
+    ? rerollRecord.indices
+        .filter((index): index is number => typeof index === 'number' && Number.isFinite(index))
+        .map((index) => Math.trunc(index))
+        .filter((index) => index >= 0 && index < dice.length)
+        .slice(0, MAX_IMPETO_REROLL)
+    : []
+  const previousValues = Array.isArray(rerollRecord.previousValues)
+    ? rerollRecord.previousValues
+        .filter((die): die is number => typeof die === 'number' && Number.isFinite(die))
+        .map((die) => Math.min(6, Math.max(1, Math.trunc(die))))
+        .slice(0, MAX_IMPETO_REROLL)
+    : []
+
+  const test = asString(record.test).trim()
+  const breakdown = asString(record.diceBreakdown).trim()
+  const reason = asString(record.difficultyReason).trim()
+
+  return {
+    id: asString(record.id).trim() || `test-${Date.now()}`,
+    createdAt: asInt(record.createdAt, Date.now(), 0, Number.MAX_SAFE_INTEGER),
+    label: asString(record.label).trim() || test || 'Teste',
+    ...(test ? { test } : {}),
+    ...(breakdown ? { diceBreakdown: breakdown } : {}),
+    ...roll,
+    difficulty: enemyRoll ? 0 : difficulty,
+    ...(reason && !enemyRoll ? { difficultyReason: reason } : {}),
+    targetSuccesses,
+    mos,
+    success: mos > 0,
+    partial: mos === 0,
+    failed: mos < 0,
+    ...(enemyRoll
+      ? {
+          enemy: {
+            label: asString(enemyRecord.label).trim() || 'Inimigo',
+            ...enemyRoll,
+          },
+        }
+      : {}),
+    failedIndices: failedDiceIndices(dice),
+    ...(rerollIndices.length > 0
+      ? {
+          impetoReroll: {
+            indices: rerollIndices,
+            previousValues,
+            cost: IMPETO_REROLL_COST,
+          },
+        }
+      : {}),
+  }
+}
+
 /**
  * Lê um estado salvo no navegador (ou enviado pelo cliente) e devolve um estado
  * sempre válido. Campos ausentes/inválidos voltam ao padrão da ficha.
@@ -177,6 +270,8 @@ export function normalizeGameState(raw: unknown, max: ArenaMaxValues): ArenaGame
     })
   }
 
+  const pendingTest = normalizePendingTest(source.pendingTest)
+
   return {
     version: ARENA_STATE_VERSION,
     turn: asInt(source.turn, 1, 1, 999),
@@ -185,6 +280,25 @@ export function normalizeGameState(raw: unknown, max: ArenaMaxValues): ArenaGame
     suppressed: source.suppressed === true,
     clocks,
     log: normalizeLog(source.log),
+    ...(pendingTest ? { pendingTest } : {}),
+  }
+}
+
+function clonePendingTest(test: ArenaPendingTest): ArenaPendingTest {
+  return {
+    ...test,
+    dice: [...test.dice],
+    failedIndices: [...test.failedIndices],
+    ...(test.enemy ? { enemy: { ...test.enemy, dice: [...test.enemy.dice] } } : {}),
+    ...(test.impetoReroll
+      ? {
+          impetoReroll: {
+            ...test.impetoReroll,
+            indices: [...test.impetoReroll.indices],
+            previousValues: [...test.impetoReroll.previousValues],
+          },
+        }
+      : {}),
   }
 }
 
@@ -200,6 +314,7 @@ function cloneState(state: ArenaGameState): ArenaGameState {
     },
     clocks: state.clocks.map((clock) => ({ ...clock })),
     log: [...state.log],
+    ...(state.pendingTest ? { pendingTest: clonePendingTest(state.pendingTest) } : {}),
   }
 }
 
@@ -235,6 +350,69 @@ export function appendArenaLog(
   return withLog(state, kind, label, detail)
 }
 
+export type ImpetoRerollOutcome =
+  | { ok: true; state: ArenaGameState; test: ArenaPendingTest; message: string }
+  | { ok: false; error: string }
+
+/**
+ * Aplica a rerrolagem de Ímpeto escolhida pelo jogador.
+ *
+ * Regra do material: 1 ponto de Ímpeto rerrola até 2 dados falhos. O jogador
+ * escolhe quais; a pilha do inimigo (dados do Mestre) não muda.
+ */
+export function applyImpetoReroll(
+  state: ArenaGameState,
+  indices: number[],
+  random: RandomSource = Math.random,
+): ImpetoRerollOutcome {
+  const pending = state.pendingTest
+  if (!pending) {
+    return { ok: false, error: 'Não há teste pendente para rerrolar. Role um teste primeiro.' }
+  }
+  if (state.resources.impeto.current < IMPETO_REROLL_COST) {
+    return { ok: false, error: 'Ímpeto insuficiente para rerrolar.' }
+  }
+
+  const allowed = new Set(pending.failedIndices)
+  const chosen = [...new Set(indices.map((index) => Math.trunc(index)))]
+    .filter((index) => allowed.has(index))
+    .slice(0, MAX_IMPETO_REROLL)
+
+  if (chosen.length === 0) {
+    return { ok: false, error: 'Escolha ao menos um dado falho para rerrolar.' }
+  }
+
+  const rerolled = rerollFailedDice(pending, chosen, random)
+  const next = cloneState(state)
+  next.resources.impeto.current = Math.max(
+    0,
+    next.resources.impeto.current - IMPETO_REROLL_COST,
+  )
+  next.pendingTest = {
+    ...rerolled,
+    id: `test-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    createdAt: Date.now(),
+  }
+
+  const previous = rerolled.impetoReroll?.previousValues ?? []
+  const nextValues = chosen.map((index) => rerolled.dice[index] ?? 0)
+  const target = rerolled.enemy
+    ? `defesa do Mestre (${rerolled.enemy.successes})`
+    : `DIF ${rerolled.difficulty}`
+  const message = [
+    `Ímpeto −1 (${next.resources.impeto.current}/${next.resources.impeto.max}).`,
+    `Dados ${chosen.map((index) => index + 1).join(' e ')}: [${previous.join(', ')}] → [${nextValues.join(', ')}].`,
+    `${rerolled.successes} sucesso(s) vs ${target} (MoS ${rerolled.mos >= 0 ? '+' : ''}${rerolled.mos}).`,
+  ].join(' ')
+
+  return {
+    ok: true,
+    state: withLog(next, 'impeto', 'Rerrolagem de Ímpeto', message),
+    test: next.pendingTest,
+    message,
+  }
+}
+
 /** Ajusta um recurso sem criar débito (PA/PM nunca ficam negativos). */
 export function changeResource(
   state: ArenaGameState,
@@ -263,7 +441,29 @@ export function startTurn(state: ArenaGameState): ArenaGameState {
   next.resources.pm.current = next.resources.pm.max
   next.suppressed = false
   next.overloaded = next.resources.limiar.current > next.resources.limiar.max
+  // O teste pendente pertence ao turno que terminou.
+  delete next.pendingTest
   return withLog(next, 'turno', `Turno ${next.turn} começou`, 'PA e PM restaurados.')
+}
+
+/**
+ * Gasta PA de uma ação declarada pelo jogador.
+ *
+ * O Mestre chama esta ferramenta ANTES de rolar/narrar a ação. Sem PA
+ * suficiente a ação é bloqueada (nada é gasto e o teste não acontece).
+ */
+export function spendActionPoints(input: SpendActionPointsInput): SpendActionPointsResult {
+  const amount = Math.max(1, Math.trunc(Number.isFinite(input.amount) ? input.amount : 1))
+  const available = Math.max(0, Math.trunc(Number.isFinite(input.currentPa) ? input.currentPa : 0))
+  const blocked = amount > available
+  const spent = blocked ? 0 : amount
+  const newPa = available - spent
+
+  const message = blocked
+    ? `${input.actionName || 'Ação'}: PA insuficiente (${available} disponível, ${amount} necessário). A ação não acontece neste turno.`
+    : `${input.actionName || 'Ação'}: gastou ${spent} PA. PA ${available} → ${newPa}.`
+
+  return { spent, newPa, blocked, message }
 }
 
 /** Custo em PM de uma magia e o Limiar que ela adiciona. */

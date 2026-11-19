@@ -23,15 +23,55 @@ export interface AmniaRoll {
   criticalFailures: number
 }
 
-export interface AmniaTestInput {
-  diceCount: number
-  difficulty: number
+/** Pilha de dados de um lado de um teste oposto (jogador ou Mestre/inimigo). */
+export interface AmniaDicePool {
   label: string
+  dice: number[]
+  successes: number
+  criticalPairs: number
+  criticalFailures: number
+}
+
+export interface AmniaTestInput {
+  /** Quantidade de dados; se omitida, o servidor calcula por perícia + atributo. */
+  diceCount?: number
+  /**
+   * DIF situacional. Padrão 0: a dificuldade principal vem da margem de
+   * sucesso e da defesa ativa. Ignorada quando há pilha do inimigo.
+   */
+  difficulty?: number
+  difficultyReason?: string
+  label: string
+  /** Teste pedido pelo Mestre, ex.: "Armas brancas + Destreza". */
+  test?: string
+  /** Decomposição da pilha, ex.: "Armas Brancas 4 + Destreza 3 = 7d6". */
+  diceBreakdown?: string
+  /** Pilha de defesa do inimigo (dados do Mestre). */
+  enemyDiceCount?: number
+  enemyLabel?: string
+}
+
+/** Rerrolagem de Ímpeto já aplicada a um teste. */
+export interface AmniaImpetoReroll {
+  /** Índices 0-based dos dados rerrolados. */
+  indices: number[]
+  /** Valores anteriores dos dados rerrolados. */
+  previousValues: number[]
+  cost: number
 }
 
 export interface AmniaTestResult extends AmniaRoll {
+  label: string
+  /** Teste pedido, ex.: "Armas brancas + Destreza". */
+  test?: string
+  /** Decomposição da pilha de dados. */
+  diceBreakdown?: string
+  /** DIF situacional efetiva (0 em testes opostos). */
   difficulty: number
-  /** Margem de Sucesso: successes − difficulty. */
+  difficultyReason?: string
+  /** Sucessos a superar: DIF ou sucessos da pilha do inimigo. */
+  targetSuccesses: number
+  /** Margem de Sucesso: successes − targetSuccesses. */
   mos: number
   /** MoS > 0. */
   success: boolean
@@ -39,7 +79,12 @@ export interface AmniaTestResult extends AmniaRoll {
   partial: boolean
   /** MoS < 0. */
   failed: boolean
-  label: string
+  /** Dados do Mestre/inimigo, quando o teste é oposto. */
+  enemy?: AmniaDicePool
+  /** Índices 0-based dos dados que falharam (1–3). */
+  failedIndices: number[]
+  /** Última rerrolagem de Ímpeto aplicada. */
+  impetoReroll?: AmniaImpetoReroll
 }
 
 export type MaculaType =
@@ -110,6 +155,21 @@ export interface AdvanceClockResult {
   completed: boolean
 }
 
+export interface SpendActionPointsInput {
+  amount: number
+  actionName: string
+  currentPa: number
+}
+
+export interface SpendActionPointsResult {
+  /** PA realmente gastos (0 se a ação foi bloqueada). */
+  spent: number
+  newPa: number
+  /** true quando não havia PA suficiente; a ação não acontece. */
+  blocked: boolean
+  message: string
+}
+
 /** Tamanho sugerido de um Relógio de Ameaça por classificação. */
 export type ThreatKind = 'mook' | 'fraco' | 'padrao' | 'elite' | 'lendario'
 
@@ -144,6 +204,12 @@ export interface ArenaLogEntry {
   detail?: string
 }
 
+/** Último teste aberto, usado para a rerrolagem de Ímpeto escolhida pelo jogador. */
+export interface ArenaPendingTest extends AmniaTestResult {
+  id: string
+  createdAt: number
+}
+
 export interface ArenaGameState {
   version: 1
   turn: number
@@ -154,6 +220,8 @@ export interface ArenaGameState {
   suppressed: boolean
   clocks: ArenaThreatClock[]
   log: ArenaLogEntry[]
+  /** Teste recém-rolado que ainda aceita rerrolagem de Ímpeto. */
+  pendingTest?: ArenaPendingTest
 }
 
 /** Valores máximos derivados da ficha (mesmas fórmulas da ficha completa). */
@@ -205,4 +273,13 @@ export interface ArenaChatResponse {
   toolResults: ArenaToolResultView[]
   gameState: ArenaGameState
   model: string
+}
+
+/** Ações de mesa disparadas por botões (não pela narração). */
+export type ArenaTableActionType = 'end_turn' | 'suppress'
+
+export interface ArenaTableActionRequest {
+  type: ArenaTableActionType
+  /** Nonce local para o chat distinguir cliques repetidos. */
+  id: number
 }

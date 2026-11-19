@@ -33,6 +33,7 @@ import {
   findCaste,
   findLineage,
   findSublineage,
+  lineageTraits,
   selectedPathOption,
 } from '@/rules/lineages'
 import { circleColor } from '@/rules/circleColors'
@@ -247,6 +248,8 @@ export function SheetView({
   const sublineage = findSublineage(lineage, character.sublineageId)
   const caste = findCaste(lineage, character.casteId)
   const pathOption = selectedPathOption(lineage, character.ancestryTraits)
+  const traitIds = [...character.ancestryTraits, ...character.negativeTraits]
+  const racialTraits = lineageTraits(lineage).filter((trait) => traitIds.includes(trait.id))
   const classDef = classes.find((item) => item.id === character.classId)
   const ability = classDef?.coreAbilities.find((item) => item.id === character.classAbilityId)
   const abilityIndex =
@@ -641,7 +644,7 @@ export function SheetView({
           ) : null}
         </Card>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <Card>
             <h2 className="mb-2 font-display text-xl tracking-wide">Habilidade & Talento</h2>
             {ability ? (
@@ -673,7 +676,36 @@ export function SheetView({
           </Card>
 
           <Card>
-            <h2 className="mb-2 font-display text-xl tracking-wide">Vantagens</h2>
+            <h2 className="mb-2 font-display text-xl tracking-wide">Traços Raciais</h2>
+            {racialTraits.length === 0 ? (
+              <p className="text-sm text-ink-soft">Nenhum traço racial escolhido.</p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {racialTraits.map((trait) => (
+                  <li key={trait.id}>
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span>
+                        {trait.cost < 0 ? '− ' : ''}
+                        {trait.name}
+                      </span>
+                      <span className="text-xs text-ink-soft">
+                        {trait.cost > 0 ? '+' : ''}
+                        {trait.cost}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">
+                      {trait.description}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card>
+            <h2 className="mb-2 font-display text-xl tracking-wide">
+              Vantagens &amp; Desvantagens
+            </h2>
             {extraAdvantages > 0 ? (
               <p className="mb-2 text-xs text-ink-soft">
                 <XpLink>

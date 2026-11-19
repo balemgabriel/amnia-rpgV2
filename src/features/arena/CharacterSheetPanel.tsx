@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   AlertTriangle,
   ArrowLeft,
@@ -16,26 +16,25 @@ import {
   Snowflake,
   Sparkles,
   User,
+  X,
   Zap,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import {
   changeResource,
   limiarTone,
-  startTurn,
-  suppressMana,
   THREAT_LABELS,
   type LimiarTone,
   type ResourceId,
 } from '@/lib/amnia/rules'
-import type { ArenaGameState } from '@/lib/amnia/types'
+import type { ArenaGameState, ArenaTableActionType } from '@/lib/amnia/types'
 import { impulses } from '@/rules/amnia'
 import type { Character } from '@/rules/character'
 import { circleColor } from '@/rules/circleColors'
 import { classes } from '@/rules/data'
 import { findCaste, findLineage, findSublineage, selectedPathOption } from '@/rules/lineages'
 import { runeById, runeCircleOf } from '@/rules/runes'
-import { effectiveRuneLevel, spellCost } from '@/rules/spell'
+import { effectiveRuneLevel, spellCost, type Spell, type SpellContext } from '@/rules/spell'
 import { spellContext } from '@/rules/spellContext'
 
 interface RuneEntry {
@@ -55,6 +54,8 @@ export function CharacterSheetPanel({
   state,
   onStateChange,
   onReset,
+  onTableAction,
+  busy,
   demo,
   onBackToCreator,
 }: {
@@ -62,11 +63,17 @@ export function CharacterSheetPanel({
   state: ArenaGameState
   onStateChange: (state: ArenaGameState) => void
   onReset: () => void
+  /** Encerrar turno / Supressão passam pelo chat para serem narrados. */
+  onTableAction: (type: ArenaTableActionType) => void
+  /** O chat está aguardando o Mestre. */
+  busy: boolean
   demo: boolean
   onBackToCreator: () => void
 }) {
   const { pv, pm, limiar, impeto, pa } = state.resources
   const tone = limiarTone(limiar.current, limiar.max)
+  const [selectedSpell, setSelectedSpell] = useState<Spell | null>(null)
+  const spellCtx = useMemo(() => spellContext(character), [character])
 
   const lineage = findLineage(character.ancestryId)
   const sublineage = findSublineage(lineage, character.sublineageId)
@@ -115,14 +122,14 @@ export function CharacterSheetPanel({
   }, [character.spells, character.knownRunes])
 
   const spellRows = useMemo(() => {
-    const context = spellContext(character)
     return character.spells.map((spell) => ({
+      spell,
       id: spell.id,
       name: spell.name || 'Magia sem nome',
-      cost: spellCost(spell, context).total,
+      cost: spellCost(spell, spellCtx).total,
       effect: spell.effect,
     }))
-  }, [character])
+  }, [character.spells, spellCtx])
 
   function adjust(id: ResourceId, delta: number) {
     onStateChange(changeResource(state, id, delta))
@@ -203,17 +210,28 @@ export function CharacterSheetPanel({
 
         <div className="mt-3 grid grid-cols-3 gap-1.5">
           <TableButton
-            onClick={() => onStateChange(startTurn(state))}
+            onClick={() => onTableAction('end_turn')}
+            disabled={busy}
             icon={<RefreshCw className="size-3.5" aria-hidden />}
             label="Encerrar turno"
-            title="Restaura PA e PM; o Limiar não reseta"
+            title={
+              busy
+                ? 'Aguarde o Mestre responder'
+                : 'O chat narra o fim do turno; restaura PA e PM (o Limiar não reseta)'
+            }
           />
           <TableButton
-            onClick={() => onStateChange(suppressMana(state, keyAttributeValue))}
-            disabled={state.suppressed}
+            onClick={() => onTableAction('suppress')}
+            disabled={busy || state.suppressed}
             icon={<Snowflake className="size-3.5" aria-hidden />}
             label="Supressão"
-            title={`Resfria o Limiar em ${2 + keyAttributeValue} e corta a mana até o próximo turno`}
+            title={
+              state.suppressed
+                ? 'Supressão já está ativa até o próximo turno'
+                : busy
+                  ? 'Aguarde o Mestre responder'
+                  : `O chat narra a Supressão: resfria o Limiar em ${2 + keyAttributeValue} e corta a mana`
+            }
           />
           <TableButton
             onClick={onReset}
@@ -428,28 +446,272 @@ export function CharacterSheetPanel({
           </div>
           <ul className="space-y-1.5">
             {spellRows.map((spell) => (
-              <li
-                key={spell.id}
-                className="rounded-xl border border-slate-800/80 bg-slate-900/45 px-2.5 py-2"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="min-w-0 truncate text-sm font-medium text-slate-100">
-                    {spell.name}
-                  </p>
-                  <span className="shrink-0 rounded-md border border-[#0055FE]/40 bg-[#0055FE]/10 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-[#93B4FF]">
-                    {spell.cost} PM
-                  </span>
-                </div>
-                {spell.effect ? (
-                  <p className="mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-slate-500">
-                    {spell.effect}
-                  </p>
-                ) : null}
+              <li key={spell.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedSpell(spell.spell)}
+                  aria-label={`Ver detalhes de ${spell.name}`}
+                  className="w-full rounded-xl border border-slate-800/80 bg-slate-900/45 px-2.5 py-2 text-left transition hover:border-[#0055FE]/50 hover:bg-slate-900/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0055FE]/50"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="min-w-0 truncate text-sm font-medium text-slate-100">
+                      {spell.name}
+                    </p>
+                    <span className="shrink-0 rounded-md border border-[#0055FE]/40 bg-[#0055FE]/10 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-[#93B4FF]">
+                      {spell.cost} PM
+                    </span>
+                  </div>
+                  {spell.effect ? (
+                    <p className="mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-slate-500">
+                      {spell.effect}
+                    </p>
+                  ) : null}
+                </button>
               </li>
             ))}
           </ul>
         </section>
       ) : null}
+
+      {selectedSpell ? (
+        <SpellModal
+          spell={selectedSpell}
+          context={spellCtx}
+          onClose={() => setSelectedSpell(null)}
+        />
+      ) : null}
+    </div>
+  )
+}
+
+const TARGET_LABELS: Record<string, string> = {
+  single: '1 alvo',
+  three: '3 alvos',
+  group: 'Grupo',
+  crowd: 'Multidão',
+  army: 'Exército',
+}
+
+const DURATION_LABELS: Record<string, string> = {
+  instant: 'Instantânea',
+  short: 'Curta',
+  long: 'Longa',
+  permanent: 'Permanente',
+}
+
+const AREA_LABELS: Record<string, string> = {
+  none: '—',
+  '1': '1 metro',
+  '5': '5 metros',
+  '10': '10 metros',
+  '20': '20 metros',
+}
+
+/**
+ * Pop-up de detalhes de uma magia preparada.
+ *
+ * Fecha ao clicar fora, no botão de fechar ou com Escape. Não altera a ficha:
+ * é só leitura, para o jogador conferir runas, custo e condições antes de
+ * declarar a magia no chat.
+ */
+function SpellModal({
+  spell,
+  context,
+  onClose,
+}: {
+  spell: Spell
+  context: SpellContext
+  onClose: () => void
+}) {
+  useEffect(() => {
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        event.stopPropagation()
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKey)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.removeEventListener('keydown', handleKey)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [onClose])
+
+  const cost = spellCost(spell, context)
+
+  return (
+    <div
+      role="presentation"
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/80 p-3 backdrop-blur-sm sm:items-center sm:p-6"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="spell-modal-title"
+        onClick={(event) => event.stopPropagation()}
+        className="arena-scroll max-h-[88dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-700/80 bg-slate-950 p-4 text-slate-200 shadow-[0_30px_90px_rgba(0,0,0,0.6)] sm:p-5"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Magia preparada
+            </p>
+            <h2
+              id="spell-modal-title"
+              className="mt-0.5 font-display text-2xl leading-tight tracking-wide text-slate-50"
+            >
+              {spell.name || 'Magia sem nome'}
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar detalhes da magia"
+            className="grid size-8 shrink-0 place-items-center rounded-lg border border-slate-700/70 bg-slate-900/70 text-slate-400 transition hover:border-slate-500 hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0055FE]/60"
+          >
+            <X className="size-4" aria-hidden />
+          </button>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          <span className="rounded-md border border-[#0055FE]/40 bg-[#0055FE]/10 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#93B4FF]">
+            {cost.total} PM
+          </span>
+          <span className="rounded-md border border-slate-700/70 bg-slate-900/70 px-2 py-0.5 text-[11px] text-slate-300">
+            {TARGET_LABELS[spell.targets] ?? spell.targets}
+          </span>
+          <span className="rounded-md border border-slate-700/70 bg-slate-900/70 px-2 py-0.5 text-[11px] text-slate-300">
+            {DURATION_LABELS[spell.duration] ?? spell.duration}
+          </span>
+          <span className="rounded-md border border-slate-700/70 bg-slate-900/70 px-2 py-0.5 text-[11px] text-slate-300">
+            Área {AREA_LABELS[spell.area] ?? spell.area}
+          </span>
+        </div>
+
+        {spell.effect ? (
+          <p className="mt-3 whitespace-pre-wrap rounded-xl border border-slate-800/80 bg-slate-900/45 px-3 py-2.5 text-sm leading-relaxed text-slate-200">
+            {spell.effect}
+          </p>
+        ) : null}
+
+        <section className="mt-4">
+          <h3 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Runas ({spell.runes.length})
+          </h3>
+          <ul className="mt-1.5 space-y-1.5">
+            {spell.runes.map((rune, index) => {
+              const def = runeById(rune.runeId)
+              const level = effectiveRuneLevel(rune, spell)
+              const color = circleColor(runeCircleOf(rune.runeId)) ?? '#94a3b8'
+              const target = rune.targetRuneId ? runeById(rune.targetRuneId) : null
+
+              return (
+                <li
+                  key={`${rune.runeId}-${index}`}
+                  className="rounded-xl border border-slate-800/80 bg-slate-900/45 px-2.5 py-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="size-2 shrink-0 rounded-full ring-2 ring-slate-950/60"
+                      style={{ backgroundColor: color, boxShadow: `0 0 10px ${color}66` }}
+                      aria-hidden
+                    />
+                    <p className="min-w-0 flex-1 truncate text-sm font-medium text-slate-100">
+                      {def?.name ?? rune.runeId}
+                    </p>
+                    <span className="shrink-0 rounded-md border border-slate-700/70 bg-slate-950/60 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-slate-300">
+                      Nv {level}
+                      {level !== rune.level ? ` · base ${rune.level}` : ''}
+                    </span>
+                  </div>
+
+                  {target ? (
+                    <p className="mt-1 text-[10px] text-slate-500">
+                      Exponencializa: {target.name}
+                    </p>
+                  ) : null}
+
+                  {rune.conditions.length > 0 ? (
+                    <ul className="mt-1 space-y-0.5">
+                      {rune.conditions.map((condition, conditionIndex) => (
+                        <li
+                          key={`${condition.id}-${conditionIndex}`}
+                          className="text-[10px] leading-relaxed text-amber-200/90"
+                        >
+                          Condição {condition.weight}: {condition.text}
+                          {condition.mode === 'pm'
+                            ? ' (desconto em PM)'
+                            : condition.mode === 'cx'
+                              ? ' (−2 Cx)'
+                              : condition.mode === 'levels'
+                                ? ' (níveis extras)'
+                                : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+
+        <section className="mt-4 grid grid-cols-2 gap-1.5 text-[11px]">
+          <SpellDetail label="Alcance" value={spell.range || '—'} />
+          <SpellDetail label="Alvo" value={spell.targetDescription || '—'} />
+        </section>
+
+        {cost.lines.length > 0 ? (
+          <section className="mt-4">
+            <h3 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Composição do custo
+            </h3>
+            <ul className="mt-1.5 space-y-0.5">
+              {cost.lines.map((line, index) => (
+                <li
+                  key={`${line.label}-${index}`}
+                  className="flex items-baseline justify-between gap-2 text-[11px] text-slate-400"
+                >
+                  <span className="min-w-0 truncate">{line.label}</span>
+                  <span className="shrink-0 tabular-nums text-slate-300">
+                    {line.value > 0 ? `+${line.value}` : line.value}
+                  </span>
+                </li>
+              ))}
+              <li className="flex items-baseline justify-between gap-2 border-t border-slate-800/80 pt-1 text-[11px] font-semibold text-slate-200">
+                <span>Total</span>
+                <span className="tabular-nums">{cost.total} PM</span>
+              </li>
+            </ul>
+          </section>
+        ) : null}
+
+        {spell.notes ? (
+          <p className="mt-3 whitespace-pre-wrap rounded-xl border border-slate-800/80 bg-slate-900/45 px-3 py-2 text-[11px] leading-relaxed text-slate-400">
+            {spell.notes}
+          </p>
+        ) : null}
+
+        <p className="mt-4 text-center text-[10px] text-slate-600">
+          Clique fora, no X ou pressione Escape para fechar.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function SpellDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-slate-800/80 bg-slate-900/45 px-2 py-1.5">
+      <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+        {label}
+      </p>
+      <p className="mt-0.5 break-words text-slate-200">{value}</p>
     </div>
   )
 }
