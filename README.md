@@ -125,6 +125,14 @@ e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com
   mesmo botão a traz de volta.
 - Clicar em uma magia preparada abre um pop-up com custo, efeito, runas,
   condições, alcance e alvo. Fecha no **X**, clicando fora ou com **Escape**.
+- Traços raciais que concedem especializações ou runas mostram um aviso
+  **Concede:** na carta do traço, na ficha final e na exportação. As concessões
+  entram nos limites automaticamente: especializações gratuitas somam ao total
+  da criação; runas específicas (Terra, Camaleão, Alma e os elementos do Caminho
+  da Vida) entram em `knownRunes` e ficam travadas enquanto o traço existir;
+  runas de escolha (ex.: 1 Runa de Reforço) apenas abrem uma vaga para o jogador
+  marcar. Runas condicionais (fase lunar Minguante) aparecem como aviso, mas não
+  entram no limite. Ao remover o traço, só saem as runas que ele concedeu.
 
 ### Teste manual
 
@@ -155,6 +163,21 @@ e o servidor lê `process.env.GROQ_API_KEY`. Sem a chave, a API responde com
     **Mostrar ficha** para alternar a barra lateral.
 13. Rode `npm run test:arena` para validar dados, teste oposto, DIF, PA,
     rerrolagem de Ímpeto, dano, PM, Mácula, Supressão e relógios.
+
+Concessões de traços raciais:
+
+1. No criador, escolha **Humanos** e marque **Conhecimento Vasto**. A carta deve
+   mostrar `Concede: +2 especializações` e a etapa **Perícias** deve exibir
+   `+2 de traços` no limite de especializações gratuitas.
+2. Escolha **Golshoy** e o **Caminho da Vida**, depois uma opção como
+   **Tempestade**. A carta deve mostrar `Concede: +1 especialização em Arcanismo
+   (Raio) · +1 runa: Raio`. Na etapa **Círculo & Runas**, o limite deve subir e a
+   runa **Raio** deve aparecer como **Concedida**.
+3. Abra uma ficha pronta com traços raciais e confirme que o cartão **Traços
+   Raciais** mostra `Concede:` para os traços que dão especialização ou runa, e
+   que os limites de runas/especializações da ficha incluem essas concessões.
+4. Exporte a ficha em PDF/PNG e confirme que as mesmas notas aparecem na seção
+   **Traços Raciais** e em **Runas Conhecidas**.
 
 Sem ficha, `/arena` mostra um estado vazio com botão para o criador e a opção
 de carregar uma ficha de exemplo (criada só no navegador).

@@ -27,6 +27,17 @@ import { resolveTestPool } from '../src/lib/amnia/testResolver'
 import type { ArenaPendingTest, ArenaSheetSummary } from '../src/lib/amnia/types'
 import { createEmptyCharacter } from '../src/rules/character'
 import { computeDerived } from '../src/rules/derive'
+import {
+  reconcileTraitRunes,
+  runeGrantLabel,
+  runeGrants,
+  specializationGrantLabel,
+  specializationGrants,
+  traitGrantNotes,
+  traitGrantedRuneIds,
+  traitRuneSlots,
+  traitSpecializationSlots,
+} from '../src/rules/traitGrants'
 
 /** Fonte determinística: cada chamada consome o próximo valor da lista. */
 function randomFrom(values: number[]): RandomSource {
@@ -476,6 +487,82 @@ test('resolveTestPool soma perícia + atributo descritos pelo Mestre', () => {
   const fallback = resolveTestPool(SHEET, { test: 'Perícia inexistente' })
   assert.equal(fallback.diceCount, 3)
   assert.equal(fallback.source, 'fallback')
+})
+
+test('Conhecimento Vasto concede 2 especializações', () => {
+  assert.equal(traitSpecializationSlots(['conhecimento-vasto']), 2)
+  assert.equal(traitRuneSlots(['conhecimento-vasto']), 0)
+  assert.equal(traitGrantNotes('conhecimento-vasto')[0], '+2 especializações')
+})
+
+test('traços com especialização restrita informam a perícia', () => {
+  const [grant] = specializationGrants(['artesao-nato'])
+  assert.equal(grant?.count, 1)
+  assert.equal(specializationGrantLabel(grant!), '+1 especialização em Ofícios — para um tipo de item')
+})
+
+test('Caminho da Vida concede runa e especialização do elemento', () => {
+  const [spec] = specializationGrants(['caminho-tempestade'])
+  assert.equal(specializationGrantLabel(spec!), '+1 especialização em Arcanismo (Raio)')
+  assert.deepEqual(traitGrantedRuneIds(['caminho-tempestade']), ['elemento-raio'])
+  assert.equal(traitRuneSlots(['caminho-tempestade']), 1)
+})
+
+test('runas específicas e de escolha entram no limite; condicionais não', () => {
+  assert.deepEqual(traitGrantedRuneIds(['sentido-de-tremor']), ['elemento-terra'])
+  assert.equal(traitRuneSlots(['sentido-de-tremor']), 1)
+
+  const [choice] = runeGrants(['coracao-do-intensificador'])
+  assert.equal(choice?.circles?.[0], 'reforco')
+  assert.equal(traitRuneSlots(['coracao-do-intensificador']), 1)
+  assert.deepEqual(traitGrantedRuneIds(['coracao-do-intensificador']), [])
+
+  assert.equal(traitRuneSlots(['tocado-pela-lua']), 0)
+  assert.match(traitGrantNotes('tocado-pela-lua')[0] ?? '', /condicional/)
+})
+
+test('runa concedida é exibida com o nome do catálogo', () => {
+  const [grant] = runeGrants(['mestre-da-camuflagem'])
+  assert.equal(grant?.runeIds?.[0], 'ilusao-camaleao')
+  assert.match(runeGrantLabel(grant!), /Camaleão/)
+})
+
+test('reconcileTraitRunes adiciona a runa concedida e a marca como automática', () => {
+  const character = createEmptyCharacter()
+  character.knownRunes = ['reforco-forca']
+  character.ancestryTraits = ['sentido-de-tremor']
+
+  const next = reconcileTraitRunes(character)
+  assert.deepEqual(next.knownRunes, ['reforco-forca', 'elemento-terra'])
+  assert.deepEqual(next.autoGrantedRunes, ['elemento-terra'])
+  // Idempotente: rodar de novo devolve o mesmo objeto.
+  assert.equal(reconcileTraitRunes(next), next)
+})
+
+test('reconcileTraitRunes remove só a runa automática ao tirar o traço', () => {
+  const character = createEmptyCharacter()
+  character.knownRunes = ['reforco-forca', 'elemento-terra', 'ilusao-camaleao']
+  character.ancestryTraits = ['sentido-de-tremor', 'mestre-da-camuflagem']
+
+  const withTraits = reconcileTraitRunes(character)
+  assert.deepEqual(withTraits.autoGrantedRunes, ['elemento-terra', 'ilusao-camaleao'])
+
+  const withoutTraits = reconcileTraitRunes({ ...withTraits, ancestryTraits: [] })
+  assert.deepEqual(withoutTraits.knownRunes, ['reforco-forca'])
+  assert.deepEqual(withoutTraits.autoGrantedRunes, [])
+})
+
+test('runa escolhida antes do traço passa a ser automática e sai com o traço', () => {
+  const character = createEmptyCharacter()
+  character.knownRunes = ['elemento-terra']
+  character.ancestryTraits = ['sentido-de-tremor']
+
+  const next = reconcileTraitRunes(character)
+  assert.deepEqual(next.knownRunes, ['elemento-terra'])
+  assert.deepEqual(next.autoGrantedRunes, ['elemento-terra'])
+
+  const withoutTrait = reconcileTraitRunes({ ...next, ancestryTraits: [] })
+  assert.deepEqual(withoutTrait.knownRunes, [])
 })
 
 test('traço racial Força acima de tudo reduz o Limiar em 4', () => {

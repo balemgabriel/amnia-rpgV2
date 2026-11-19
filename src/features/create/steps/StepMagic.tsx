@@ -15,8 +15,15 @@ import {
 import { circleColor } from '@/rules/circleColors'
 import { runeAllowance } from '@/rules/character'
 import { withAlpha } from '@/rules/lineageColors'
+import { findLineage, findLineageTrait } from '@/rules/lineages'
 import { runes, type RuneCircleId } from '@/rules/data'
 import { checkRequirement, type RequirementCheck } from '@/rules/requirements'
+import {
+  runeGrantLabel,
+  runeGrants,
+  traitGrantedRuneIds,
+  traitRuneSlots,
+} from '@/rules/traitGrants'
 import { useDraft } from '@/store/draft'
 
 const RUNE_CIRCLES: RuneCircleId[] = [...circleOrder, 'miscelanea']
@@ -38,7 +45,13 @@ export function StepMagic() {
   const [filter, setFilter] = useState<RuneCircleId | 'known'>('reforco')
 
   const known = character.knownRunes
-  const allowance = runeAllowance(character.attributes.inteligencia)
+  const lineage = findLineage(character.ancestryId)
+  const traitIds = [...character.ancestryTraits, ...character.negativeTraits]
+  const grantedRunes = runeGrants(traitIds)
+  const grantedRuneIds = traitGrantedRuneIds(traitIds)
+  const grantedSlots = traitRuneSlots(traitIds)
+  const baseAllowance = runeAllowance(character.attributes.inteligencia)
+  const allowance = baseAllowance + grantedSlots
   const remaining = allowance - known.length
   const innate = circles.find((item) => item.id === character.innateCircle) ?? null
 
@@ -183,16 +196,48 @@ export function StepMagic() {
         </div>
         <p className="mb-4 text-sm text-ink-soft">
           Escolha <strong className="text-ink">quais</strong> runas o personagem conhece: 3 + INT
-          (3 + {character.attributes.inteligencia} = {allowance}). Clique na carta para marcar ou
-          desmarcar. Aqui só se define o acesso; o nível de cada runa é escolhido ao criar uma
-          magia, e a escada abaixo mostra o que ela faz do nível 1 ao 7. Runas compradas depois
-          custam de 6 a 9 XP conforme a relação com o seu círculo.
+          (3 + {character.attributes.inteligencia} = {baseAllowance})
+          {grantedSlots > 0 ? (
+            <>
+              {' '}
+              + {grantedSlots} de traço{grantedSlots === 1 ? '' : 's'} racial
+              {grantedSlots === 1 ? '' : 'is'} = {allowance}
+            </>
+          ) : (
+            <> = {allowance}</>
+          )}
+          . Clique na carta para marcar ou desmarcar. Aqui só se define o acesso; o nível de cada
+          runa é escolhido ao criar uma magia, e a escada abaixo mostra o que ela faz do nível 1 ao
+          7. Runas compradas depois custam de 6 a 9 XP conforme a relação com o seu círculo.
         </p>
+
+        {grantedRunes.length > 0 ? (
+          <div className="mb-4 rounded-lg border border-emerald-700/20 bg-emerald-700/[0.05] p-2.5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800">
+              Runas concedidas por traços raciais
+            </p>
+            <ul className="mt-1 space-y-0.5 text-xs text-ink-soft">
+              {grantedRunes.map((grant, index) => (
+                <li key={`${grant.traitId}-${index}`}>
+                  <strong className="text-ink">
+                    {findLineageTrait(lineage, grant.traitId)?.name ?? grant.traitId}:
+                  </strong>{' '}
+                  {runeGrantLabel(grant)}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-1 text-[11px] text-ink-soft">
+              Runas específicas já entram automaticamente e ficam travadas enquanto o traço
+              existir. Runas de escolha devem ser marcadas na carta correspondente.
+            </p>
+          </div>
+        ) : null}
 
         {remaining < 0 ? (
           <div className="mb-4">
             <Callout tone="warn">
-              Você marcou {-remaining} runa(s) a mais do que o limite atual (3 + INT). Desmarque
+              Você marcou {-remaining} runa(s) a mais do que o limite atual (3 + INT + traços
+              raciais). Desmarque
               {-remaining === 1 ? ' uma' : ' algumas'} para continuar.
             </Callout>
           </div>
@@ -278,6 +323,10 @@ export function StepMagic() {
             known={known}
             remaining={remaining}
             requirementChecks={requirementChecks}
+            grantedRuneIds={grantedRuneIds}
+            grantedCircles={grantedRunes
+              .filter((grant) => !grant.conditional)
+              .flatMap((grant) => grant.circles ?? [])}
             onToggle={toggleKnownRune}
           />
         )}

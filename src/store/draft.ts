@@ -9,6 +9,7 @@ import {
   type Character,
 } from '@/rules/character'
 import { toggleKnownRune } from '@/rules/runes'
+import { reconcileTraitRunes, traitRuneSlots } from '@/rules/traitGrants'
 import type { AttributeId } from '@/rules/types'
 import { saveCharacter } from '@/storage/characters'
 import { publishCurrentCharacter } from '@/storage/currentCharacter'
@@ -58,6 +59,19 @@ interface DraftState {
 
 const CHANNELING_MODIFIER_SOURCE = 'Método de Canalização'
 
+/** Ids de todos os traços raciais/negativos escolhidos na ficha. */
+function traitIdsOf(character: Character): string[] {
+  return [...character.ancestryTraits, ...character.negativeTraits]
+}
+
+/**
+ * Mantém `knownRunes` em sincronia com as runas específicas concedidas por
+ * traços raciais. A lógica pura vive em `reconcileTraitRunes`.
+ */
+function reconcileGrantedRunes(character: Character): Character {
+  return reconcileTraitRunes(character)
+}
+
 /** Modificadores fixos concedidos por cada método de canalização (nível 1). */
 function channelingModifiers(methodId: string | null) {
   if (methodId === 'gatilho') {
@@ -72,17 +86,26 @@ export const useDraft = create<DraftState>()((set, get) => ({
   dirty: false,
 
   reset: (character) =>
-    set({ character: character ?? createEmptyCharacter(), step: 0, dirty: false }),
+    set({
+      character: reconcileGrantedRunes(character ?? createEmptyCharacter()),
+      step: 0,
+      dirty: false,
+    }),
 
   goTo: (step) => set({ step: Math.max(0, Math.min(WIZARD_STEPS.length - 1, step)) }),
   next: () => set({ step: Math.min(WIZARD_STEPS.length - 1, get().step + 1) }),
   back: () => set({ step: Math.max(0, get().step - 1) }),
 
   patch: (partial) =>
-    set((state) => ({
-      character: { ...state.character, ...partial, updatedAt: Date.now() },
-      dirty: true,
-    })),
+    set((state) => {
+      const traitsChanged =
+        partial.ancestryTraits !== undefined || partial.negativeTraits !== undefined
+      const next = { ...state.character, ...partial, updatedAt: Date.now() }
+      return {
+        character: traitsChanged ? reconcileGrantedRunes(next) : next,
+        dirty: true,
+      }
+    }),
 
   setAttribute: (id, value) =>
     set((state) => ({
@@ -215,11 +238,22 @@ export const useDraft = create<DraftState>()((set, get) => ({
 
   toggleKnownRune: (runeId) =>
     set((state) => {
-      const allowance = runeAllowance(state.character.attributes.inteligencia)
-      const next = toggleKnownRune(state.character.knownRunes, runeId, allowance)
-      if (next === state.character.knownRunes) return state
+      const { character } = state
+      // Runas específicas concedidas por traço são travadas: quem controla a
+      // presença delas é o traço, não o clique do jogador.
+      if (
+        character.autoGrantedRunes?.includes(runeId) &&
+        character.knownRunes.includes(runeId)
+      ) {
+        return state
+      }
+      const allowance =
+        runeAllowance(character.attributes.inteligencia) +
+        traitRuneSlots(traitIdsOf(character))
+      const next = toggleKnownRune(character.knownRunes, runeId, allowance)
+      if (next === character.knownRunes) return state
       return {
-        character: { ...state.character, knownRunes: next, updatedAt: Date.now() },
+        character: { ...character, knownRunes: next, updatedAt: Date.now() },
         dirty: true,
       }
     }),

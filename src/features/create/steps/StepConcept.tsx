@@ -18,6 +18,7 @@ import {
   lineageTraits,
   selectedPathOption,
 } from '@/rules/lineages'
+import { traitGrantNotes } from '@/rules/traitGrants'
 import { useDraft } from '@/store/draft'
 
 const WIP_NOTE =
@@ -646,6 +647,7 @@ function PathCard({
           const selected = selectedOption?.id === option.id
           const budget = available + (selectedOption?.cost ?? 0)
           const affordable = selected || option.cost <= budget
+          const grants = traitGrantNotes(option.id)
 
           return (
             <li key={option.id}>
@@ -670,6 +672,11 @@ function PathCard({
                 <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
                   {option.description}
                 </span>
+                {grants.length > 0 ? (
+                  <span className="mt-1 block text-xs font-semibold text-emerald-800">
+                    Concede: {grants.join(' · ')}
+                  </span>
+                ) : null}
               </button>
             </li>
           )
@@ -720,6 +727,7 @@ function TraitList({
         {traits.map((trait) => {
           const selected = selectedIds.has(trait.id)
           const affordable = !disabled && (selected || trait.cost <= available)
+          const grants = traitGrantNotes(trait.id)
           return (
             <li key={trait.id}>
               <button
@@ -756,6 +764,11 @@ function TraitList({
                 <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
                   {trait.description}
                 </span>
+                {grants.length > 0 ? (
+                  <span className="mt-1 block text-xs font-semibold text-emerald-800">
+                    Concede: {grants.join(' · ')}
+                  </span>
+                ) : null}
               </button>
             </li>
           )

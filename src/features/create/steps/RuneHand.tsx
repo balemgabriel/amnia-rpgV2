@@ -8,7 +8,7 @@ import {
 import { RuneCard } from '@/components/RuneCard'
 import { Badge } from '@/components/ui'
 import { circleColor } from '@/rules/circleColors'
-import type { RuneDef } from '@/rules/data'
+import type { RuneCircleId, RuneDef } from '@/rules/data'
 import { withAlpha } from '@/rules/lineageColors'
 import type { RequirementCheck } from '@/rules/requirements'
 
@@ -37,6 +37,8 @@ export function RuneHand({
   known,
   remaining,
   requirementChecks,
+  grantedRuneIds,
+  grantedCircles,
   onToggle,
 }: {
   runes: RuneDef[]
@@ -44,6 +46,10 @@ export function RuneHand({
   remaining: number
   /** Resultado do requisito de cada runa, por id. */
   requirementChecks?: Record<string, RequirementCheck>
+  /** Runas específicas concedidas por traços raciais. */
+  grantedRuneIds?: readonly string[]
+  /** Círculos com uma runa gratuita concedida por traço racial. */
+  grantedCircles?: readonly RuneCircleId[]
   onToggle: (runeId: string) => void
 }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
@@ -159,6 +165,10 @@ export function RuneHand({
             )
             const tone = circleColor(rune.circle) ?? '#5c5044'
             const isKnown = known.includes(rune.id)
+            const granted =
+              grantedRuneIds?.includes(rune.id) || grantedCircles?.includes(rune.circle)
+            // Runa específica concedida fica travada enquanto o traço existir.
+            const locked = isKnown && Boolean(grantedRuneIds?.includes(rune.id))
             const requirement = requirementChecks?.[rune.id]
             const blockedByRequirement = !isKnown && requirement?.status === 'unmet'
             const disabled = !isKnown && (remaining <= 0 || blockedByRequirement)
@@ -194,17 +204,29 @@ export function RuneHand({
                   active={isKnown}
                   disabled={disabled}
                   blockedReason={blockedByRequirement ? requirement.detail : undefined}
-                  onToggle={() => {
-                    // Um arrasto termina em click; só esse click é ignorado.
-                    if (
-                      drag.current.endedAt > 0 &&
-                      performance.now() - drag.current.endedAt < 250
-                    ) {
-                      return
-                    }
-                    onToggle(rune.id)
-                  }}
-                  badge={isKnown ? <Badge tone="ok">Conhecida</Badge> : null}
+                  onToggle={
+                    locked
+                      ? undefined
+                      : () => {
+                          // Um arrasto termina em click; só esse click é ignorado.
+                          if (
+                            drag.current.endedAt > 0 &&
+                            performance.now() - drag.current.endedAt < 250
+                          ) {
+                            return
+                          }
+                          onToggle(rune.id)
+                        }
+                  }
+                  badge={
+                    granted ? (
+                      <Badge tone={isKnown ? 'ok' : 'gold'}>
+                        {isKnown ? 'Concedida' : 'Grátis'}
+                      </Badge>
+                    ) : isKnown ? (
+                      <Badge tone="ok">Conhecida</Badge>
+                    ) : null
+                  }
                   className="h-full w-full"
                 />
               </div>

@@ -16,7 +16,7 @@ import { xpPurchaseSchema } from './xp'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 8
+export const SHEET_VERSION = 9
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)
@@ -87,6 +87,12 @@ const characterObjectSchema = z.object({
    * Só acesso: o nível nunca é guardado aqui; ele é escolhido em cada magia.
    */
   knownRunes: z.array(z.string()),
+  /**
+   * Runas que entraram em `knownRunes` automaticamente por concessão de um
+   * traço racial. Serve para removê-las ao trocar/remover o traço sem apagar
+   * runas que o jogador escolheu manualmente.
+   */
+  autoGrantedRunes: z.array(z.string()).default([]),
   channelingMethodId: z.string().nullable(),
   channelingLevel: z.number().int().min(1).max(2),
 
@@ -163,6 +169,7 @@ export function createEmptyCharacter(now = Date.now()): Character {
 
     innateCircle: null,
     knownRunes: [],
+    autoGrantedRunes: [],
     channelingMethodId: null,
     channelingLevel: 1,
 

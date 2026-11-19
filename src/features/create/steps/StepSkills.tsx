@@ -5,7 +5,12 @@ import { cn } from '@/lib/cn'
 import { SKILL_MAX, skillDistributions, skillGroups, skills } from '@/rules/amnia'
 import { countSkillLevels, creationSpecializations } from '@/rules/character'
 import { withAlpha } from '@/rules/lineageColors'
+import { findLineage, findLineageTrait } from '@/rules/lineages'
 import { skillGroupColor } from '@/rules/skillColors'
+import {
+  specializationGrantLabel,
+  specializationGrants,
+} from '@/rules/traitGrants'
 import { useDraft } from '@/store/draft'
 
 const GROUP_ORDER = ['fisica', 'social', 'mental'] as const
@@ -26,7 +31,15 @@ export function StepSkills() {
   const levels = distribution?.levels ?? {}
   const counts = countSkillLevels(character.skills)
 
-  const freeSpecializations = creationSpecializations(character.skills)
+  const lineage = findLineage(character.ancestryId)
+  const traitIds = [...character.ancestryTraits, ...character.negativeTraits]
+  const grantedSpecializations = specializationGrants(traitIds)
+  const traitSpecializationSlots = grantedSpecializations.reduce(
+    (sum, grant) => sum + grant.count,
+    0,
+  )
+  const freeSpecializations =
+    creationSpecializations(character.skills) + traitSpecializationSlots
   const usedSpecializations = character.specializations.length
 
   function maxLevelFor(skillId: string): number {
@@ -161,16 +174,40 @@ export function StepSkills() {
       })}
 
       <Card>
-        <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-display text-lg tracking-wide">Especializações</h3>
-          <Badge tone={usedSpecializations >= freeSpecializations ? 'ok' : 'gold'}>
-            {usedSpecializations} / {freeSpecializations} grátis
-          </Badge>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {traitSpecializationSlots > 0 ? (
+              <Badge tone="ok">+{traitSpecializationSlots} de traços</Badge>
+            ) : null}
+            <Badge tone={usedSpecializations >= freeSpecializations ? 'ok' : 'gold'}>
+              {usedSpecializations} / {freeSpecializations} grátis
+            </Badge>
+          </div>
         </div>
         <p className="mb-3 text-sm text-ink-soft">
           Uma de graça na criação, mais uma em Ofícios, Erudição ou Arcanismo se você tiver pontos
-          nelas. Cada especialização dá +1 dado quando o assunto se aplica.
+          nelas. Traços raciais também podem conceder especializações extras. Cada especialização
+          dá +1 dado quando o assunto se aplica.
         </p>
+
+        {grantedSpecializations.length > 0 ? (
+          <div className="mb-3 rounded-lg border border-emerald-700/20 bg-emerald-700/[0.05] p-2.5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800">
+              Concedidas por traços raciais
+            </p>
+            <ul className="mt-1 space-y-0.5 text-xs text-ink-soft">
+              {grantedSpecializations.map((grant, index) => (
+                <li key={`${grant.traitId}-${index}`}>
+                  <strong className="text-ink">
+                    {findLineageTrait(lineage, grant.traitId)?.name ?? grant.traitId}:
+                  </strong>{' '}
+                  {specializationGrantLabel(grant)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         {character.specializations.length > 0 ? (
           <ul className="mb-3 space-y-1.5">

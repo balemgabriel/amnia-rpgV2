@@ -32,10 +32,20 @@ import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
 import {
   findCaste,
   findLineage,
+  findLineageTrait,
   findSublineage,
   lineageTraits,
   selectedPathOption,
 } from '@/rules/lineages'
+import {
+  runeGrantLabel,
+  runeGrants,
+  specializationGrantLabel,
+  specializationGrants,
+  traitGrantNotes,
+  traitRuneSlots,
+  traitSpecializationSlots,
+} from '@/rules/traitGrants'
 import { circleColor } from '@/rules/circleColors'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { skillGroupColor } from '@/rules/skillColors'
@@ -265,9 +275,15 @@ export function SheetView({
   const xpItem = xpCostItem(xpItemId)
   const xpPreview = xpItemCost(xpItem, xpLevel)
 
-  const runeLimit = runeAllowance(character.attributes.inteligencia)
+  const traitRuneSlotCount = traitRuneSlots(traitIds)
+  const traitSpecializationSlotCount = traitSpecializationSlots(traitIds)
+  const traitRuneGrantList = runeGrants(traitIds)
+  const traitSpecializationGrantList = specializationGrants(traitIds)
+  const runeLimit =
+    runeAllowance(character.attributes.inteligencia) + traitRuneSlotCount
   const extraRunes = Math.max(0, character.knownRunes.length - runeLimit)
-  const freeSpecializations = creationSpecializations(character.skills)
+  const freeSpecializations =
+    creationSpecializations(character.skills) + traitSpecializationSlotCount
   const extraSpecializations = Math.max(0, character.specializations.length - freeSpecializations)
   const advantageSummary = advantagePoints(character.advantages)
   const extraAdvantages = Math.max(
@@ -494,6 +510,15 @@ export function SheetView({
             <h2 className="mb-1 font-display text-xl tracking-wide">Runas Conhecidas</h2>
             <p className="mb-3 text-xs text-ink-soft">
               Acesso às runas; o nível de cada uma é escolhido em cada magia.
+              {traitRuneSlotCount > 0 ? (
+                <>
+                  {' '}
+                  Inclui {traitRuneSlotCount} runa{traitRuneSlotCount === 1 ? '' : 's'}{' '}
+                  concedida{traitRuneSlotCount === 1 ? '' : 's'} por traço
+                  {traitRuneSlotCount === 1 ? '' : 's'} racial
+                  {traitRuneSlotCount === 1 ? '' : 'is'}.
+                </>
+              ) : null}
               {extraRunes > 0 ? (
                 <>
                   {' '}
@@ -503,6 +528,24 @@ export function SheetView({
                 </>
               ) : null}
             </p>
+            {traitRuneGrantList.length > 0 ? (
+              <div className="mb-3 rounded-md border border-emerald-700/20 bg-emerald-700/[0.05] px-2.5 py-1.5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-800">
+                  Concedidas por traços raciais
+                </p>
+                <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">
+                  {traitRuneGrantList.map((grant, index) => (
+                    <span key={`${grant.traitId}-${index}`}>
+                      {index > 0 ? ' · ' : ''}
+                      <strong className="text-ink">
+                        {findLineageTrait(lineage, grant.traitId)?.name ?? grant.traitId}
+                      </strong>
+                      : {runeGrantLabel(grant)}
+                    </span>
+                  ))}
+                </p>
+              </div>
+            ) : null}
             {character.knownRunes.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhuma runa registrada.</p>
             ) : (
@@ -602,6 +645,19 @@ export function SheetView({
             <div className="mt-4 border-t border-ink/8 pt-3">
               <p className="mb-2 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
                 Especializações
+                {traitSpecializationSlotCount > 0 ? (
+                  <span
+                    className="rounded-full border border-emerald-700/30 bg-emerald-700/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800"
+                    title={traitSpecializationGrantList
+                      .map(
+                        (grant) =>
+                          `${findLineageTrait(lineage, grant.traitId)?.name ?? grant.traitId}: ${specializationGrantLabel(grant)}`,
+                      )
+                      .join(' · ')}
+                  >
+                    inclui +{traitSpecializationSlotCount} de traços
+                  </span>
+                ) : null}
                 {extraSpecializations > 0 ? (
                   <XpLink>
                     {extraSpecializations} além das {freeSpecializations} gratuitas
@@ -677,27 +733,40 @@ export function SheetView({
 
           <Card>
             <h2 className="mb-2 font-display text-xl tracking-wide">Traços Raciais</h2>
+            {traitRuneSlotCount + traitSpecializationSlotCount > 0 ? (
+              <p className="mb-2 text-xs text-ink-soft">
+                As concessões abaixo já estão somadas aos limites de runas e especializações.
+              </p>
+            ) : null}
             {racialTraits.length === 0 ? (
               <p className="text-sm text-ink-soft">Nenhum traço racial escolhido.</p>
             ) : (
               <ul className="space-y-2 text-sm">
-                {racialTraits.map((trait) => (
-                  <li key={trait.id}>
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span>
-                        {trait.cost < 0 ? '− ' : ''}
-                        {trait.name}
-                      </span>
-                      <span className="text-xs text-ink-soft">
-                        {trait.cost > 0 ? '+' : ''}
-                        {trait.cost}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">
-                      {trait.description}
-                    </p>
-                  </li>
-                ))}
+                {racialTraits.map((trait) => {
+                  const grants = traitGrantNotes(trait.id)
+                  return (
+                    <li key={trait.id}>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span>
+                          {trait.cost < 0 ? '− ' : ''}
+                          {trait.name}
+                        </span>
+                        <span className="text-xs text-ink-soft">
+                          {trait.cost > 0 ? '+' : ''}
+                          {trait.cost}
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">
+                        {trait.description}
+                      </p>
+                      {grants.length > 0 ? (
+                        <p className="mt-0.5 text-xs font-semibold text-emerald-800">
+                          Concede: {grants.join(' · ')}
+                        </p>
+                      ) : null}
+                    </li>
+                  )
+                })}
               </ul>
             )}
           </Card>

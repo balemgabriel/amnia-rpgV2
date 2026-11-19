@@ -27,12 +27,18 @@ import { ancestryColor, lineageColor, withAlpha } from '@/rules/lineageColors'
 import {
   findCaste,
   findLineage,
+  findLineageTrait,
   findSublineage,
   lineageTraits,
   selectedPathOption,
 } from '@/rules/lineages'
 import { runeById, runeName } from '@/rules/runes'
 import { skillGroupColor } from '@/rules/skillColors'
+import {
+  runeGrantLabel,
+  runeGrants,
+  traitGrantNotes,
+} from '@/rules/traitGrants'
 import {
   AREA_OPTIONS,
   CONDITION_LABELS,
@@ -130,6 +136,7 @@ export function ExportSheet({
   const traitPool = lineageTraits(lineage)
   const traitIds = [...character.ancestryTraits, ...character.negativeTraits]
   const traits = traitPool.filter((trait) => traitIds.includes(trait.id))
+  const runeGrantList = runeGrants(traitIds)
 
   const sortedInventory = [...character.inventory].sort(
     (a, b) => Number(b.equipped) - Number(a.equipped),
@@ -394,12 +401,24 @@ export function ExportSheet({
                   <p className="xs-p xs-muted">Nenhum traço escolhido.</p>
                 ) : (
                   <ul className="xs-list">
-                    {traits.map((trait) => (
-                      <li className="xs-item" key={trait.id}>
-                        <b>{trait.cost < 0 ? '− ' : ''}{trait.name}.</b>{' '}
-                        <span className="xs-muted">{trait.description}</span>
-                      </li>
-                    ))}
+                    {traits.map((trait) => {
+                      const grants = traitGrantNotes(trait.id)
+                      return (
+                        <li className="xs-item" key={trait.id}>
+                          <b>
+                            {trait.cost < 0 ? '− ' : ''}
+                            {trait.name}.
+                          </b>{' '}
+                          <span className="xs-muted">{trait.description}</span>
+                          {grants.length > 0 ? (
+                            <span className="xs-muted">
+                              {' '}
+                              <b>Concede:</b> {grants.join(' · ')}.
+                            </span>
+                          ) : null}
+                        </li>
+                      )
+                    })}
                   </ul>
                 )}
               </section>
@@ -505,6 +524,18 @@ export function ExportSheet({
             <div className="xs-three">
               <section className="xs-box">
                 <h2 className="xs-h">Runas Conhecidas</h2>
+                {runeGrantList.length > 0 ? (
+                  <p className="xs-p xs-small">
+                    <b>Concedidas por traços:</b>{' '}
+                    {runeGrantList.map((grant, index) => (
+                      <span key={`${grant.traitId}-${index}`}>
+                        {index > 0 ? ' · ' : ''}
+                        {findLineageTrait(lineage, grant.traitId)?.name ?? grant.traitId}:{' '}
+                        {runeGrantLabel(grant)}
+                      </span>
+                    ))}
+                  </p>
+                ) : null}
                 {character.knownRunes.length === 0 ? (
                   <p className="xs-p xs-muted">Nenhuma runa registrada.</p>
                 ) : (
