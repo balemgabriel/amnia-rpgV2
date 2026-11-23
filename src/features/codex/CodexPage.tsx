@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,6 +14,8 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Badge, Button, Callout, Card, TextInput } from '@/components/ui'
 import { cn } from '@/lib/cn'
+import { withAlpha } from '@/rules/lineageColors'
+import { codexArticleColor, codexHeadingColor } from './codexColors'
 import {
   CODEX_ARTICLES,
   CODEX_SECTIONS,
@@ -118,14 +120,40 @@ function sectionTitle(id: CodexSectionId) {
 type MarkdownProps = {
   markdown: string
   onSelect: (id: string) => void
+  /** Artigo aberto; define a cor das raças/linhagens no markdown. */
+  articleId?: string
+}
+
+function ToneDot({ color }: { color: string }) {
+  return <span aria-hidden className="codex-tone-dot" style={{ backgroundColor: color }} />
+}
+
+/** Outline suave igual ao da criação: borda translúcida e fundo de 6–10%. */
+function toneStyle(color: string, level: number, active = false): CSSProperties {
+  return {
+    borderColor: active ? color : withAlpha(color, level === 1 ? 0.32 : 0.45),
+    borderLeftColor: color,
+    backgroundColor: active ? withAlpha(color, 0.1) : withAlpha(color, level === 1 ? 0.06 : 0.1),
+  }
 }
 
 /** Renderizador compartilhado pelo artigo e pelo índice da home. */
-function MarkdownContent({ markdown, onSelect }: MarkdownProps) {
+function MarkdownContent({ markdown, onSelect, articleId }: MarkdownProps) {
   const heading = (level: 1 | 2 | 3 | 4) =>
     function Heading({ children }: { children?: ReactNode }) {
       const Tag = `h${level}` as 'h1'
-      return <Tag id={headingId(nodeText(children))}>{children}</Tag>
+      const text = nodeText(children)
+      const color = articleId ? codexHeadingColor(articleId, text) : null
+      return (
+        <Tag
+          id={headingId(text)}
+          className={color ? 'codex-race-heading' : undefined}
+          style={color ? toneStyle(color, level) : undefined}
+        >
+          {color ? <ToneDot color={color} /> : null}
+          {color ? <span>{children}</span> : children}
+        </Tag>
+      )
     }
 
   return (
@@ -140,6 +168,8 @@ function MarkdownContent({ markdown, onSelect }: MarkdownProps) {
           a({ href, children }) {
             if (href?.startsWith('#/')) {
               const target = href.slice(2)
+              const color = codexArticleColor(target)
+              const active = target === articleId
               return (
                 <a
                   href={href}
@@ -147,8 +177,21 @@ function MarkdownContent({ markdown, onSelect }: MarkdownProps) {
                     event.preventDefault()
                     onSelect(target)
                   }}
+                  className={color ? 'codex-race-link' : undefined}
+                  style={
+                    color
+                      ? ({
+                          '--race-tone': color,
+                          ...toneStyle(color, 2, active),
+                        } as CSSProperties)
+                      : undefined
+                  }
                 >
-                  {children}
+                  {color ? <ToneDot color={color} /> : null}
+                  <span>{children}</span>
+                  {color ? (
+                    <ArrowRight className="size-3.5 shrink-0 text-ink-soft" aria-hidden />
+                  ) : null}
                 </a>
               )
             }
@@ -238,6 +281,7 @@ export function CodexPage({ onBack }: { onBack: () => void }) {
   const markdown = current ? contentFor(current) : ''
   const toc = useMemo(() => tocFrom(markdown), [markdown])
   const readingMinutes = Math.max(1, Math.round((current?.words ?? 0) / 200))
+  const articleTone = current ? codexArticleColor(current.id) : null
 
   useEffect(() => {
     function syncFromUrl() {
@@ -418,23 +462,28 @@ export function CodexPage({ onBack }: { onBack: () => void }) {
                         </button>
                         {expanded ? (
                           <div className="mt-1 space-y-0.5 border-l border-gold/25 pl-2">
-                            {articles.map((article) => (
-                              <button
-                                key={article.id}
-                                type="button"
-                                onClick={() => selectArticle(article.id)}
-                                aria-current={article.id === selectedId ? 'page' : undefined}
-                                className={cn(
-                                  'block w-full rounded-md px-2.5 py-1.5 text-left text-sm leading-snug transition',
-                                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold',
-                                  article.id === selectedId
-                                    ? 'border-l-2 border-gold bg-gold/12 font-semibold text-ink'
-                                    : 'text-ink-soft hover:bg-ink/5 hover:text-ink',
-                                )}
-                              >
-                                {article.title}
-                              </button>
-                            ))}
+                            {articles.map((article) => {
+                              const tone = codexArticleColor(article.id)
+                              return (
+                                <button
+                                  key={article.id}
+                                  type="button"
+                                  onClick={() => selectArticle(article.id)}
+                                  aria-current={article.id === selectedId ? 'page' : undefined}
+                                  className={cn(
+                                    'w-full rounded-md px-2.5 py-1.5 text-left text-sm leading-snug transition',
+                                    tone ? 'flex items-center gap-1.5' : 'block',
+                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold',
+                                    article.id === selectedId
+                                      ? 'border-l-2 border-gold bg-gold/12 font-semibold text-ink'
+                                      : 'text-ink-soft hover:bg-ink/5 hover:text-ink',
+                                  )}
+                                >
+                                  {tone ? <ToneDot color={tone} /> : null}
+                                  {article.title}
+                                </button>
+                              )
+                            })}
                           </div>
                         ) : null}
                       </div>
@@ -546,7 +595,7 @@ export function CodexPage({ onBack }: { onBack: () => void }) {
                   Índice completo do material original
                 </summary>
                 <div className="mt-4">
-                  <MarkdownContent markdown={markdown} onSelect={selectArticle} />
+                  <MarkdownContent markdown={markdown} onSelect={selectArticle} articleId={current?.id} />
                 </div>
               </details>
             </section>
@@ -588,7 +637,13 @@ export function CodexPage({ onBack }: { onBack: () => void }) {
                         {current.group !== 'Geral' ? <Badge>{current.group}</Badge> : null}
                         {current.stub ? <Badge tone="warn">Página vazia</Badge> : null}
                       </div>
-                      <h2 className="mt-4 font-display text-3xl leading-tight tracking-wide sm:text-4xl">
+                      <h2
+                        className={cn(
+                          'mt-4 font-display text-3xl leading-tight tracking-wide sm:text-4xl',
+                          articleTone && 'border-l-4 pl-3',
+                        )}
+                        style={articleTone ? { borderLeftColor: articleTone } : undefined}
+                      >
                         {current.title}
                       </h2>
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-ink-soft">
@@ -599,7 +654,11 @@ export function CodexPage({ onBack }: { onBack: () => void }) {
                           ~{readingMinutes} min de leitura
                         </span>
                       </div>
-                      <div className="codex-ornament mt-5" aria-hidden>
+                      <div
+                        className="codex-ornament mt-5"
+                        aria-hidden
+                        style={articleTone ? { color: articleTone } : undefined}
+                      >
                         ✦
                       </div>
                     </div>
@@ -633,7 +692,11 @@ export function CodexPage({ onBack }: { onBack: () => void }) {
                       </div>
                     ) : null}
 
-                    <MarkdownContent markdown={markdown} onSelect={selectArticle} />
+                    <MarkdownContent
+                      markdown={markdown}
+                      onSelect={selectArticle}
+                      articleId={current?.id}
+                    />
 
                     <nav
                       aria-label="Navegação entre páginas"

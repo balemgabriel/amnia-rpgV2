@@ -25,8 +25,10 @@ import {
 } from '../src/lib/amnia/rules'
 import { resolveTestPool } from '../src/lib/amnia/testResolver'
 import type { ArenaPendingTest, ArenaSheetSummary } from '../src/lib/amnia/types'
+import { codexArticleColor, codexHeadingColor } from '../src/features/codex/codexColors'
 import { createEmptyCharacter } from '../src/rules/character'
 import { computeDerived } from '../src/rules/derive'
+import { lineagePalette } from '../src/rules/lineageColors'
 import {
   createXpPurchase,
   totalXpSpent,
@@ -700,4 +702,30 @@ test('compras de vantagem e canalização criam/atualizam registros revertíveis
   assert.equal(canalizacao.patch.channelingMethodId, 'gestual')
   const comCanalizacao = { ...character, ...canalizacao.patch }
   assert.equal(revertXpPurchase(comCanalizacao, canalizacao.purchase).channelingLevel, 1)
+})
+
+// ---------------------------------------------------------------------------
+// Codex: cores de ancestralidade/linhagem nos outlines das raças
+// ---------------------------------------------------------------------------
+
+test('Codex usa a cor da ancestralidade nos artigos de raça', () => {
+  assert.equal(codexArticleColor('racas-humanos'), lineagePalette.azulEscuro)
+  assert.equal(codexArticleColor('racas-orcs'), lineagePalette.verde)
+  assert.equal(codexArticleColor('racas-lirizatl'), lineagePalette.laranja)
+  assert.equal(codexArticleColor('racas-shrumakara-wip'), lineagePalette.laranja)
+  assert.equal(codexArticleColor('racas-linhagens-racas'), null)
+  assert.equal(codexArticleColor('regras-regras-pericias'), null)
+})
+
+test('Codex colore os headings de linhagens, castas e grupos como a criação', () => {
+  assert.equal(codexHeadingColor('racas-humanos', '☀️Soltianos'), lineagePalette.laranja)
+  assert.equal(codexHeadingColor('racas-humanos', '**Asdaw**'), lineagePalette.vermelho)
+  assert.equal(codexHeadingColor('racas-humanos', '# Traços Raciais'), lineagePalette.azulEscuro)
+
+  assert.equal(codexHeadingColor('racas-orcs', 'Ghullen'), lineagePalette.roxo)
+  assert.equal(codexHeadingColor('racas-skaraeb', '🛠️Trabalhador'), lineagePalette.laranja)
+  assert.equal(codexHeadingColor('racas-lirizatl', '# Linhagem Kuetz'), lineagePalette.azulEsverdeado)
+  assert.equal(codexHeadingColor('racas-skaraeb', '## **Khayat**'), lineagePalette.ciano)
+  assert.equal(codexHeadingColor('racas-troll', '### **Forghum ( Ferreiros )**'), lineagePalette.laranja)
+  assert.equal(codexHeadingColor('regras-regras-pericias', 'Ações'), null)
 })

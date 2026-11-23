@@ -333,6 +333,58 @@
 }
 
 /*
+ * Raças e linhagens do Codex usam o mesmo código de cores da criação de
+ * personagens: borda translúcida, fundo suave e um ponto na cor cheia.
+ */
+.codex-tone-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 9999px;
+  border: 1px solid rgba(32, 26, 20, 0.2);
+}
+
+.codex-prose a.codex-race-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  color: var(--color-ink, #201a14);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+.codex-prose a.codex-race-link:hover {
+  border-color: var(--race-tone, var(--color-gold, #b08d57));
+  background-color: color-mix(in srgb, var(--race-tone, #b08d57) 12%, transparent);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.codex-prose h1.codex-race-heading,
+.codex-prose h2.codex-race-heading,
+.codex-prose h3.codex-race-heading,
+.codex-prose h4.codex-race-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-width: 1px;
+  border-style: solid;
+  border-left-width: 3px;
+  border-radius: 0.55rem;
+  padding: 0.45rem 0.7rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0.75rem;
+}
+
+/*
  * Impressão / PDF da ficha.
  * A ficha é feita para caber em A4: removemos a navegação, deixamos o papel
  * branco e evitamos quebrar blocos pequenos no meio.

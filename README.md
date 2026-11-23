@@ -204,6 +204,13 @@ internos viram `#/<id-do-artigo>`; o seletor fica no hash para que o link possa
 ser compartilhado. A wiki é carregada com `React.lazy`, então o markdown não
 entra no bundle inicial.
 
+Em **Raças e culturas**, os links do índice e os títulos de linhagens, castas e
+grupos recebem outline na mesma paleta da criação de personagens (`ancestryColor`
+e `lineageColor` em `src/rules/lineageColors.ts`): verde para Troll/Goblin/Orc,
+laranja para Lirizatl/Skaraeb/Shrumakara/Khefaret/Dongwu, azul para as demais,
+com as sete cores de linhagem nos títulos específicos. A tradução dos ids e
+títulos do markdown para essa paleta fica em `src/features/codex/codexColors.ts`.
+
 ## Experiência (XP)
 
 Na ficha final, o cartão **Experiência** substitui o antigo recibo de gastos:
