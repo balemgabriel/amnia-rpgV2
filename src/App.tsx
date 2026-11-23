@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { ArenaPage } from '@/features/arena/ArenaPage'
 import { CharacterList } from '@/features/characters/CharacterList'
 import { CreateWizard } from '@/features/create/CreateWizard'
@@ -10,9 +10,16 @@ import { characterSchema } from '@/rules/character'
 import { getCharacter } from '@/storage/characters'
 import { useDraft } from '@/store/draft'
 
+// A wiki traz todo o markdown do compêndio; carregá-la só quando abrir evita
+// pagar esse custo em todas as telas do assistente.
+const CodexPage = lazy(() =>
+  import('@/features/codex/CodexPage').then((module) => ({ default: module.CodexPage })),
+)
+
 type View =
   | { name: 'list' }
   | { name: 'arena' }
+  | { name: 'codex' }
   | { name: 'create'; from?: 'ready' | 'home' }
   | { name: 'ready' }
   | { name: 'workshop' }
@@ -20,10 +27,12 @@ type View =
   | { name: 'sheet'; id: string; from?: 'ready' }
   | { name: 'spell'; id: string; spellId?: string; from?: 'ready' }
 
-/** `/arena` abre direto na Arena (o dev server e o preview servem o index.html). */
+/** `/arena` e `/codex` abrem direto na página (dev server e preview servem o index.html). */
 function initialView(): View {
-  const path = window.location.pathname.replace(/\/+$/, '')
-  return path === '/arena' ? { name: 'arena' } : { name: 'list' }
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  if (path === '/arena') return { name: 'arena' }
+  if (path === '/codex') return { name: 'codex' }
+  return { name: 'list' }
 }
 
 export default function App() {
@@ -56,6 +65,20 @@ export default function App() {
     setView(arenaReturn.current)
   }
 
+  function openCodex() {
+    if (window.location.pathname.replace(/\/+$/, '') !== '/codex') {
+      window.history.pushState({ codex: true }, '', '/codex')
+    }
+    setView({ name: 'codex' })
+  }
+
+  function closeCodex() {
+    if (window.location.pathname.replace(/\/+$/, '') === '/codex') {
+      window.history.replaceState({}, '', '/')
+    }
+    setView({ name: 'list' })
+  }
+
   /**
    * Abre uma ficha salva no assistente para alteração.
    *
@@ -77,6 +100,20 @@ export default function App() {
 
   if (view.name === 'arena') {
     return <ArenaPage onBack={closeArena} />
+  }
+
+  if (view.name === 'codex') {
+    return (
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center text-sm text-ink-soft">
+            Abrindo o Codex…
+          </div>
+        }
+      >
+        <CodexPage onBack={closeCodex} />
+      </Suspense>
+    )
   }
 
   if (view.name === 'create') {
@@ -154,6 +191,7 @@ export default function App() {
       }}
       onReady={() => setView({ name: 'ready' })}
       onWorkshop={() => setView({ name: 'workshop' })}
+      onCodex={openCodex}
       onArena={openArena}
       onOpen={(id) => setView({ name: 'sheet', id })}
       onEdit={(id) => void editCharacter(id, 'home')}

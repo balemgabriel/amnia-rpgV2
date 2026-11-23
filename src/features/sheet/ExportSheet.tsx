@@ -34,6 +34,7 @@ import {
 } from '@/rules/lineages'
 import { runeById, runeName } from '@/rules/runes'
 import { skillGroupColor } from '@/rules/skillColors'
+import { totalXpSpent, xpAvailable } from '@/rules/xp'
 import {
   runeGrantLabel,
   runeGrants,
@@ -479,6 +480,28 @@ export function ExportSheet({
                     })}
                   </ul>
                 )}
+              </section>
+
+              <section className="xs-box">
+                <h2 className="xs-h">Experiência</h2>
+                <p className="xs-p">
+                  <b>Disponível:</b> {xpAvailable(character.xpPurchases, character.xpEarned)} XP ·{' '}
+                  <b>Recebida:</b> {character.xpEarned} ·{' '}
+                  <b>Gasta:</b> {totalXpSpent(character.xpPurchases)}
+                </p>
+                {character.xpPurchases.length > 0 ? (
+                  <ul className="xs-list" style={{ marginTop: '0.4em' }}>
+                    {character.xpPurchases.map((purchase) => (
+                      <li className="xs-line" key={purchase.id}>
+                        <span>
+                          {purchase.label}
+                          {purchase.detail ? ` · ${purchase.detail}` : ''}
+                        </span>
+                        <span className="xs-tag">{purchase.cost} XP</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </section>
             </div>
           </div>

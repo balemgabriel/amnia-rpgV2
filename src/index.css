@@ -105,6 +105,234 @@
 }
 
 /*
+ * Codex Amnia: o markdown vem direto do export do Notion (tabelas, listas,
+ * citações e imagens), então o texto de leitura ganha um estilo próprio.
+ */
+.codex-prose {
+  color: var(--color-ink, #201a14);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.codex-prose > :first-child {
+  margin-top: 0;
+}
+
+.codex-prose h1,
+.codex-prose h2,
+.codex-prose h3,
+.codex-prose h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin: 2rem 0 0.75rem;
+  break-after: avoid;
+}
+
+.codex-prose h1 {
+  font-size: 1.9rem;
+}
+.codex-prose h2 {
+  font-size: 1.5rem;
+}
+.codex-prose h3 {
+  font-size: 1.2rem;
+}
+.codex-prose h4 {
+  font-size: 1.05rem;
+}
+
+/* Os headings ganham ID para o índice "Nesta página" navegar até eles. */
+.codex-prose h1,
+.codex-prose h2,
+.codex-prose h3,
+.codex-prose h4 {
+  scroll-margin-top: 6rem;
+}
+
+.codex-prose p,
+.codex-prose ul,
+.codex-prose ol,
+.codex-prose blockquote,
+.codex-prose table,
+.codex-prose pre {
+  margin: 0 0 1rem;
+}
+
+.codex-prose ul,
+.codex-prose ol {
+  padding-left: 1.4rem;
+}
+.codex-prose ul {
+  list-style: disc;
+}
+.codex-prose ol {
+  list-style: decimal;
+}
+.codex-prose li {
+  margin: 0.25rem 0;
+}
+.codex-prose li > ul,
+.codex-prose li > ol {
+  margin: 0.25rem 0 0.25rem 1rem;
+}
+
+.codex-prose strong {
+  font-weight: 700;
+}
+
+.codex-prose a {
+  color: var(--color-accent, #7b2d26);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+}
+.codex-prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.codex-prose blockquote {
+  border-left: 3px solid var(--color-gold, #b08d57);
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: rgba(176, 141, 87, 0.08);
+  color: var(--color-ink-soft, #5c5044);
+  padding: 0.6rem 1rem;
+}
+.codex-prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.codex-prose hr {
+  border: 0;
+  border-top: 1px solid rgba(32, 26, 20, 0.12);
+  margin: 1.75rem 0;
+}
+
+.codex-prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.codex-prose th,
+.codex-prose td {
+  border: 1px solid rgba(32, 26, 20, 0.14);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.codex-prose th {
+  background: rgba(32, 26, 20, 0.05);
+  font-weight: 700;
+}
+.codex-prose tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.codex-prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: rgba(32, 26, 20, 0.07);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.3rem;
+}
+.codex-prose pre {
+  overflow-x: auto;
+  background: rgba(32, 26, 20, 0.07);
+  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+}
+.codex-prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.codex-prose img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid rgba(32, 26, 20, 0.12);
+  border-radius: 0.5rem;
+  margin: 0.5rem 0 1.25rem;
+}
+
+.codex-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+.codex-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.codex-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+}
+
+/* Codex como site: molduras, hero e cartões na mesma paleta papel/dourado. */
+.codex-ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-gold, #b08d57);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+}
+.codex-ornament::before,
+.codex-ornament::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: 0.55;
+}
+
+.codex-hero {
+  position: relative;
+  background:
+    radial-gradient(120% 140% at 50% -20%, rgba(176, 141, 87, 0.22), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.25));
+}
+.codex-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0.55rem;
+  border: 1px solid rgba(176, 141, 87, 0.22);
+  border-radius: 0.9rem;
+  pointer-events: none;
+}
+.codex-hero::after {
+  content: '✦';
+  position: absolute;
+  right: 2rem;
+  top: 1.2rem;
+  font-size: 2.5rem;
+  color: rgba(176, 141, 87, 0.16);
+  pointer-events: none;
+}
+
+.codex-section-card,
+.codex-nav-card {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+.codex-section-card:hover,
+.codex-nav-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(176, 141, 87, 0.5);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 34px -26px rgba(32, 26, 20, 0.6);
+}
+
+.codex-paper {
+  box-shadow: 0 22px 50px -36px rgba(32, 26, 20, 0.55);
+}
+
+/*
  * Impressão / PDF da ficha.
  * A ficha é feita para caber em A4: removemos a navegação, deixamos o papel
  * branco e evitamos quebrar blocos pequenos no meio.

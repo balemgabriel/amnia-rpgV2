@@ -13,6 +13,28 @@ import type { XpCostDef } from './types'
 
 export const XP_POOL = creationBudget.startingXp
 
+/**
+ * Efeito aplicado na ficha quando a compra é feita. Guardar o valor anterior
+ * permite desfazer a compra depois sem deixar atributo/runa órfão.
+ */
+export const xpEffectSchema = z.object({
+  kind: z.enum([
+    'atributo',
+    'pericia',
+    'especializacao',
+    'talento',
+    'vantagem',
+    'runa',
+    'canalizacao',
+    'ponto-extra',
+  ]),
+  targetId: z.string(),
+  /** Valor anterior do atributo/perícia/nível de canalização. */
+  previous: z.number().int().optional(),
+  /** Id anterior (talento) ou do registro criado (especialização, vantagem, modificador). */
+  recordId: z.string().optional(),
+})
+
 export const xpPurchaseSchema = z.object({
   id: z.string(),
   /** Id do item na tabela de custos (`xpCosts`). */
@@ -22,9 +44,12 @@ export const xpPurchaseSchema = z.object({
   /** Detalhe do cálculo (ex.: "Nível 2 · 4 × 2"). */
   detail: z.string().default(''),
   cost: z.number().int().min(0),
+  /** Compras antigas (importadas) eram só recibos e não têm efeito. */
+  effect: xpEffectSchema.optional(),
 })
 
 export type XpPurchase = z.infer<typeof xpPurchaseSchema>
+export type XpEffect = z.infer<typeof xpEffectSchema>
 
 export function xpCostItem(itemId: string): XpCostDef | undefined {
   return xpCosts.find((item) => item.id === itemId)
@@ -67,4 +92,13 @@ export function remainingXp(
   pool: number = XP_POOL,
 ): number {
   return pool - totalXpSpent(purchases)
+}
+
+/** XP livre: pool inicial + XP recebida em jogo − gasto registrado. */
+export function xpAvailable(
+  purchases: readonly XpPurchase[],
+  earned = 0,
+  pool: number = XP_POOL,
+): number {
+  return remainingXp(purchases, pool + Math.max(0, earned))
 }

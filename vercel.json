@@ -11,6 +11,14 @@
     {
       "source": "/arena/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/codex",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/codex/",
+      "destination": "/index.html"
     }
   ],
   "functions": {

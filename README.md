@@ -182,6 +182,53 @@ Concessões de traços raciais:
 Sem ficha, `/arena` mostra um estado vazio com botão para o criador e a opção
 de carregar uma ficha de exemplo (criada só no navegador).
 
+## Codex Amnia (compêndio)
+
+A página `/codex` publica o material original como um site de consulta: home com
+cards das cinco seções, busca em todo o texto, índice lateral, navegação entre
+páginas e links internos do próprio material. Tudo na mesma paleta papel/dourado
+e com as fontes do projeto.
+
+O conteúdo não é editado à mão. O export local do Notion fica em
+`docs/amnia-export/` (fora do git, via `.gitignore`) e é transformado em markdown
+com:
+
+```bash
+node scripts/build-codex-content.mjs
+```
+
+O script gera `src/features/codex/content/*.md`, copia as imagens para
+`public/codex/` e escreve `src/features/codex/manifest.generated.ts` (índice com
+id, título, seção, grupo, contagem de palavras e flag de página vazia). Links
+internos viram `#/<id-do-artigo>`; o seletor fica no hash para que o link possa
+ser compartilhado. A wiki é carregada com `React.lazy`, então o markdown não
+entra no bundle inicial.
+
+## Experiência (XP)
+
+Na ficha final, o cartão **Experiência** substitui o antigo recibo de gastos:
+comprar com XP altera o personagem de verdade.
+
+- **Saldo:** 15 XP iniciais + XP recebida em jogo (campo editável, o mesmo padrão
+  do saldo de Zigs) − XP gasta. O cartão mostra disponível, recebida e gasta, e
+  a exportação em PDF/PNG traz os mesmos totais e a lista de compras.
+- **Compras aplicadas:** runas entram em **Runas Conhecidas** (o preço é 6/7/8/9
+  conforme a relação com o Círculo Inato: inata/adjacente/paralela/oposta);
+  atributos e perícias sobem de nível; especializações, talentos e
+  vantagens/desvantagens entram nas respectivas listas; canalização e pontos
+  extras de PV/PM/Ímpeto também são aplicados.
+- **Desfazer:** remover uma linha da tabela devolve o efeito registrado — a runa,
+  o nível anterior e os registros criados voltam ao estado original. Runas
+  concedidas por traço não são removidas.
+- **Recibos antigos:** compras importadas sem `effect` continuam valendo como
+  registro de gasto, mas não alteram a ficha.
+
+A tabela de custos e o cálculo ficam em `src/rules/xp.ts`; a ponte que aplica e
+desfaz cada compra fica em `src/rules/xpPurchase.ts`. O schema da ficha subiu
+para `SHEET_VERSION = 10`; fichas antigas continuam válidas pelos defaults do
+Zod. Os testes do motor cobrem custo por nível, relação de runas, aplicação e
+reversão (`npm run test:arena`).
+
 
 ## Tipografia
 

@@ -14,7 +14,6 @@ import {
   impulses,
   skillGroups,
   skills,
-  xpCosts,
 } from '@/rules/amnia'
 import {
   advantagePoints,
@@ -50,18 +49,10 @@ import { circleColor } from '@/rules/circleColors'
 import { classIsWip, classTone, coreAbilityTone } from '@/rules/classColors'
 import { skillGroupColor } from '@/rules/skillColors'
 import { spellContext } from '@/rules/spellContext'
-import {
-  createXpPurchase,
-  remainingXp,
-  totalXpSpent,
-  xpCostItem,
-  xpItemCost,
-  xpItemNeedsLevel,
-  XP_POOL,
-} from '@/rules/xp'
 import { SpellCard } from '@/features/spells/SpellCard'
 import { CharacterPortrait } from './CharacterPortrait'
 import { EquipmentSection } from './EquipmentSection'
+import { XpSection } from './XpSection'
 import { ExportSheet, type ExportMode } from './ExportSheet'
 import { captureNodeAsPng, downloadDataUrl, exportSlug } from './capture'
 import { getCharacter, saveCharacter } from '@/storage/characters'
@@ -101,9 +92,6 @@ export function SheetView({
   /** Exportação em andamento: o layout A4 (ExportSheet) é montado só enquanto exporta. */
   const [exportMode, setExportMode] = useState<ExportMode | null>(null)
   const exporting = exportMode !== null
-  const [xpItemId, setXpItemId] = useState('pericia')
-  const [xpLevel, setXpLevel] = useState(1)
-  const [xpLabel, setXpLabel] = useState('')
   const exportDocRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -213,26 +201,6 @@ export function SheetView({
     })
   }
 
-  async function addXpPurchase() {
-    if (!character) return
-    const purchase = createXpPurchase(xpItemId, xpLevel, xpLabel)
-    if (!purchase) return
-    await persist({
-      ...character,
-      xpPurchases: [...character.xpPurchases, purchase],
-    })
-    setXpLabel('')
-    setXpLevel(1)
-  }
-
-  async function removeXpPurchase(purchaseId: string) {
-    if (!character) return
-    await persist({
-      ...character,
-      xpPurchases: character.xpPurchases.filter((purchase) => purchase.id !== purchaseId),
-    })
-  }
-
   if (error) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16">
@@ -269,11 +237,6 @@ export function SheetView({
   const impulse = impulses.find((item) => item.id === character.impulseId)
   const circle = circles.find((item) => item.id === character.innateCircle)
   const magicContext = spellContext(character)
-
-  const xpSpent = totalXpSpent(character.xpPurchases)
-  const xpRemaining = remainingXp(character.xpPurchases)
-  const xpItem = xpCostItem(xpItemId)
-  const xpPreview = xpItemCost(xpItem, xpLevel)
 
   const traitRuneSlotCount = traitRuneSlots(traitIds)
   const traitSpecializationSlotCount = traitSpecializationSlots(traitIds)
@@ -838,137 +801,7 @@ export function SheetView({
           </Card>
         ) : null}
 
-        <Card id="experiencia" className="print-avoid-break scroll-mt-24">
-          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <h2 className="font-display text-xl tracking-wide">Experiência</h2>
-              <p className="text-xs text-ink-soft">
-                Pool inicial de {XP_POOL} XP. Registre aqui o que passar do gratuito na criação
-                (atributo, perícia, especialização, runa, talento…).
-              </p>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <Badge tone={xpRemaining < 0 ? 'warn' : 'ok'}>
-                {xpRemaining} XP restante(s)
-              </Badge>
-              <span className="text-xs tabular-nums text-ink-soft">gastos: {xpSpent}</span>
-            </div>
-          </div>
-
-          {character.xpPurchases.length === 0 ? (
-            <p className="text-sm text-ink-soft">Nenhum gasto de XP registrado ainda.</p>
-          ) : (
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-ink/15 text-left text-[10px] uppercase tracking-[0.14em] text-ink-soft">
-                  <th className="py-1.5 font-semibold">Gasto</th>
-                  <th className="py-1.5 font-semibold">Cálculo</th>
-                  <th className="py-1.5 text-right font-semibold">XP</th>
-                  <th className="no-print w-8" />
-                </tr>
-              </thead>
-              <tbody>
-                {character.xpPurchases.map((purchase) => (
-                  <tr key={purchase.id} className="border-b border-ink/8">
-                    <td className="py-1.5">{purchase.label}</td>
-                    <td className="py-1.5 text-xs text-ink-soft">{purchase.detail}</td>
-                    <td className="py-1.5 text-right tabular-nums">{purchase.cost}</td>
-                    <td className="no-print py-1.5 text-right">
-                      <button
-                        type="button"
-                        onClick={() => void removeXpPurchase(purchase.id)}
-                        className="text-xs text-ink-soft transition hover:text-accent"
-                      >
-                        remover
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                <tr>
-                  <td
-                    colSpan={2}
-                    className="pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-soft"
-                  >
-                    Total gasto
-                  </td>
-                  <td className="pt-2 text-right font-semibold tabular-nums">{xpSpent}</td>
-                  <td className="no-print" />
-                </tr>
-              </tbody>
-            </table>
-          )}
-
-          <div className="no-print mt-4 rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-              Adicionar gasto
-            </p>
-            <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_5.5rem_minmax(0,1fr)_auto]">
-              <select
-                value={xpItemId}
-                onChange={(event) => {
-                  setXpItemId(event.target.value)
-                  setXpLevel(1)
-                }}
-                aria-label="Item da tabela de experiência"
-                className="h-[34px] w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
-              >
-                {xpCosts.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name} · {item.cost}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="number"
-                min={1}
-                value={xpLevel}
-                disabled={!xpItemNeedsLevel(xpItem)}
-                onChange={(event) => setXpLevel(Math.max(1, Number(event.target.value) || 1))}
-                aria-label="Nível ou quantidade"
-                title={
-                  xpItemNeedsLevel(xpItem)
-                    ? 'Nível atual / quantidade'
-                    : 'Este item tem custo fixo'
-                }
-                className="h-[34px] w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm tabular-nums disabled:opacity-40"
-              />
-              <input
-                value={xpLabel}
-                onChange={(event) => setXpLabel(event.target.value)}
-                placeholder="Detalhe (ex.: Perícia Furtividade)"
-                className="h-[34px] w-full rounded-md border border-ink/15 bg-parchment/70 px-2 text-sm"
-              />
-              <Button
-                type="button"
-                onClick={() => void addXpPurchase()}
-                className="h-[34px] px-3 text-xs"
-              >
-                + {xpPreview} XP
-              </Button>
-            </div>
-            <p className="mt-2 text-[11px] leading-snug text-ink-soft">
-              Use a coluna de nível para itens com custo variável; para os de custo fixo, basta
-              adicionar.
-            </p>
-          </div>
-
-          <div className="mt-4 border-t border-ink/8 pt-3">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-              Tabela de custos
-            </p>
-            <ul className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
-              {xpCosts.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-baseline justify-between gap-3 border-b border-ink/8 pb-1"
-                >
-                  <span>{item.name}</span>
-                  <span className="shrink-0 text-xs tabular-nums text-ink-soft">{item.cost}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Card>
+        <XpSection character={character} onChange={persist} />
 
         <EquipmentSection character={character} onChange={persist} />
       </main>

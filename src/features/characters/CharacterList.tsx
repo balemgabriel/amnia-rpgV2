@@ -13,6 +13,7 @@ export function CharacterList({
   onNew,
   onReady,
   onWorkshop,
+  onCodex,
   onArena,
   onOpen,
   onEdit,
@@ -20,6 +21,7 @@ export function CharacterList({
   onNew: () => void
   onReady: () => void
   onWorkshop: () => void
+  onCodex: () => void
   onArena: () => void
   onOpen: (id: string) => void
   onEdit: (id: string) => void
@@ -75,7 +77,7 @@ export function CharacterList({
             </h2>
             <p className="mt-1 text-xs text-ink-soft">Escolha por onde quer ir.</p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <HomeOption
               eyebrow="Passo a passo"
               title="Criar Nova Ficha"
@@ -97,6 +99,13 @@ export function CharacterList({
               description="Crie magias, guarde neste dispositivo e adicione a qualquer personagem depois."
               action="Abrir oficina"
               onClick={onWorkshop}
+            />
+            <HomeOption
+              eyebrow="Compêndio"
+              title="Codex Amnia"
+              description="Mundo, regras, raças, itens e magias do material original em uma wiki interativa."
+              action="Abrir Codex"
+              onClick={onCodex}
             />
           </div>
         </section>
@@ -220,7 +229,7 @@ function parseCharacter(record: CharacterRecord): Character | null {
 }
 
 /**
- * Um dos três caminhos da página inicial. É um cartão inteiro clicável, com
+ * Um dos caminhos da página inicial. É um cartão inteiro clicável, com
  * uma chamada de ação no rodapé para deixar claro o que acontece ao entrar.
  */
 function HomeOption({

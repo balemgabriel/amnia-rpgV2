@@ -16,7 +16,7 @@ import { xpPurchaseSchema } from './xp'
 import type { AttributeId } from './types'
 
 /** Versão do formato da ficha. Sobe quando o schema abaixo mudar. */
-export const SHEET_VERSION = 9
+export const SHEET_VERSION = 10
 
 const attributeValue = z.number().int().min(ATTRIBUTE_MIN).max(ATTRIBUTE_MAX)
 const skillValue = z.number().int().min(SKILL_MIN).max(SKILL_MAX)
@@ -115,6 +115,8 @@ const characterObjectSchema = z.object({
 
   /** Gastos de XP além da pool inicial de 15 (tabela de experiência). */
   xpPurchases: z.array(xpPurchaseSchema).default([]),
+  /** XP recebida durante a campanha, somada ao pool inicial. */
+  xpEarned: z.number().int().min(0).default(0),
   /** Inventário (loja de equipamentos, opcional). Moeda: Zg, o mesmo saldo de `zigs`. */
   inventory: z.array(inventoryItemSchema).default([]),
 
@@ -187,6 +189,7 @@ export function createEmptyCharacter(now = Date.now()): Character {
     advantages: [],
 
     xpPurchases: [],
+    xpEarned: 0,
     inventory: [],
 
     zigs: 30,

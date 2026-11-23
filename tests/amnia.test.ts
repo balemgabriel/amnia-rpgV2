@@ -28,6 +28,19 @@ import type { ArenaPendingTest, ArenaSheetSummary } from '../src/lib/amnia/types
 import { createEmptyCharacter } from '../src/rules/character'
 import { computeDerived } from '../src/rules/derive'
 import {
+  createXpPurchase,
+  totalXpSpent,
+  xpAvailable,
+  xpItemCost,
+  XP_POOL,
+} from '../src/rules/xp'
+import {
+  applyXpPurchase,
+  revertXpPurchase,
+  runeXpRelation,
+  xpCostFor,
+} from '../src/rules/xpPurchase'
+import {
   reconcileTraitRunes,
   runeGrantLabel,
   runeGrants,
@@ -577,4 +590,114 @@ test('traço racial Força acima de tudo reduz o Limiar em 4', () => {
     limiar?.sources.map((source) => source.source),
     ['Traço racial: Força acima de tudo'],
   )
+})
+
+// ---------------------------------------------------------------------------
+// XP: tabela de custos e compras aplicadas à ficha
+// ---------------------------------------------------------------------------
+
+test('tabela de XP cobra por nível ou valor fixo', () => {
+  assert.equal(xpItemCost({ id: 'x', name: 'X', cost: '', unitCost: 5, perLevel: true }, 3), 15)
+  assert.equal(xpItemCost({ id: 'x', name: 'X', cost: '', fixedCost: 9 }), 9)
+
+  const purchase = createXpPurchase('pericia', 2, 'Furtividade')
+  assert.equal(purchase?.cost, 8)
+  assert.match(purchase?.detail ?? '', /Nível 2/)
+  assert.equal(createXpPurchase('inexistente'), null)
+})
+
+test('XP disponível soma a XP recebida e subtrai a gasta', () => {
+  const compras = [createXpPurchase('runa-inata', 1, 'Runa')!]
+  assert.equal(XP_POOL, 15)
+  assert.equal(totalXpSpent(compras), 6)
+  assert.equal(xpAvailable(compras), 9)
+  assert.equal(xpAvailable(compras, 5), 14)
+})
+
+test('relação da runa com o círculo inato define o preço em XP', () => {
+  const character = createEmptyCharacter()
+  character.innateCircle = 'reforco'
+
+  assert.equal(runeXpRelation(character, 'reforco-forca'), 'inata')
+  assert.equal(runeXpRelation(character, 'elemento-agua'), 'adjacente')
+  assert.equal(runeXpRelation(character, 'alteracao-criacao'), 'paralela')
+  assert.equal(runeXpRelation(character, 'projecao-alma'), 'oposta')
+  assert.equal(runeXpRelation(character, 'miscelanea-cura'), null)
+
+  assert.equal(xpCostFor(character, { itemId: 'runa-inata', targetId: 'reforco-forca' }), 6)
+  assert.equal(xpCostFor(character, { itemId: 'runa-paralela', targetId: 'alteracao-criacao' }), 8)
+  assert.equal(xpCostFor(character, { itemId: 'runa-inata', targetId: 'miscelanea-cura' }), 7)
+})
+
+test('comprar uma runa com XP adiciona a runa; remover desfaz', () => {
+  const character = createEmptyCharacter()
+  character.innateCircle = 'reforco'
+
+  const aplicada = applyXpPurchase(character, {
+    itemId: 'runa-paralela',
+    targetId: 'alteracao-criacao',
+  })
+  assert.ok(aplicada)
+  assert.equal(aplicada.purchase.cost, 8)
+  assert.deepEqual(aplicada.patch.knownRunes, [...character.knownRunes, 'alteracao-criacao'])
+  assert.deepEqual(aplicada.purchase.effect, { kind: 'runa', targetId: 'alteracao-criacao' })
+
+  const comprada = {
+    ...character,
+    ...aplicada.patch,
+    xpPurchases: [aplicada.purchase],
+  }
+  assert.deepEqual(revertXpPurchase(comprada, aplicada.purchase).knownRunes, [])
+
+  // Runa concedida por traço não sai quando a compra é removida.
+  comprada.autoGrantedRunes = ['alteracao-criacao']
+  assert.deepEqual(revertXpPurchase(comprada, aplicada.purchase).knownRunes, ['alteracao-criacao'])
+
+  // Não vende a mesma runa duas vezes.
+  assert.equal(applyXpPurchase(comprada, { itemId: 'runa-paralela', targetId: 'alteracao-criacao' }), null)
+})
+
+test('compras de atributo e perícia alteram os valores e podem ser desfeitas', () => {
+  const character = createEmptyCharacter()
+
+  const atributo = applyXpPurchase(character, { itemId: 'atributo', targetId: 'forca', level: 2 })
+  assert.ok(atributo)
+  assert.equal(atributo.purchase.cost, 10)
+  assert.equal(atributo.patch.attributes?.forca, 2)
+  const comAtributo = { ...character, ...atributo.patch }
+  assert.equal(revertXpPurchase(comAtributo, atributo.purchase).attributes?.forca, 1)
+
+  const pericia = applyXpPurchase(character, { itemId: 'pericia', targetId: 'furtividade', level: 3 })
+  assert.ok(pericia)
+  assert.equal(pericia.purchase.cost, 12)
+  assert.equal(pericia.patch.skills?.furtividade, 3)
+  const comPericia = { ...character, ...pericia.patch }
+  assert.equal(revertXpPurchase(comPericia, pericia.purchase).skills?.furtividade, 0)
+})
+
+test('compras de vantagem e canalização criam/atualizam registros revertíveis', () => {
+  const character = createEmptyCharacter()
+
+  const vantagem = applyXpPurchase(character, {
+    itemId: 'vantagem',
+    targetId: 'poliglota',
+    level: 2,
+  })
+  assert.ok(vantagem)
+  assert.equal(vantagem.purchase.cost, 6)
+  const novaVantagem = vantagem.patch.advantages?.[0]
+  assert.equal(novaVantagem?.sourceId, 'poliglota')
+  const comVantagem = { ...character, ...vantagem.patch }
+  assert.deepEqual(revertXpPurchase(comVantagem, vantagem.purchase).advantages, [])
+
+  const canalizacao = applyXpPurchase(character, {
+    itemId: 'canalizacao-2',
+    targetId: 'gestual',
+  })
+  assert.ok(canalizacao)
+  assert.equal(canalizacao.purchase.cost, 8)
+  assert.equal(canalizacao.patch.channelingLevel, 2)
+  assert.equal(canalizacao.patch.channelingMethodId, 'gestual')
+  const comCanalizacao = { ...character, ...canalizacao.patch }
+  assert.equal(revertXpPurchase(comCanalizacao, canalizacao.purchase).channelingLevel, 1)
 })
