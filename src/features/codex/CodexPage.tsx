@@ -165,6 +165,25 @@ function MarkdownContent({ markdown, onSelect, articleId }: MarkdownProps) {
           h2: heading(2),
           h3: heading(3),
           h4: heading(4),
+          img({ src, alt }) {
+            // O export do Notion traz uma imagem antiga das Esferas; no Codex
+            // usamos o hexágono da criação de personagens, enviado pelo usuário.
+            if (src === '/codex/magia-image.png') {
+              return (
+                <span className="codex-arcana-figure">
+                  <img
+                    src="/arcana-hexagon.png"
+                    alt="Hexágono das seis Esferas da Arcanae"
+                  />
+                  <span className="codex-arcana-caption">
+                    Hexágono das Esferas: inata −1 PM · adjacente 0 · paralela +1 ·
+                    oposta +2
+                  </span>
+                </span>
+              )
+            }
+            return <img src={src} alt={alt} loading="lazy" />
+          },
           a({ href, children }) {
             if (href?.startsWith('#/')) {
               const target = href.slice(2)

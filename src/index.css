@@ -258,6 +258,34 @@
   margin: 0.5rem 0 1.25rem;
 }
 
+/* Hexágono da Arcanae: substitui a imagem antiga do export do Notion. */
+.codex-prose .codex-arcana-figure {
+  display: block;
+  max-width: 23rem;
+  margin: 1.5rem auto 1.75rem;
+  padding: 1rem 1rem 0.85rem;
+  border: 1px solid rgba(176, 141, 87, 0.45);
+  border-radius: 0.75rem;
+  background: rgba(243, 236, 224, 0.72);
+  text-align: center;
+}
+.codex-prose .codex-arcana-figure img {
+  display: block;
+  width: 100%;
+  max-width: 19rem;
+  margin: 0 auto;
+  border: 0;
+  border-radius: 0;
+}
+.codex-prose .codex-arcana-caption {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--color-ink-soft, #5c5044);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
 .codex-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
