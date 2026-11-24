@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Swords } from 'lucide-react'
+import { ClipboardCopy, Swords } from 'lucide-react'
 import { ArcanaeHexagon } from '@/components/ArcanaeHexagon'
 import { DotRating } from '@/components/DotRating'
 import { KnownRunes } from './KnownRunes'
@@ -53,6 +53,7 @@ import { SpellCard } from '@/features/spells/SpellCard'
 import { CharacterPortrait } from './CharacterPortrait'
 import { EquipmentSection } from './EquipmentSection'
 import { XpSection } from './XpSection'
+import { SheetCodeDialog } from './SheetCodeDialog'
 import { ExportSheet, type ExportMode } from './ExportSheet'
 import { captureNodeAsPng, downloadDataUrl, exportSlug } from './capture'
 import { getCharacter, saveCharacter } from '@/storage/characters'
@@ -91,6 +92,7 @@ export function SheetView({
   const [error, setError] = useState<string | null>(null)
   /** Exportação em andamento: o layout A4 (ExportSheet) é montado só enquanto exporta. */
   const [exportMode, setExportMode] = useState<ExportMode | null>(null)
+  const [codeOpen, setCodeOpen] = useState(false)
   const exporting = exportMode !== null
   const exportDocRef = useRef<HTMLDivElement>(null)
 
@@ -284,6 +286,15 @@ export function SheetView({
                 Arena
               </Button>
             ) : null}
+            <Button
+              variant="ghost"
+              onClick={() => setCodeOpen(true)}
+              className="text-xs"
+              title="Copiar o código completo da ficha para compartilhar."
+            >
+              <ClipboardCopy className="size-3.5" aria-hidden />
+              Código
+            </Button>
             <Button
               variant="ghost"
               onClick={() => startExport('pdf')}
@@ -815,6 +826,13 @@ export function SheetView({
           onReady={() => void handleExportReady()}
         />
       ) : null}
+
+      <SheetCodeDialog
+        mode="export"
+        open={codeOpen}
+        onClose={() => setCodeOpen(false)}
+        character={character}
+      />
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Swords } from 'lucide-react'
+import { ClipboardPaste, Swords } from 'lucide-react'
 import { StarIcon } from '@/components/StarIcon'
 import { Badge, Button, Card } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { attributes } from '@/rules/amnia'
 import { characterSchema, type Character } from '@/rules/character'
 import { computeDerived } from '@/rules/derive'
+import { SheetCodeDialog } from '@/features/sheet/SheetCodeDialog'
 import { deleteCharacter, listCharacters } from '@/storage/characters'
 import type { CharacterRecord } from '@/storage/db'
 
@@ -17,6 +18,7 @@ export function CharacterList({
   onArena,
   onOpen,
   onEdit,
+  onImport,
 }: {
   onNew: () => void
   onReady: () => void
@@ -25,9 +27,11 @@ export function CharacterList({
   onArena: () => void
   onOpen: (id: string) => void
   onEdit: (id: string) => void
+  onImport: (character: Character) => Promise<void> | void
 }) {
   const [records, setRecords] = useState<CharacterRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [importOpen, setImportOpen] = useState(false)
 
   async function refresh() {
     const rows = await listCharacters()
@@ -111,13 +115,24 @@ export function CharacterList({
         </section>
 
         <section aria-labelledby="suas-fichas">
-          <div className="mb-4">
-            <h2 id="suas-fichas" className="font-display text-xl tracking-wide">
-              Suas fichas
-            </h2>
-            <p className="mt-1 text-xs text-ink-soft">
-              Salvas neste dispositivo. Nada é enviado para servidor.
-            </p>
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 id="suas-fichas" className="font-display text-xl tracking-wide">
+                Suas fichas
+              </h2>
+              <p className="mt-1 text-xs text-ink-soft">
+                Salvas neste dispositivo. Nada é enviado para servidor.
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              onClick={() => setImportOpen(true)}
+              className="text-xs"
+              title="Colar um código recebido e criar uma cópia da ficha"
+            >
+              <ClipboardPaste className="size-4" aria-hidden />
+              Importar código
+            </Button>
           </div>
 
           {loading ? (
@@ -128,8 +143,11 @@ export function CharacterList({
               <p className="mx-auto mt-2 max-w-md text-sm text-ink-soft">
                 Crie o seu primeiro personagem. Tudo é salvo no seu dispositivo, sem login.
               </p>
-              <div className="mt-5 flex justify-center">
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
                 <Button onClick={onNew}>Começar a criação</Button>
+                <Button variant="ghost" onClick={() => setImportOpen(true)}>
+                  Importar código
+                </Button>
               </div>
             </Card>
           ) : (
@@ -219,6 +237,13 @@ export function CharacterList({
           )}
         </section>
       </main>
+
+      <SheetCodeDialog
+        mode="import"
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImport={onImport}
+      />
     </div>
   )
 }

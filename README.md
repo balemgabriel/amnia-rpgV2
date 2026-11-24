@@ -236,6 +236,40 @@ para `SHEET_VERSION = 10`; fichas antigas continuam válidas pelos defaults do
 Zod. Os testes do motor cobrem custo por nível, relação de runas, aplicação e
 reversão (`npm run test:arena`).
 
+## Código da ficha (exportar/importar)
+
+A ficha inteira pode ser compartilhada como um texto copiável — sem arquivo e
+sem servidor:
+
+- Na ficha aberta, o botão **Código** gera o código e o botão **Copiar código**
+  coloca tudo na área de transferência.
+- Na página inicial, **Importar código** abre o leitor: cole o texto, confira o
+  resumo da ficha e confirme. A importação cria uma **cópia nova** (novo id e
+  novas datas), então não sobrescreve a ficha original.
+- O código inclui atributos, perícias, runas, magias, XP, inventário, retrato e
+  anotações. Ele é comprimido com Deflate, convertido em base64url e protegido
+  por um checksum curto; o formato é `AMNIA1-Z....` (ou `AMNIA1-P....` em
+  navegadores sem compressão).
+- Na leitura, o código passa pelo `characterSchema` — com as mesmas migrações
+  das fichas salvas — e pela reconciliação de runas concedidas por traços.
+  Códigos cortados, corrompidos ou de uma versão mais nova são recusados com
+  mensagem clara.
+
+Isso permite criar uma ficha no celular, copiar o código e abrir a cópia no
+navegador do PC. Os testes de ida e volta ficam em `npm run test:arena`.
+
+Para publicar uma ficha nas **Fichas Prontas**, envie o código; basta adicionar
+uma entrada em `src/features/reference/readySheetCodes.ts`:
+
+```ts
+export const readySheetCodes: ReadySheetCode[] = [
+  { id: 'nome-do-personagem', code: 'AMNIA1-Z....' },
+]
+```
+
+O `id` precisa ser estável: ele vira o `referenceId` usado pelo botão
+"Resetar ao padrão". A semeadura em `ensureReadySheets()` e o reset passam a
+incluir essas entradas automaticamente.
 
 ## Tipografia
 
@@ -259,9 +293,13 @@ src/
   storage/
     db.ts              schema do IndexedDB
     characters.ts      operações de salvar/listar/excluir
-  rules/               sistema de Amnia como dados + motores de ficha
+  rules/
+    sheetCode.ts       código compartilhável (comprimir/ler/validar)
+    ...                sistema de Amnia como dados + motores de ficha
   lib/amnia/           regras puras da Arena (dados, dano, PM, Mácula)
   features/arena/      página /arena, chat e painel da ficha
+  features/sheet/      ficha final, PDF/PNG e janela de código
+  features/reference/  fichas prontas (markdown e códigos compartilhados)
 server/
   chatMestre.ts        tools + chamada ao Groq
   index.ts             servidor de produção (dist + API)
@@ -280,6 +318,6 @@ tests/                 testes das regras puras
 - [ ] Schema da ficha + motor de cálculo
 - [ ] Criação guiada (passo a passo com validação de pontos)
 - [ ] Visualização/edição da ficha
-- [ ] Exportar/importar JSON
+- [x] Exportar/importar por código copiável
 - [ ] Exportação em PDF / impressão
 - [ ] Fontes oficiais + acabamento visual

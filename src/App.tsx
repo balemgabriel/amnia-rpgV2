@@ -6,8 +6,13 @@ import { ReadySheetsPage } from '@/features/reference/ReadySheetsPage'
 import { SheetView } from '@/features/sheet/SheetView'
 import { SpellCreator } from '@/features/spells/SpellCreator'
 import { SpellWorkshop } from '@/features/spells/SpellWorkshop'
-import { characterSchema } from '@/rules/character'
-import { getCharacter } from '@/storage/characters'
+import {
+  characterSchema,
+  rulesVersion,
+  SHEET_VERSION,
+  type Character,
+} from '@/rules/character'
+import { getCharacter, saveCharacter } from '@/storage/characters'
 import { useDraft } from '@/store/draft'
 
 // A wiki traz todo o markdown do compêndio; carregá-la só quando abrir evita
@@ -96,6 +101,17 @@ export default function App() {
     if (!parsed.success) return
     reset(parsed.data)
     setView({ name: 'create', from })
+  }
+
+  /** Salva a ficha decodificada como uma nova ficha local e já abre ela. */
+  async function importCharacter(character: Character) {
+    const id = await saveCharacter({
+      name: character.name.trim() || 'Ficha importada',
+      rulesVersion,
+      sheetVersion: SHEET_VERSION,
+      data: character,
+    })
+    setView({ name: 'sheet', id })
   }
 
   if (view.name === 'arena') {
@@ -195,6 +211,7 @@ export default function App() {
       onArena={openArena}
       onOpen={(id) => setView({ name: 'sheet', id })}
       onEdit={(id) => void editCharacter(id, 'home')}
+      onImport={(character) => importCharacter(character)}
     />
   )
 }

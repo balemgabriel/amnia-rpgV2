@@ -28,6 +28,12 @@ import type { ArenaPendingTest, ArenaSheetSummary } from '../src/lib/amnia/types
 import { codexArticleColor, codexHeadingColor } from '../src/features/codex/codexColors'
 import { createEmptyCharacter } from '../src/rules/character'
 import { computeDerived } from '../src/rules/derive'
+import { emptySpell } from '../src/rules/spell'
+import {
+  createSheetCode,
+  instantiateImportedCharacter,
+  readSheetCode,
+} from '../src/rules/sheetCode'
 import { lineagePalette } from '../src/rules/lineageColors'
 import {
   createXpPurchase,
@@ -728,4 +734,90 @@ test('Codex colore os headings de linhagens, castas e grupos como a criação', 
   assert.equal(codexHeadingColor('racas-skaraeb', '## **Khayat**'), lineagePalette.ciano)
   assert.equal(codexHeadingColor('racas-troll', '### **Forghum ( Ferreiros )**'), lineagePalette.laranja)
   assert.equal(codexHeadingColor('regras-regras-pericias', 'Ações'), null)
+})
+
+// ---------------------------------------------------------------------------
+// Código compartilhável da ficha (exportar/importar por copiar e colar)
+// ---------------------------------------------------------------------------
+
+function codeSampleCharacter(): ReturnType<typeof createEmptyCharacter> {
+  const character = createEmptyCharacter(1000)
+  const spell = emptySpell(1000)
+  spell.name = 'Toque de Fogo'
+  spell.effect = 'Cria uma chama na mão.'
+  character.name = 'Kiva'
+  character.concept = 'Conjuradora de elementos'
+  character.attributes.forca = 3
+  character.innateCircle = 'elemento'
+  character.knownRunes = ['elemento-fogo']
+  character.xpEarned = 4
+  character.notes = 'Anotação longa para exercitar a compressão. '.repeat(12)
+  character.spells = [spell]
+  return character
+}
+
+test('código de ficha: vai e volta com a ficha completa', async () => {
+  const character = codeSampleCharacter()
+  const payload = await readSheetCode(await createSheetCode(character))
+
+  assert.equal(payload.format, 1)
+  assert.equal(payload.sheetVersion, 10)
+  assert.deepEqual(payload.character, character)
+  assert.equal(payload.character.spells[0]?.name, 'Toque de Fogo')
+  assert.equal(payload.character.notes, character.notes)
+})
+
+test('código de ficha: aceita cercas Markdown e quebras de linha', async () => {
+  const code = await createSheetCode(codeSampleCharacter())
+  const wrapped = `\`\`\`text\n${code.slice(0, 40)}\n${code.slice(40)}\n\`\`\``
+  const payload = await readSheetCode(wrapped)
+
+  assert.equal(payload.character.name, 'Kiva')
+})
+
+test('código de ficha: rejeita texto comum e códigos corrompidos', async () => {
+  await assert.rejects(() => readSheetCode('olá, veja esta ficha'), /inválido/)
+
+  const parts = (await createSheetCode(codeSampleCharacter())).split('.')
+  parts[2] = parts[2] === 'a' ? 'b' : 'a'
+  await assert.rejects(() => readSheetCode(parts.join('.')), /corrompido/)
+})
+
+test('código de ficha: fallback sem compressão permanece legível', async () => {
+  const character = codeSampleCharacter()
+  const compressed = await createSheetCode(character)
+  const original = globalThis.CompressionStream
+  let plain = ''
+
+  Object.defineProperty(globalThis, 'CompressionStream', {
+    configurable: true,
+    writable: true,
+    value: undefined,
+  })
+  try {
+    plain = await createSheetCode(character)
+  } finally {
+    Object.defineProperty(globalThis, 'CompressionStream', {
+      configurable: true,
+      writable: true,
+      value: original,
+    })
+  }
+
+  assert.match(compressed, /^AMNIA1-Z\./)
+  assert.match(plain, /^AMNIA1-P\./)
+  assert.ok(plain.length > compressed.length)
+  assert.deepEqual((await readSheetCode(plain)).character, character)
+})
+
+test('código de ficha: importar cria uma cópia com id e datas novos', async () => {
+  const original = codeSampleCharacter()
+  const payload = await readSheetCode(await createSheetCode(original))
+  const copy = instantiateImportedCharacter(payload, { now: 5000 })
+
+  assert.notEqual(copy.id, original.id)
+  assert.equal(copy.createdAt, 5000)
+  assert.equal(copy.updatedAt, 5000)
+  assert.equal(copy.name, original.name)
+  assert.deepEqual(copy.spells, original.spells)
 })
