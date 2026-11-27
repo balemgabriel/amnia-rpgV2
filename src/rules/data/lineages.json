@@ -1357,8 +1357,8 @@
     ],
     "negativeTraits": [
       {
-        "id": "lorem",
-        "name": "lorem",
+        "id": "choque-de-fe",
+        "name": "Choque de Fé",
         "cost": -1,
         "description": "Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto."
       },
@@ -1621,16 +1621,16 @@
         "description": "Sempre que você ver algo relacionado à sua arte sendo feito de maneira \"errada\" ou \"ruim\", você DEVE intervir, corrigir ou criticar, independentemente da situação social ou de perigo."
       },
       {
-        "id": "lorem",
-        "name": "lorem",
+        "id": "pesado",
+        "name": "Pesado",
         "cost": -2,
-        "description": "Recebe -1 Dado em SAVES relacionado a um atributo."
+        "description": "Recebe -1 no deslocamento, e -1 dado em testes de atletismo."
       },
       {
-        "id": "lorem-2",
-        "name": "lorem",
+        "id": "regua-alta",
+        "name": "Régua alta",
         "cost": -2,
-        "description": "Você distribui 2 pontos em desvantagens."
+        "description": "Falhar um teste no qual você é especializado faz você perder 1 Ímpeto."
       }
     ]
   },

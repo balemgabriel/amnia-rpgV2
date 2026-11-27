@@ -58,8 +58,8 @@ Ogroide
 
 # Traços Negativos
 
-( -1 ) - lorem; Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto.
+( -1 ) - Choque de Fé; Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto.
 
-( -2 ) - lorem: Recebe -1 Dado em SAVES relacionado a um atributo.
+( -2 ) - Pesado: Recebe -1 no deslocamento, e -1 dado em testes de atletismo.
 
-( -2 ) - lorem; Você distribui 2 pontos em desvantagens.
+( -2 ) - Régua alta: Falhar um teste no qual você é especializado faz você perder 1 Ímpeto.

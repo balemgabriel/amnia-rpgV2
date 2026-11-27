@@ -14,12 +14,30 @@ import { resolveRuneId } from './runes'
  *
  * É idempotente: dados já no formato novo passam sem alteração.
  * Zero dependências de zod/React; roda antes da validação.
+ *
+ * Também troca os ids provisórios dos traços negativos ("lorem") pelos ids
+ * finais, usando a ancestralidade da ficha para desambiguá-los.
  */
 
 type Obj = Record<string, unknown>
 
 const isObj = (value: unknown): value is Obj =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
+
+/** Ids provisórios que apareceram no material antes da revisão dos traços. */
+const LEGACY_NEGATIVE_TRAIT_IDS: Record<string, Record<string, string>> = {
+  orcs: { lorem: 'choque-de-fe' },
+  troll: { lorem: 'pesado', 'lorem-2': 'regua-alta' },
+}
+
+function migrateNegativeTraitIds(raw: Obj): void {
+  const ancestryId = typeof raw.ancestryId === 'string' ? raw.ancestryId : ''
+  const remap = LEGACY_NEGATIVE_TRAIT_IDS[ancestryId]
+  if (!remap || !Array.isArray(raw.negativeTraits)) return
+  raw.negativeTraits = raw.negativeTraits.map((id) =>
+    typeof id === 'string' ? (remap[id] ?? id) : id,
+  )
+}
 
 function clampLevel(value: unknown): number {
   const n = typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : 1
@@ -111,6 +129,8 @@ export function migrateCharacterData(raw: unknown): unknown {
   if (!isObj(raw)) return raw
 
   const next: Obj = { ...raw }
+
+  migrateNegativeTraitIds(next)
 
   if (!Array.isArray(next.knownRunes)) {
     const ids: string[] = []

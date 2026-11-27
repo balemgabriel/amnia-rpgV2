@@ -30,7 +30,7 @@ As linhagens de Orcs são na verdade Kodulls, caminho de vida aonde o Orc decide
 
 # Traços Negativos
 
-( -1 ) - lorem; Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto.
+( -1 ) - Choque de Fé; Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto.
 
 ( -2 ) - Força acima de tudo: Seu limiar é 4 pontos menor.
 

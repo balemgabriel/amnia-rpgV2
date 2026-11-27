@@ -383,7 +383,7 @@ export const CODEX_ARTICLES: CodexArticle[] = [
     "section": "racas",
     "group": "Geral",
     "file": "racas/linhagens-racas.md",
-    "words": 261,
+    "words": 273,
     "stub": false
   },
   {
@@ -464,7 +464,7 @@ export const CODEX_ARTICLES: CodexArticle[] = [
     "section": "racas",
     "group": "Ancestralidades",
     "file": "racas/orcs.md",
-    "words": 418,
+    "words": 420,
     "stub": false
   },
   {
@@ -509,7 +509,7 @@ export const CODEX_ARTICLES: CodexArticle[] = [
     "section": "racas",
     "group": "Ancestralidades",
     "file": "racas/troll.md",
-    "words": 666,
+    "words": 676,
     "stub": false
   },
   {

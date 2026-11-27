@@ -35,6 +35,8 @@ import {
   readSheetCode,
 } from '../src/rules/sheetCode'
 import { lineagePalette } from '../src/rules/lineageColors'
+import { findLineage } from '../src/rules/lineages'
+import { migrateCharacterData } from '../src/rules/migrate'
 import {
   createXpPurchase,
   totalXpSpent,
@@ -820,4 +822,57 @@ test('código de ficha: importar cria uma cópia com id e datas novos', async ()
   assert.equal(copy.updatedAt, 5000)
   assert.equal(copy.name, original.name)
   assert.deepEqual(copy.spells, original.spells)
+})
+
+// ---------------------------------------------------------------------------
+// Traços raciais: textos finais no catálogo e migração dos ids provisórios
+// ---------------------------------------------------------------------------
+
+test('traços negativos de Orcs e Trolls usam os nomes e efeitos finais', () => {
+  const orcs = findLineage('orcs')
+  const troll = findLineage('troll')
+
+  assert.deepEqual(orcs?.negativeTraits.map((trait) => trait.name), [
+    'Choque de Fé',
+    'Força acima de tudo',
+    'Sangue Fervente',
+  ])
+  assert.deepEqual(troll?.negativeTraits.map((trait) => trait.name), [
+    'Compulsão do Perfeccionista',
+    'Pesado',
+    'Régua alta',
+  ])
+  assert.equal(orcs?.negativeTraits[0]?.cost, -1)
+  assert.equal(
+    orcs?.negativeTraits[0]?.description,
+    'Falhar um teste de VON por margem de 4 faz você perder 1 Ímpeto.',
+  )
+  assert.equal(
+    troll?.negativeTraits[1]?.description,
+    'Recebe -1 no deslocamento, e -1 dado em testes de atletismo.',
+  )
+  assert.equal(
+    troll?.negativeTraits[2]?.description,
+    'Falhar um teste no qual você é especializado faz você perder 1 Ímpeto.',
+  )
+})
+
+test('fichas antigas migram os ids provisórios dos traços negativos', () => {
+  const migrated = (value: unknown) =>
+    migrateCharacterData(value) as { negativeTraits?: string[] }
+
+  assert.deepEqual(
+    migrated({ ancestryId: 'orcs', negativeTraits: ['lorem', 'forca-acima-de-tudo'] })
+      .negativeTraits,
+    ['choque-de-fe', 'forca-acima-de-tudo'],
+  )
+  assert.deepEqual(
+    migrated({ ancestryId: 'troll', negativeTraits: ['lorem', 'lorem-2'] }).negativeTraits,
+    ['pesado', 'regua-alta'],
+  )
+  // Outras ancestralidades não são alteradas.
+  assert.deepEqual(
+    migrated({ ancestryId: 'goblin', negativeTraits: ['lorem'] }).negativeTraits,
+    ['lorem'],
+  )
 })
